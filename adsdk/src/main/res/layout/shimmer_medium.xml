@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ad_unit_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:orientation="vertical"
+    android:paddingBottom="5dp">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/ad_sdk_bg"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/icon"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/ad_sdk_no_margin"
+            android:layout_weight="0"
+            android:background="@color/ad_sdk_colorGrey"
+            android:foregroundGravity="center_vertical" />
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/ad_sdk_default_margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/headline_old"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1"
+                android:background="@color/ad_sdk_test_background_color"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/headline"
+                    tools:ignore="NestedWeights"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/ad_sdk_no_margin"
+                    android:layout_marginTop="@dimen/ad_sdk_no_margin"
+                    android:layout_marginEnd="@dimen/ad_sdk_default_margin"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:background="@color/ad_sdk_colorGrey"
+                    android:lines="1"
+                    android:textColor="@color/ad_sdk_gray"
+                    android:textSize="@dimen/ad_sdk_text_size_large"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ad_notification_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@drawable/ad_text_rounded_corners_shape"
+                    android:gravity="center"
+                    android:minWidth="25dp"
+                    android:text="@string/text_ad"
+                    android:textColor="@color/ad_sdk_green"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/row_two"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="2"
+                android:background="@color/ad_sdk_colorGrey"
+                android:orientation="horizontal">
+
+                <RatingBar
+                    android:id="@+id/ad_stars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/ad_sdk_no_margin"
+                    android:background="@color/ad_sdk_color_white"
+                    android:lines="1"
+                    android:numStars="5"
+                    android:stepSize="0.1"
+                    android:textColor="@color/ad_sdk_gray"
+                    android:textSize="@dimen/ad_sdk_text_size_small">
+
+                </RatingBar>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/ad_sdk_no_margin"
+                    android:background="@color/ad_sdk_color_white"
+                    android:gravity="center_vertical"
+                    android:lines="1"
+                    android:textColor="@color/ad_sdk_gray"
+                    android:textSize="@dimen/ad_sdk_text_size_small" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/call_to_action"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/ad_sdk_colorGrey"
+                android:gravity="center"
+                android:lines="2"
+                android:minHeight="30dp"
+                android:padding="3dp"
+                android:textColor="@color/ad_sdk_color_white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

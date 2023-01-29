@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ad_sdk_ad_indicator_width">25dp</dimen>
+    <dimen name="ad_sdk_ad_indicator_height">20dp</dimen>
+    <dimen name="ad_sdk_default_margin_small">5dp</dimen>
+    <dimen name="ad_sdk_default_margin">10dp</dimen>
+    <dimen name="ad_sdk_text_size_small">12sp</dimen>
+    <dimen name="ad_sdk_text_size_large">15sp</dimen>
+    <dimen name="ad_sdk_no_margin">0dp</dimen>
+    <dimen name="ad_sdk_ad_text_size">10sp</dimen>
+    <dimen name="ad_sdk_indicator_top_margin">0dp</dimen>
+</resources>

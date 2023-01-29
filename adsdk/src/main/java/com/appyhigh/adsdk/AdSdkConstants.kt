@@ -1,0 +1,27 @@
+package com.appyhigh.adsdk
+
+import com.google.android.gms.ads.AdView
+
+object AdSdkConstants {
+    const val BASE_URL = "https://admob-automation.apyhi.com/"
+    const val AUTHORIZATION_HEADER = "Authorization"
+    const val TAG = "AdSdkLogger"
+    const val PACKAGE_ID = "packageId"
+    const val PLATFORM = "platform"
+    const val ANDROID = "ANDROID"
+    const val AD_CONFIG = "ad_config"
+    const val AD_CONFIG_RESPONSE = "ad_config_response"
+    const val VERSION_CONTROL = "version_control"
+    const val CURRENT_VERSION = "current_version"
+    const val CRITICAL_VERSION = "critical_version"
+    const val PACKAGE_NAME = "package_name"
+    const val MY_REQUEST_CODE = 0x121212
+    const val NATIVE = "native"
+    const val BANNER = "banner"
+    const val INTERSTITIAL = "interstitial"
+    const val REWARDED_INTERSTITIAL = "rewarded_interstitial"
+    const val REWARDED = "rewarded"
+    const val APP_OPEN = "app_open"
+    var adUnitsSet = HashSet<String>()
+    var preloadedBannerAdMap = HashMap<String, AdView?>()
+}
