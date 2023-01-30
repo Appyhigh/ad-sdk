@@ -1,10 +1,10 @@
 package com.appyhigh.adsdk.interfaces
 
-interface BannerAdLoadListener {
-    fun onAdClicked()
-    fun onAdClosed()
-    fun onAdFailedToLoad(adError : ArrayList<String>)
-    fun onAdImpression()
-    fun onAdLoaded()
-    fun onAdOpened()
+abstract class BannerAdLoadListener {
+    open fun onAdClicked() {}
+    open fun onAdClosed(){}
+    open fun onAdFailedToLoad(adError: ArrayList<String>){}
+    open fun onAdImpression(){}
+    open fun onAdLoaded(){}
+    open fun onAdOpened(){}
 }

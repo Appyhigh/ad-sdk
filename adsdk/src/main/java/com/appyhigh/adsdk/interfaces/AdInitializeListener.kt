@@ -2,7 +2,7 @@ package com.appyhigh.adsdk.interfaces
 
 import com.appyhigh.adsdk.data.model.AdSdkError
 
-interface AdInitializeListener {
-    fun onSdkInitialized()
-    fun onInitializationFailed(adSdkError: AdSdkError)
+abstract class AdInitializeListener {
+    open fun onSdkInitialized(){}
+    open fun onInitializationFailed(adSdkError: AdSdkError){}
 }

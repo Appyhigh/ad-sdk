@@ -19,9 +19,9 @@ object AdSdkConstants {
     const val NATIVE = "native"
     const val BANNER = "banner"
     const val INTERSTITIAL = "interstitial"
-    const val REWARDED_INTERSTITIAL = "rewarded_interstitial"
+    const val REWARDED_INTERSTITIAL = "rewardinterstitial"
     const val REWARDED = "rewarded"
-    const val APP_OPEN = "app_open"
+    const val APP_OPEN = "appopen"
     var adUnitsSet = HashSet<String>()
     var preloadedBannerAdMap = HashMap<String, AdView?>()
 }

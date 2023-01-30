@@ -3,12 +3,20 @@ package com.appyhigh.adsdk
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.appyhigh.adsdk.ads.AppOpenAdManager
+import com.appyhigh.adsdk.data.enums.AppOpenLoadType
 import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
-import com.appyhigh.adsdk.interfaces.AdInitializeListener
-import com.appyhigh.adsdk.interfaces.VersionControlListener
+import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
+import com.google.android.gms.ads.OnUserEarnedRewardListener
+import com.google.android.gms.ads.appopen.AppOpenAd
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,13 +25,13 @@ class MainActivity : AppCompatActivity() {
         AdSdk.initialize(
             application,
             null,
-            object : AdInitializeListener {
+            object : AdInitializeListener() {
                 override fun onSdkInitialized() {
                     AdSdk.setUpVersionControl(
                         this@MainActivity,
                         findViewById(R.id.tvDummyView),
                         BuildConfig.VERSION_CODE,
-                        object : VersionControlListener {
+                        object : VersionControlListener() {
                             override fun onUpdateDetectionSuccess(updateType: UpdateType) {
                                 when (updateType) {
                                     UpdateType.SOFT_UPDATE -> {
@@ -40,23 +48,26 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
 
-                    AdSdk.preloadAd(
-                        parentView = findViewById(R.id.llAdView),
-                        adName = "test_banner",
-                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
-                    )
-
-                    AdSdk.preloadAd(
-                        parentView = findViewById(R.id.llAdView2),
-                        adName = "test_banner_2",
-                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
-                    )
-
-                    AdSdk.preloadAd(
-                        parentView = findViewById(R.id.llAdView3),
-                        adName = "test_banner_3",
-                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
-                    )
+//                    AdSdk.preloadAd(
+//                        this@MainActivity,
+//                        parentView = findViewById(R.id.llAdView),
+//                        adName = "test_banner",
+//                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//                    )
+//
+//                    AdSdk.preloadAd(
+//                        this@MainActivity,
+//                        parentView = findViewById(R.id.llAdView2),
+//                        adName = "test_banner_2",
+//                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//                    )
+//
+//                    AdSdk.preloadAd(
+//                        this@MainActivity,
+//                        parentView = findViewById(R.id.llAdView3),
+//                        adName = "test_banner_3",
+//                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//                    )
                 }
 
                 override fun onInitializationFailed(adSdkError: AdSdkError) {
@@ -66,23 +77,101 @@ class MainActivity : AppCompatActivity() {
         )
 
         Handler(Looper.getMainLooper()).postDelayed({
-            AdSdk.loadAd(
-                parentView = findViewById(R.id.llAdView),
-                adName = "test_banner",
-                fallBackId = "ca-app-pub-3940256099942544/6300978111"
-            )
+//            AdSdk.loadAd(
+//                this,
+//                parentView = findViewById(R.id.llAdView),
+//                adName = "test_banner",
+//                fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//            )
+//
+//            AdSdk.loadAd(
+//                this,
+//                parentView = findViewById(R.id.llAdView2),
+//                adName = "test_banner_2",
+//                fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//            )
+//
+//            AdSdk.loadAd(
+//                this,
+//                parentView = findViewById(R.id.llAdView3),
+//                adName = "test_banner_3",
+//                fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//            )
 
-            AdSdk.loadAd(
-                parentView = findViewById(R.id.llAdView2),
-                adName = "test_banner_2",
-                fallBackId = "ca-app-pub-3940256099942544/6300978111"
-            )
+//            AdSdk.loadAd(
+//                this,
+//                adName = "test_interstitial",
+//                fallBackId = "ca-app-pub-3940256099942544/1033173712",
+//                interstitialAdLoadListener = object : InterstitialAdLoadListener {
+//                    override fun onAdFailedToLoad(adErrors: List<String>) {
+//                        for (error in adErrors) {
+//                            Logger.e(AdSdkConstants.TAG, error)
+//                        }
+//                    }
+//
+//                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+//                        interstitialAd.show(this@MainActivity)
+//                    }
+//                }
+//            )
 
+//            AdSdk.loadAd(
+//                this,
+//                adName = "test_rewarded",
+//                fallBackId = "ca-app-pub-3940256099942544/5224354917",
+//                rewardedAdLoadListener = object :RewardedAdLoadListener{
+//                    override fun onAdFailedToLoad(adErrors: List<String>) {
+//                        for (error in adErrors) {
+//                            Logger.e(AdSdkConstants.TAG, error)
+//                        }
+//                    }
+//
+//                    override fun onAdLoaded(rewardedAd: RewardedAd) {
+//                        rewardedAd.show(this@MainActivity) {
+//                            fun onUserEarnedReward(rewardItem: RewardItem) {
+//                                var rewardAmount = rewardItem.amount
+//                                var rewardType = rewardItem.type
+//                                Logger.d(AdSdkConstants.TAG, "User earned the reward.")
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            )
+//            AdSdk.loadAd(
+//                context = this,
+//                adName = "test_rewarded_interstitial",
+//                fallBackId = "ca-app-pub-3940256099942544/5354046379",
+//                rewardedInterstitialAdLoadListener = object : RewardedInterstitialAdLoadListener {
+//                    override fun onAdFailedToLoad(adErrors: List<String>) {
+//                        for (error in adErrors) {
+//                            Logger.e(AdSdkConstants.TAG, error)
+//                        }
+//                    }
+//
+//                    override fun onAdLoaded(rewardedInterstitialAd: RewardedInterstitialAd) {
+//                        rewardedInterstitialAd.show(this@MainActivity) {
+//                            fun onUserEarnedReward(rewardItem: RewardItem) {
+//                                var rewardAmount = rewardItem.amount
+//                                var rewardType = rewardItem.type
+//                                Logger.d(AdSdkConstants.TAG, "User earned the reward.")
+//                            }
+//                        }
+//                    }
+//                }
+//            )
             AdSdk.loadAd(
-                parentView = findViewById(R.id.llAdView3),
-                adName = "test_banner_3",
-                fallBackId = "ca-app-pub-3940256099942544/6300978111"
+                application = application,
+                context = this,
+                adName = "test_app_open",
+                fallBackId = "ca-app-pub-3940256099942544/3419835294",
+                appOpenAdLoadListener = object : AppOpenAdLoadListener() {
+                    override fun onAdLoaded(ad: AppOpenAd) {
+                        super.onAdLoaded(ad)
+                        ad.show(this@MainActivity)
+                    }
+                }
             )
-        }, 8000)
+        }, 1000)
     }
 }

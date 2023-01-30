@@ -5,14 +5,13 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import com.appyhigh.adsdk.ads.BannerAd
+import com.appyhigh.adsdk.ads.*
 import com.appyhigh.adsdk.data.enums.AdSdkErrorCode
 import com.appyhigh.adsdk.data.enums.AdType
+import com.appyhigh.adsdk.data.enums.AppOpenLoadType
 import com.appyhigh.adsdk.data.local.SharedPrefs
 import com.appyhigh.adsdk.data.model.AdSdkError
-import com.appyhigh.adsdk.interfaces.AdInitializeListener
-import com.appyhigh.adsdk.interfaces.BannerAdLoadListener
-import com.appyhigh.adsdk.interfaces.VersionControlListener
+import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.AdConfig
 import com.appyhigh.adsdk.utils.Logger
 import com.google.android.gms.ads.MobileAds
@@ -89,6 +88,7 @@ object AdSdk {
     }
 
     fun preloadAd(
+        context: Context,
         parentView: ViewGroup,
         adName: String,
         fallBackId: String,
@@ -99,52 +99,126 @@ object AdSdk {
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
                 AdType.NATIVE -> {}
-                AdType.BANNER -> BannerAd().preloadBannerAd(
-                    parentView,
+                AdType.BANNER -> BannerAdLoader().preloadBannerAd(
+                    context,
                     adName,
                     adConfig.fetchBannerAdSize(adName),
                     fallBackId,
                     contentURL,
                     neighbourContentURL
                 )
-                AdType.INTERSTITIAL -> {}
-                AdType.REWARDED_INTERSTITIAL -> {}
-                AdType.REWARDED -> {}
-                AdType.APP_OPEN -> {}
                 else -> {}
             }
         }
     }
 
     fun loadAd(
-        parentView: ViewGroup,
+        application: Application? = null,
+        context: Context,
+        parentView: ViewGroup? = null,
         adName: String,
         fallBackId: String,
         contentURL: String? = null,
         neighbourContentURL: List<String>? = null,
         bannerAdLoadListener: BannerAdLoadListener? = null,
+        interstitialAdLoadListener: InterstitialAdLoadListener? = null,
+        rewardedAdLoadListener: RewardedAdLoadListener? = null,
+        rewardedInterstitialAdLoadListener: RewardedInterstitialAdLoadListener? = null,
+        appOpenAdLoadListener: AppOpenAdLoadListener? = null,
+        appOpenLoadType: AppOpenLoadType? = null
     ) {
+        var appOpenLoadTypeInternal = appOpenLoadType
         adConfig.init()
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
                 AdType.NATIVE -> {}
-                AdType.BANNER -> BannerAd().loadBannerAd(
-                    parentView,
-                    adName,
-                    adConfig.fetchBannerAdSize(adName),
-                    fallBackId,
-                    adConfig.fetchPrimaryAdUnitIds(adName),
-                    adConfig.fetchSecondaryAdUnitIds(adName),
-                    adConfig.fetchAdUnitTimeout(adName),
-                    adConfig.fetchAdUnitRefreshTimer(adName),
-                    contentURL,
-                    neighbourContentURL,
-                    bannerAdLoadListener
-                )
-                AdType.INTERSTITIAL -> {}
-                AdType.REWARDED_INTERSTITIAL -> {}
-                AdType.REWARDED -> {}
-                AdType.APP_OPEN -> {}
+                AdType.BANNER -> {
+                    if (parentView == null) {
+                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null"
+                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        Logger.e(AdSdkConstants.TAG, error)
+                        return
+                    }
+                    BannerAdLoader().loadBannerAd(
+                        context,
+                        parentView,
+                        adName,
+                        adConfig.fetchBannerAdSize(adName),
+                        fallBackId,
+                        adConfig.fetchPrimaryAdUnitIds(adName),
+                        adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchAdUnitTimeout(adName),
+                        adConfig.fetchAdUnitRefreshTimer(adName),
+                        contentURL,
+                        neighbourContentURL,
+                        bannerAdLoadListener
+                    )
+                }
+                AdType.INTERSTITIAL ->
+                    InterstitialAdLoader().loadInterstitialAd(
+                        context,
+                        adName,
+                        fallBackId,
+                        adConfig.fetchPrimaryAdUnitIds(adName),
+                        adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchAdUnitTimeout(adName),
+                        interstitialAdLoadListener
+                    )
+                AdType.REWARDED_INTERSTITIAL ->
+                    RewardedInterstitialAdLoader().loadInterstitialRewardedAd(
+                        context,
+                        adName,
+                        fallBackId,
+                        adConfig.fetchPrimaryAdUnitIds(adName),
+                        adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchAdUnitTimeout(adName),
+                        rewardedInterstitialAdLoadListener
+                    )
+                AdType.REWARDED ->
+                    RewardedAdLoader().loadRewardedAd(
+                        context,
+                        adName,
+                        fallBackId,
+                        adConfig.fetchPrimaryAdUnitIds(adName),
+                        adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchAdUnitTimeout(adName),
+                        rewardedAdLoadListener
+                    )
+                AdType.APP_OPEN -> {
+                    if (appOpenLoadTypeInternal == null) {
+                        val error =
+                            "$adName ==== $fallBackId ==== AppOpenAdType not Supplied so switching it to AppOpenLoadType.SINGLE_LOAD"
+                        Logger.e(AdSdkConstants.TAG, error)
+                        appOpenLoadTypeInternal = AppOpenLoadType.SINGLE_LOAD
+                    }
+                    if (appOpenLoadTypeInternal == AppOpenLoadType.SINGLE_LOAD) {
+                        AppOpenAdLoader().loadAppOpenAd(
+                            context,
+                            adName,
+                            fallBackId,
+                            adConfig.fetchPrimaryAdUnitIds(adName),
+                            adConfig.fetchSecondaryAdUnitIds(adName),
+                            adConfig.fetchAdUnitTimeout(adName),
+                            appOpenAdLoadListener
+                        )
+                    } else {
+                        if (application == null) {
+                            val error =
+                                "$adName ==== $fallBackId ==== Application context Supplied is Null"
+                            bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                            Logger.e(AdSdkConstants.TAG, error)
+                            return
+                        }
+                        AppOpenAdLoader().loadAppOpenAdBgToFg(
+                            application,
+                            context,
+                            adName,
+                            fallBackId,
+                            adConfig.fetchPrimaryAdUnitIds(adName),
+                            adConfig.fetchSecondaryAdUnitIds(adName)
+                        )
+                    }
+                }
                 else -> {}
             }
         }
