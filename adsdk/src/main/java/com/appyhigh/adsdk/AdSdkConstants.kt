@@ -24,4 +24,5 @@ object AdSdkConstants {
     const val APP_OPEN = "appopen"
     var adUnitsSet = HashSet<String>()
     var preloadedBannerAdMap = HashMap<String, AdView?>()
+    var preloadedNativeAdMap = HashMap<String, AdView?>()
 }

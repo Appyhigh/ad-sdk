@@ -106,20 +106,6 @@ class BannerAdLoader {
                 neighbourContentURL,
                 bannerAdLoadListener
             )
-            startRefreshTimer(
-                context,
-                parentView,
-                adName,
-                adSize,
-                fallBackId,
-                primaryAdUnitIds,
-                secondaryAdUnitIds,
-                timeout,
-                refreshTimer,
-                contentURL,
-                neighbourContentURL,
-                bannerAdLoadListener
-            )
             AdSdkConstants.preloadedBannerAdMap[adName] = null
 
         } else {
@@ -128,29 +114,21 @@ class BannerAdLoader {
             adUnits.addAll(secondaryAdUnitIds)
             adUnits.add(fallBackId)
             val bannerShimmerBaseView =
-                View.inflate(parentView?.context, R.layout.banner_shimmer, null)
+                View.inflate(parentView?.context, R.layout.shimmer_parent_view, null)
             parentView?.addView(bannerShimmerBaseView)
-            when (adSize) {
-                AdSize.BANNER -> {
-                    val bannerShimmerSmall =
-                        View.inflate(parentView?.context, R.layout.shimmer_banner_small, null)
-                    (bannerShimmerBaseView as ShimmerFrameLayout).addView(bannerShimmerSmall)
-                }
-                AdSize.LARGE_BANNER -> {
-                    val bannerShimmerSmall =
-                        View.inflate(parentView?.context, R.layout.shimmer_banner_large, null)
-                    (bannerShimmerBaseView as ShimmerFrameLayout).addView(bannerShimmerSmall)
-                }
-                AdSize.MEDIUM_RECTANGLE -> {
-                    val bannerShimmerSmall =
-                        View.inflate(
-                            parentView?.context,
-                            R.layout.shimmer_banner_medium_rectangle,
-                            null
-                        )
-                    (bannerShimmerBaseView as ShimmerFrameLayout).addView(bannerShimmerSmall)
-                }
+            val layout = when (adSize) {
+                AdSize.BANNER -> R.layout.shimmer_banner_small
+                AdSize.LARGE_BANNER -> R.layout.shimmer_banner_large
+                AdSize.MEDIUM_RECTANGLE -> R.layout.shimmer_banner_medium_rectangle
+                else -> R.layout.shimmer_banner_small
             }
+            (bannerShimmerBaseView as ShimmerFrameLayout).addView(
+                View.inflate(
+                    parentView?.context,
+                    layout,
+                    null
+                )
+            )
             inflateAd(
                 context,
                 parentView,
@@ -162,21 +140,21 @@ class BannerAdLoader {
                 neighbourContentURL,
                 bannerAdLoadListener
             )
-            startRefreshTimer(
-                context,
-                parentView,
-                adName,
-                adSize,
-                fallBackId,
-                primaryAdUnitIds,
-                secondaryAdUnitIds,
-                timeout,
-                refreshTimer,
-                contentURL,
-                neighbourContentURL,
-                bannerAdLoadListener
-            )
         }
+        startRefreshTimer(
+            context,
+            parentView,
+            adName,
+            adSize,
+            fallBackId,
+            primaryAdUnitIds,
+            secondaryAdUnitIds,
+            timeout,
+            refreshTimer,
+            contentURL,
+            neighbourContentURL,
+            bannerAdLoadListener
+        )
     }
 
     @SuppressLint("VisibleForTests")

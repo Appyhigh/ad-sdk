@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ad_unit_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:orientation="vertical"
+    android:paddingBottom="5dp">
+
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/ad_sdk_bg"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_margin="@dimen/ad_sdk_default_margin_small"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/headline_old"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/ad_sdk_test_background_color"
+                android:orientation="horizontal">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical">
+                   <androidx.appcompat.widget.AppCompatTextView
+                       android:layout_width="match_parent"
+                       android:layout_height="30dp"
+                       android:layout_marginEnd="50dp"
+                       android:layout_marginStart="@dimen/ad_sdk_no_margin"
+                       android:layout_marginTop="@dimen/ad_sdk_no_margin"
+                       android:background="@color/ad_sdk_colorGrey"
+                       android:lines="1" />
+                   <androidx.appcompat.widget.AppCompatTextView
+                       android:layout_width="match_parent"
+                       android:layout_height="40dp"
+                       android:layout_marginStart="@dimen/ad_sdk_no_margin"
+                       android:layout_marginTop="@dimen/ad_sdk_default_margin_small"
+                       android:background="@color/ad_sdk_colorGrey"
+                       android:lines="1" />
+               </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/ad_notification_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_margin="5dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/ad_text_rounded_corners_shape"
+                    android:gravity="center"
+                    android:minWidth="25dp"
+                    android:text="@string/text_ad"
+                    android:textColor="@color/ad_sdk_green"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

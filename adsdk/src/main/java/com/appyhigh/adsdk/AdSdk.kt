@@ -125,13 +125,36 @@ object AdSdk {
         rewardedAdLoadListener: RewardedAdLoadListener? = null,
         rewardedInterstitialAdLoadListener: RewardedInterstitialAdLoadListener? = null,
         appOpenAdLoadListener: AppOpenAdLoadListener? = null,
-        appOpenLoadType: AppOpenLoadType? = null
+        appOpenLoadType: AppOpenLoadType? = null,
+        nativeAdLoadListener: NativeAdLoadListener? = null
     ) {
         var appOpenLoadTypeInternal = appOpenLoadType
         adConfig.init()
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
-                AdType.NATIVE -> {}
+                AdType.NATIVE -> {
+                    if (parentView == null) {
+                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null"
+                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        Logger.e(AdSdkConstants.TAG, error)
+                        return
+                    }
+
+                    NativeAdLoader().loadNativeAd(
+                        context,
+                        parentView,
+                        adName,
+                        adConfig.fetchNativeAdSize(adName),
+                        fallBackId,
+                        adConfig.fetchPrimaryAdUnitIds(adName),
+                        adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchAdUnitTimeout(adName),
+                        adConfig.fetchAdUnitRefreshTimer(adName),
+                        contentURL,
+                        neighbourContentURL,
+                        nativeAdLoadListener
+                    )
+                }
                 AdType.BANNER -> {
                     if (parentView == null) {
                         val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null"

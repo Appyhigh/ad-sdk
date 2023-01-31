@@ -160,17 +160,24 @@ class MainActivity : AppCompatActivity() {
 //                    }
 //                }
 //            )
+//            AdSdk.loadAd(
+//                application = application,
+//                context = this,
+//                adName = "test_app_open",
+//                fallBackId = "ca-app-pub-3940256099942544/3419835294",
+//                appOpenAdLoadListener = object : AppOpenAdLoadListener() {
+//                    override fun onAdLoaded(ad: AppOpenAd) {
+//                        super.onAdLoaded(ad)
+//                        ad.show(this@MainActivity)
+//                    }
+//                }
+//            )
+
             AdSdk.loadAd(
-                application = application,
                 context = this,
-                adName = "test_app_open",
-                fallBackId = "ca-app-pub-3940256099942544/3419835294",
-                appOpenAdLoadListener = object : AppOpenAdLoadListener() {
-                    override fun onAdLoaded(ad: AppOpenAd) {
-                        super.onAdLoaded(ad)
-                        ad.show(this@MainActivity)
-                    }
-                }
+                parentView = findViewById(R.id.llAdView3),
+                adName = "test_native_ad",
+                fallBackId = "ca-app-pub-3940256099942544/2247696110"
             )
         }, 1000)
     }
