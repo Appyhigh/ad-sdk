@@ -1,0 +1,194 @@
+{
+    "status": "success",
+    "message": "App info served from cache",
+    "app": {
+        "showAppAds": true,
+        "isActive": true,
+        "_id": "63b7ffa4339c0caf4ccf812e",
+        "appName": "OrangeVPN",
+        "packageId": "orange.vpn.free.proxy",
+        "platform": "ANDROID",
+        "latestVersion": 41,
+        "criticalVersion": 41,
+        "appUid": "7355bc7e847b42d7a8b68520c53b7115",
+        "adMob": [
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/3376394498"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/5547490514"
+                ],
+                "_id": "63bbabbeeb05750006b8ccc5",
+                "ad_name": "app_open_ad_unit",
+                "ad_type": "appopen",
+                "isActive": true,
+                "refresh_rate_ms": 10000,
+                "color_hex": "#000000",
+                "size": "",
+                "primary_adload_timeout_ms": 6000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/2870209601"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/7748232155"
+                ],
+                "_id": "63bbac1536f4607aaf785d06",
+                "ad_name": "speed_test_banner_ad_unit",
+                "ad_type": "banner",
+                "isActive": true,
+                "refresh_rate_ms": 10000,
+                "color_hex": "#000000",
+                "size": "banner",
+                "primary_adload_timeout_ms": 4000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/1001906112"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/3001383493"
+                ],
+                "_id": "63bbac453da4ba96b2e64d4a",
+                "ad_name": "exit_page_native_ad_unit",
+                "ad_type": "native",
+                "isActive": true,
+                "refresh_rate_ms": 45000,
+                "color_hex": "#000000",
+                "size": "bigv1",
+                "primary_adload_timeout_ms": 6000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/8314107975"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/6331208703"
+                ],
+                "_id": "63bbac7aeb0575948bb8cf4f",
+                "ad_name": "home_page_native_ad_unit",
+                "ad_type": "native",
+                "isActive": true,
+                "refresh_rate_ms": 40000,
+                "color_hex": "#000000",
+                "size": "bigv1",
+                "primary_adload_timeout_ms": 6000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/4204355423"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/6331208703"
+                ],
+                "_id": "63bbaca8eb05756e30b8cfe9",
+                "ad_name": "disconnect_native_ad_unit",
+                "ad_type": "native",
+                "isActive": true,
+                "refresh_rate_ms": 45000,
+                "color_hex": "#000000",
+                "size": "bigv1",
+                "primary_adload_timeout_ms": 6000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/6746141674"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/6746141674"
+                ],
+                "_id": "63bbacda3da4ba58b0e64f2a",
+                "ad_name": "home_page_interstitial_ad_unit",
+                "ad_type": "interstitial",
+                "isActive": true,
+                "refresh_rate_ms": 10000,
+                "color_hex": "#000000",
+                "size": "",
+                "primary_adload_timeout_ms": 4000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/7239049973"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/7203121451"
+                ],
+                "_id": "63bbad13eb0575d6cab8d14a",
+                "ad_name": "home_page_reward_ad_unit",
+                "ad_type": "rewarded",
+                "isActive": true,
+                "refresh_rate_ms": 10000,
+                "color_hex": "#000000",
+                "size": "",
+                "primary_adload_timeout_ms": 6000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/8316030173"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/1471420221"
+                ],
+                "_id": "63c90c83e292c752a321147d",
+                "ad_name": "speed_test_native_ad_unit",
+                "ad_type": "native",
+                "isActive": true,
+                "refresh_rate_ms": 40000,
+                "color_hex": "#000000",
+                "size": "bigv1",
+                "primary_adload_timeout_ms": 6000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/8318795957"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/6432102862"
+                ],
+                "_id": "63c925e8b1a0866645120d62",
+                "ad_name": "server_page_sticky_native_ad_unit",
+                "ad_type": "native",
+                "isActive": true,
+                "refresh_rate_ms": 40000,
+                "color_hex": "#000000",
+                "size": "small",
+                "primary_adload_timeout_ms": 60000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/2988455953"
+                ],
+                "secondary_ids": [
+                    "ca-app-pub-4310459535775382/9514605353"
+                ],
+                "_id": "63cfb181d919aa0bcf13185e",
+                "ad_name": "tunnel_banner",
+                "ad_type": "banner",
+                "isActive": true,
+                "refresh_rate_ms": 45000,
+                "color_hex": "#000000",
+                "size": "banner",
+                "primary_adload_timeout_ms": 6000
+            },
+            {
+                "primary_ids": [
+                    "ca-app-pub-4310459535775382/2785561383"
+                ],
+                "secondary_ids": [],
+                "_id": "63d0daa6837981062df93d58",
+                "ad_name": "reward_test",
+                "ad_type": "rewarded",
+                "isActive": true,
+                "refresh_rate_ms": 40000,
+                "color_hex": "#000000",
+                "size": "",
+                "primary_adload_timeout_ms": 6000
+            }
+        ],
+        "createdAt": "2023-01-06T11:01:56.541Z",
+        "updatedAt": "2023-01-29T19:18:34.073Z",
+        "__v": 0
+    }
+}
