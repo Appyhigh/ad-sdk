@@ -9,27 +9,42 @@
     <View
         android:id="@+id/tvDummyView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="0dp" />
 
     <LinearLayout
         android:id="@+id/llAdView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/llAdView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <LinearLayout
-        android:id="@+id/llAdView3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"/>
+        android:layout_height="250dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/llAdView3"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/llAdView4"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:orientation="vertical" />
+    </LinearLayout>
 
 </LinearLayout>

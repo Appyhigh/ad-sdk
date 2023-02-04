@@ -14,14 +14,13 @@ import com.google.android.gms.ads.appopen.AppOpenAd
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AppOpenAdLoader {
+internal class AppOpenAdLoader {
 
     private var appOpenAdManager: AppOpenAdManager? = null
     private var adUnits = ArrayList<String>()
     private var adRequestsCompleted = 0
     private var adFailureReasonArray = ArrayList<String>()
     private var countDownTimer: CountDownTimer? = null
-    private var currentAdUnitId: String? = null
     private var appOpenAd: AppOpenAd? = null
     private var isAdLoaded = false
 
@@ -130,23 +129,21 @@ class AppOpenAdLoader {
         countDownTimer: CountDownTimer?,
         appOpenAdLoadListener: AppOpenAdLoadListener?
     ) {
-        currentAdUnitId = adUnit
         val request = AdRequest.Builder().build()
         AppOpenAd.load(
             context, adUnit!!, request,
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(ad: AppOpenAd) {
-                    if (currentAdUnitId == ad.adUnitId) {
+                    if (!isAdLoaded) {
                         countDownTimer?.cancel()
                         Logger.d(
                             AdSdkConstants.TAG,
                             "$adName === $adUnit ==== AppOpen Ad Loaded"
                         )
                         appOpenAd = ad
-                        if (!isAdLoaded) {
-                            appOpenAdLoadListener?.onAdLoaded(ad)
-                        }
+
+                        appOpenAdLoadListener?.onAdLoaded(ad)
                         isAdLoaded = true
                     }
                 }

@@ -11,13 +11,12 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 
-class RewardedAdLoader {
+internal class RewardedAdLoader {
 
     var rewardedAd: RewardedAd? = null
     private var adRequestsCompleted = 0
     private var adUnits = ArrayList<String>()
     private var countDownTimer: CountDownTimer? = null
-    private var currentAdUnitId: String? = null
     private var isAdLoaded = false
     private var adFailureReasonArray = ArrayList<String>()
 
@@ -76,7 +75,6 @@ class RewardedAdLoader {
         countDownTimer: CountDownTimer?,
         rewardedAdLoadListener: RewardedAdLoadListener?
     ) {
-        currentAdUnitId = adUnit
         countDownTimer?.start()
 
         val adRequest = AdRequest.Builder().build()
@@ -105,16 +103,14 @@ class RewardedAdLoader {
                 }
 
                 override fun onAdLoaded(ad: RewardedAd) {
-                    if (currentAdUnitId == ad.adUnitId) {
+                    if (!isAdLoaded) {
                         countDownTimer?.cancel()
                         Logger.d(
                             AdSdkConstants.TAG,
                             "$adName === $adUnit ==== Interstitial Ad Loaded"
                         )
                         rewardedAd = ad
-                        if (!isAdLoaded) {
-                            rewardedAdLoadListener?.onAdLoaded(ad)
-                        }
+                        rewardedAdLoadListener?.onAdLoaded(ad)
                         isAdLoaded = true
                     }
                 }

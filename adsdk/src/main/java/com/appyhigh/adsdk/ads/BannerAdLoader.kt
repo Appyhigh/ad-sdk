@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.BannerAdLoadListener
@@ -14,7 +17,7 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.*
 
-class BannerAdLoader {
+internal class BannerAdLoader {
     private var isAdLoaded = false
     private var adRequestsCompleted = 0
     private var adFailureReasonArray = ArrayList<String>()
@@ -67,7 +70,8 @@ class BannerAdLoader {
     @SuppressLint("VisibleForTests")
     fun loadBannerAd(
         context: Context,
-        parentView: ViewGroup?,
+        lifecycle: Lifecycle?,
+        parentView: ViewGroup,
         adName: String,
         adSize: AdSize,
         fallBackId: String,
@@ -77,24 +81,40 @@ class BannerAdLoader {
         refreshTimer: Int,
         contentURL: String?,
         neighbourContentURL: List<String>?,
-        bannerAdLoadListener: BannerAdLoadListener?
+        bannerAdLoadListener: BannerAdLoadListener?,
+        isLocalRefresh: Boolean = false
     ) {
+
+        if (!isLocalRefresh) {
+            lifecycle?.addObserver(object : LifecycleEventObserver {
+                override fun onStateChanged(
+                    source: LifecycleOwner,
+                    event: Lifecycle.Event
+                ) {
+                    if (event == Lifecycle.Event.ON_DESTROY) {
+                        cancelRefreshTimer(adName, fallBackId)
+                    }
+                }
+            })
+        }
+
         isAdLoaded = false
         adRequestsCompleted = 0
-        if (AdSdkConstants.adUnitsSet.contains(adName)) {
+        if (AdSdkConstants.adUnitsSet.contains(adName + parentView.toString())) {
             return
         } else {
-            AdSdkConstants.adUnitsSet.add(adName)
+            AdSdkConstants.adUnitsSet.add(adName + parentView.toString())
         }
         if (AdSdkConstants.preloadedBannerAdMap[adName] != null) {
             Logger.d(
                 AdSdkConstants.TAG,
                 "$adName ==== $fallBackId ==== Preloaded Banner Ad Displayed"
             )
-            parentView?.removeAllViews()
-            parentView?.addView(AdSdkConstants.preloadedBannerAdMap[adName])
+            parentView.removeAllViews()
+            parentView.addView(AdSdkConstants.preloadedBannerAdMap[adName])
             setAdViewListener(
                 context,
+                lifecycle,
                 AdSdkConstants.preloadedBannerAdMap[adName]!!,
                 null,
                 parentView,
@@ -109,28 +129,30 @@ class BannerAdLoader {
             AdSdkConstants.preloadedBannerAdMap[adName] = null
 
         } else {
-            parentView?.removeAllViews()
             adUnits.addAll(primaryAdUnitIds)
             adUnits.addAll(secondaryAdUnitIds)
             adUnits.add(fallBackId)
-            val bannerShimmerBaseView =
-                View.inflate(parentView?.context, R.layout.shimmer_parent_view, null)
-            parentView?.addView(bannerShimmerBaseView)
-            val layout = when (adSize) {
-                AdSize.BANNER -> R.layout.shimmer_banner_small
-                AdSize.LARGE_BANNER -> R.layout.shimmer_banner_large
-                AdSize.MEDIUM_RECTANGLE -> R.layout.shimmer_banner_medium_rectangle
-                else -> R.layout.shimmer_banner_small
-            }
-            (bannerShimmerBaseView as ShimmerFrameLayout).addView(
-                View.inflate(
-                    parentView?.context,
-                    layout,
-                    null
+            if (!isLocalRefresh) {
+                val bannerShimmerBaseView =
+                    View.inflate(parentView.context, R.layout.shimmer_parent_view, null)
+                parentView.addView(bannerShimmerBaseView)
+                val layout = when (adSize) {
+                    AdSize.BANNER -> R.layout.shimmer_banner_small
+                    AdSize.LARGE_BANNER -> R.layout.shimmer_banner_large
+                    AdSize.MEDIUM_RECTANGLE -> R.layout.shimmer_banner_medium_rectangle
+                    else -> R.layout.shimmer_banner_small
+                }
+                (bannerShimmerBaseView as ShimmerFrameLayout).addView(
+                    View.inflate(
+                        parentView.context,
+                        layout,
+                        null
+                    )
                 )
-            )
+            }
             inflateAd(
                 context,
+                lifecycle,
                 parentView,
                 adName,
                 adSize,
@@ -143,6 +165,7 @@ class BannerAdLoader {
         }
         startRefreshTimer(
             context,
+            lifecycle,
             parentView,
             adName,
             adSize,
@@ -160,7 +183,8 @@ class BannerAdLoader {
     @SuppressLint("VisibleForTests")
     private fun inflateAd(
         context: Context,
-        parentView: ViewGroup?,
+        lifecycle: Lifecycle?,
+        parentView: ViewGroup,
         adName: String,
         adSize: AdSize,
         timeout: Int,
@@ -174,6 +198,7 @@ class BannerAdLoader {
             override fun onFinish() {
                 requestNextAd(
                     context,
+                    lifecycle,
                     "$adUnit ==== $adName ==== Banner Ad Unit Timed Out",
                     parentView,
                     adName,
@@ -196,6 +221,7 @@ class BannerAdLoader {
         mAdView.loadAd(adRequest)
         setAdViewListener(
             context,
+            lifecycle,
             mAdView,
             countDownTimer,
             parentView,
@@ -211,8 +237,9 @@ class BannerAdLoader {
 
     private fun requestNextAd(
         context: Context,
+        lifecycle: Lifecycle?,
         errorMsg: String,
-        parentView: ViewGroup?,
+        parentView: ViewGroup,
         adName: String,
         adSize: AdSize,
         timeout: Int,
@@ -225,10 +252,11 @@ class BannerAdLoader {
         adRequestsCompleted += 1
         if (adUnits.size == adRequestsCompleted) {
             bannerAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
-            parentView?.removeAllViews()
+            parentView.removeAllViews()
         } else {
             inflateAd(
                 context,
+                lifecycle,
                 parentView,
                 adName,
                 adSize,
@@ -243,9 +271,10 @@ class BannerAdLoader {
 
     private fun setAdViewListener(
         context: Context,
+        lifecycle: Lifecycle?,
         mAdView: AdView,
         countDownTimer: CountDownTimer?,
-        parentView: ViewGroup?,
+        parentView: ViewGroup,
         adName: String,
         adSize: AdSize,
         timeout: Int,
@@ -267,6 +296,7 @@ class BannerAdLoader {
                 countDownTimer?.cancel()
                 requestNextAd(
                     context,
+                    lifecycle,
                     adUnit + " ==== " + adName + " ==== " + adError.message,
                     parentView,
                     adName,
@@ -288,8 +318,8 @@ class BannerAdLoader {
                     bannerAdLoadListener?.onAdLoaded()
                     countDownTimer?.cancel()
                     isAdLoaded = true
-                    parentView?.removeAllViews()
-                    parentView?.addView(mAdView)
+                    parentView.removeAllViews()
+                    parentView.addView(mAdView)
                 }
             }
 
@@ -301,7 +331,8 @@ class BannerAdLoader {
 
     private fun startRefreshTimer(
         context: Context,
-        parentView: ViewGroup?,
+        lifecycle: Lifecycle?,
+        parentView: ViewGroup,
         adName: String,
         adSize: AdSize,
         fallBackId: String,
@@ -318,10 +349,11 @@ class BannerAdLoader {
                 override fun onTick(p0: Long) {}
 
                 override fun onFinish() {
-                    if (parentView?.isShown == true) {
-                        AdSdkConstants.adUnitsSet.remove(adName)
+                    if (parentView.isShown) {
+                        AdSdkConstants.adUnitsSet.remove(adName + parentView.toString())
                         loadBannerAd(
                             context,
+                            lifecycle,
                             parentView,
                             adName,
                             adSize,
@@ -332,7 +364,8 @@ class BannerAdLoader {
                             refreshTimer,
                             contentURL,
                             neighbourContentURL,
-                            bannerAdLoadListener
+                            bannerAdLoadListener,
+                            true
                         )
                     } else {
                         Logger.d(
@@ -343,6 +376,17 @@ class BannerAdLoader {
                     }
                 }
             }.start()
+    }
+
+    private fun cancelRefreshTimer(
+        adName: String,
+        fallBackId: String
+    ) {
+        refreshCountDownTimer?.cancel()
+        Logger.d(
+            AdSdkConstants.TAG,
+            "$adName ==== $fallBackId ==== Refresh Cancelled as parent activity is destroyed."
+        )
     }
 
     private val extras = Bundle()

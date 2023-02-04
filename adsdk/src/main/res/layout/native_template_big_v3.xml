@@ -4,54 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="1dp"
     android:layout_margin="5dp"
+    android:elevation="1dp"
     tools:ignore="MissingDefaultResource">
 
     <RelativeLayout
         android:id="@+id/ad_unit_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:background="@drawable/ad_sdk_bg"
-        android:orientation="vertical"
-        android:layout_margin="5dp">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/ad_notification_view5"
-            android:layout_width="@dimen/ad_sdk_ad_indicator_width"
-            android:layout_height="@dimen/ad_sdk_ad_indicator_height"
-            android:background="@drawable/ad_sdk_tag_new"
-            android:gravity="center"
-            android:text="@string/text_ad"
-            android:textColor="@color/white"
-            android:textSize="@dimen/ad_sdk_ad_text_size"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ad_notification_view5"
-            android:orientation="vertical"
-            android:paddingBottom="5dp">
+            android:orientation="vertical">
 
 
-            <LinearLayout
-                android:id="@+id/linearLayout4"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/ad_notification_view2"
+                android:layout_width="@dimen/ad_sdk_ad_indicator_width"
+                android:layout_height="@dimen/ad_sdk_ad_indicator_height"
+                android:layout_margin="5dp"
+                android:background="@drawable/ad_text_rounded_corners_shape"
+                android:gravity="center"
+                android:text="@string/text_ad"
+                android:textColor="@color/ad_sdk_green"
+                android:textSize="@dimen/ad_sdk_ad_text_size"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.gms.ads.nativead.MediaView
+                android:id="@+id/ad_media"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:minHeight="200dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ad_notification_view2" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/ad_media">
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
@@ -59,12 +69,12 @@
                         android:id="@+id/icon"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:adjustViewBounds="true"
-                        tools:srcCompat="@tools:sample/avatars" />
+                        android:adjustViewBounds="true" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_marginStart="5dp"
                         android:orientation="vertical">
 
@@ -106,7 +116,7 @@
                                 android:textStyle="bold" />
 
                             <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/ad_price"
+                                android:id="@+id/price"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
@@ -116,7 +126,7 @@
                                 android:textStyle="bold" />
 
                             <RatingBar
-                                android:id="@+id/ad_stars"
+                                android:id="@+id/stars"
                                 style="?android:ratingBarStyleSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -136,39 +146,19 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/call_to_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/ad_sdk_cta_bg_curved"
+                    android:gravity="center"
+                    android:textColor="@color/ad_sdk_color_white"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/call_to_action"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/ad_sdk_cta_bg_curved"
-                android:gravity="center"
-                android:minWidth="100dp"
-                android:padding="10dp"
-                android:textColor="@color/ad_sdk_color_white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ad_media"
-                tools:text="Install" />
-
-
-            <com.google.android.gms.ads.nativead.MediaView
-                android:id="@+id/ad_media"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 </com.google.android.gms.ads.nativead.NativeAdView>

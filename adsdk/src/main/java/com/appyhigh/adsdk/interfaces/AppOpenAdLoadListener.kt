@@ -18,3 +18,5 @@ abstract class AppOpenAdLoadListenerInternal {
     open fun onAdLoaded(ad: AppOpenAd) {}
     open fun onAdFailedToLoad(loadAdError: LoadAdError) {}
 }
+
+interface BypassAppOpenAd

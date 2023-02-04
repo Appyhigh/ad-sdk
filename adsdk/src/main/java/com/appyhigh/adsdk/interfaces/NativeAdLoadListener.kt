@@ -1,14 +1,17 @@
 package com.appyhigh.adsdk.interfaces
 
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.nativead.NativeAd
 
 
 abstract class NativeAdLoadListener {
-    open fun onAdClicked(){}
-    fun onAdClosed() {}
-    fun onAdFailedToLoad(p0: LoadAdError) {}
-    fun onAdImpression() {}
-    fun onAdLoaded() {}
-    fun onAdOpened() {}
-    fun onAdSwipeGestureClicked() {}
+    open fun onAdClicked() {}
+    open fun onAdClosed() {}
+    open fun onAdFailedToLoad(p0: LoadAdError) {}
+    open fun onAdImpression() {}
+    open fun onAdInflated() {}
+    open fun onAdLoaded(nativeAd: NativeAd?) {}
+    open fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {}
+    open fun onAdOpened() {}
+    open fun onAdSwipeGestureClicked() {}
 }

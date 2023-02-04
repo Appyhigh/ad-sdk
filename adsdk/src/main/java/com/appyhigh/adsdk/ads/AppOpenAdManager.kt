@@ -5,12 +5,11 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
-import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListener
+import androidx.lifecycle.*
+import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListenerInternal
+import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
+import com.appyhigh.adsdk.utils.Logger
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -18,7 +17,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import java.util.*
 
-class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserver {
+class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventObserver {
     private var appOpenAd: AppOpenAd? = null
     private var isLoadingAd = false
     private var isShowingAd = false
@@ -60,7 +59,6 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserv
             object : AppOpenAd.AppOpenAdLoadCallback() {
 
                 override fun onAdLoaded(ad: AppOpenAd) {
-                    // Called when an app open ad has loaded.
                     loadTime = Date().time
                     appOpenAd = ad
                     isLoadingAd = false
@@ -68,7 +66,6 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserv
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    // Called when an app open ad has failed to load.
                     isLoadingAd = false
                     appOpenAdLoadListener?.onAdFailedToLoad(loadAdError)
                 }
@@ -95,38 +92,27 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserv
         }
     }
 
-    override fun onActivityPaused(activity: Activity) {
-
-    }
-
-    override fun onActivityStopped(activity: Activity) {
-
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity, p1: Bundle) {
-
-    }
-
-    override fun onActivityDestroyed(activity: Activity) {
-
-    }
-
+    override fun onActivityPaused(activity: Activity) {}
+    override fun onActivityStopped(activity: Activity) {}
+    override fun onActivitySaveInstanceState(activity: Activity, p1: Bundle) {}
+    override fun onActivityDestroyed(activity: Activity) {}
     interface OnShowAdCompleteListener {
         fun onShowAdComplete()
     }
 
-
-    /** Shows the ad if one isn't already showing. */
     private fun showAdIfAvailable(
         activity: Activity,
         onShowAdCompleteListener: OnShowAdCompleteListener
     ) {
-        // If the app open ad is already showing, do not show the ad again.
         if (isShowingAd) {
+            Logger.d(AdSdkConstants.TAG, "App Open Ad Already Showing")
+            return
+        }
+        if (currentActivity is BypassAppOpenAd) {
+            Logger.d(AdSdkConstants.TAG, "App Open Ad Display Bypassed")
             return
         }
 
-        // If the app open ad is not available yet, invoke the callback then load the ad.
         if (!isAdAvailable()) {
             onShowAdCompleteListener.onShowAdComplete()
             loadAd(activity, adName, adUnit)
@@ -134,30 +120,21 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserv
         }
 
         appOpenAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-
-
             override fun onAdDismissedFullScreenContent() {
-                // Called when full screen content is dismissed.
-                // Set the reference to null so isAdAvailable() returns false.
                 appOpenAd = null
                 isShowingAd = false
-
                 onShowAdCompleteListener.onShowAdComplete()
                 loadAd(activity, adName, adUnit)
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                // Called when fullscreen content failed to show.
-                // Set the reference to null so isAdAvailable() returns false.
                 appOpenAd = null
                 isShowingAd = false
-
                 onShowAdCompleteListener.onShowAdComplete()
                 loadAd(activity, adName, adUnit)
             }
 
             override fun onAdShowedFullScreenContent() {
-                // Called when fullscreen content is shown.
                 isShowingAd = true
             }
         }
@@ -165,23 +142,11 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserv
         appOpenAd?.show(activity)
     }
 
-    /** LifecycleObserver method that shows the app open ad when the app moves to foreground. */
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onMoveToForeground() {
-        // Show the ad (if available) when the app moves to foreground.
-        currentActivity?.let {
-            showAdIfAvailable(it)
-        }
-    }
-
-
-    /** Show the ad if one isn't already showing. */
     private fun showAdIfAvailable(activity: Activity) {
         showAdIfAvailable(
             activity,
             object : OnShowAdCompleteListener {
                 override fun onShowAdComplete() {
-
                 }
             })
     }
@@ -190,6 +155,14 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObserv
         val dateDifference: Long = Date().time - loadTime
         val numMilliSecondsPerHour: Long = 3600000
         return dateDifference < numMilliSecondsPerHour * 4
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_START) {
+            currentActivity?.let {
+                showAdIfAvailable(it)
+            }
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import com.appyhigh.adsdk.ads.*
 import com.appyhigh.adsdk.data.enums.AdSdkErrorCode
 import com.appyhigh.adsdk.data.enums.AdType
@@ -18,6 +19,9 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 object AdSdk {
     private var isInitialized = false
@@ -25,8 +29,34 @@ object AdSdk {
     fun initialize(
         application: Application,
         testDevice: String?,
+        fileId: Int,
         adInitializeListener: AdInitializeListener
     ) {
+        val inputStream: InputStream = try {
+            application.resources.openRawResource(fileId)
+        } catch (e: Exception) {
+            adInitializeListener.onInitializationFailed(
+                AdSdkError(
+                    AdSdkErrorCode.DEFAULT_RESOURCE_NOT_FOUND,
+                    application.getString(R.string.error_reading_file)
+                )
+            )
+            null
+        } ?: return
+        try {
+            val fileData = readDefaultAdResponseFile(inputStream)
+            SharedPrefs.init(application)
+            adConfig.initWithLocalFile(fileData)
+        } catch (e: Exception) {
+            adInitializeListener.onInitializationFailed(
+                AdSdkError(
+                    AdSdkErrorCode.EXCEPTION_READING_FILE,
+                    application.getString(R.string.exception_reading_file)
+                )
+            )
+            return
+        }
+
         if (isGooglePlayServicesAvailable(application)) {
             MobileAds.initialize(application) {
                 isInitialized = true
@@ -44,6 +74,22 @@ object AdSdk {
                 )
             )
         }
+    }
+
+    private fun readDefaultAdResponseFile(inputStream: InputStream): String {
+        val outputStream = ByteArrayOutputStream()
+        val buf = ByteArray(1024)
+        var len: Int
+        try {
+            while (inputStream.read(buf).also { len = it } != -1) {
+                outputStream.write(buf, 0, len)
+            }
+            outputStream.close()
+            inputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return outputStream.toString().replace("\n", "")
     }
 
     fun setUpVersionControl(
@@ -89,7 +135,6 @@ object AdSdk {
 
     fun preloadAd(
         context: Context,
-        parentView: ViewGroup,
         adName: String,
         fallBackId: String,
         contentURL: String? = null,
@@ -98,7 +143,13 @@ object AdSdk {
         adConfig.init()
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
-                AdType.NATIVE -> {}
+                AdType.NATIVE -> NativeAdLoader().preloadNativeAd(
+                    context,
+                    adName,
+                    fallBackId,
+                    contentURL,
+                    neighbourContentURL
+                )
                 AdType.BANNER -> BannerAdLoader().preloadBannerAd(
                     context,
                     adName,
@@ -112,12 +163,63 @@ object AdSdk {
         }
     }
 
-    fun loadAd(
-        application: Application? = null,
+    fun fetchNativeAds(
         context: Context,
         parentView: ViewGroup? = null,
         adName: String,
         fallBackId: String,
+        adsRequested: Int,
+        nativeAdLoadListener: NativeAdLoadListener,
+        isService: Boolean,
+    ) {
+        val requestedAds = if (adsRequested < 1) {
+            1
+        } else if (adsRequested > 5) {
+            5
+        } else {
+            adsRequested
+        }
+        loadAd(
+            context = context,
+            parentView = parentView,
+            adName = adName,
+            fallBackId = fallBackId,
+            nativeAdLoadListener = nativeAdLoadListener,
+            isNativeFetch = true,
+            adsRequested = requestedAds,
+            isService = isService
+        )
+    }
+
+    fun fetchNativeAd(
+        context: Context,
+        parentView: ViewGroup? = null,
+        adName: String,
+        fallBackId: String,
+        nativeAdLoadListener: NativeAdLoadListener,
+        isService: Boolean,
+    ) {
+        loadAd(
+            context = context,
+            parentView = parentView,
+            adName = adName,
+            fallBackId = fallBackId,
+            nativeAdLoadListener = nativeAdLoadListener,
+            isNativeFetch = true,
+            isService = isService
+        )
+    }
+
+    fun loadAd(
+        context: Context,
+        adName: String,
+        fallBackId: String,
+        isNativeFetch: Boolean = false,
+        adsRequested: Int = 1,
+        isService: Boolean = false,
+        application: Application? = null,
+        lifecycle: Lifecycle? = null,
+        parentView: ViewGroup? = null,
         contentURL: String? = null,
         neighbourContentURL: List<String>? = null,
         bannerAdLoadListener: BannerAdLoadListener? = null,
@@ -133,8 +235,15 @@ object AdSdk {
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
                 AdType.NATIVE -> {
+                    if (lifecycle == null && !isService) {
+                        val error =
+                            "$adName ==== $fallBackId ==== Lifecycle Supplied is Null!"
+                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        Logger.e(AdSdkConstants.TAG, error)
+                        return
+                    }
                     if (parentView == null) {
-                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null"
+                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null!"
                         bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                         Logger.e(AdSdkConstants.TAG, error)
                         return
@@ -142,6 +251,7 @@ object AdSdk {
 
                     NativeAdLoader().loadNativeAd(
                         context,
+                        lifecycle,
                         parentView,
                         adName,
                         adConfig.fetchNativeAdSize(adName),
@@ -152,18 +262,29 @@ object AdSdk {
                         adConfig.fetchAdUnitRefreshTimer(adName),
                         contentURL,
                         neighbourContentURL,
-                        nativeAdLoadListener
+                        nativeAdLoadListener,
+                        false,
+                        isNativeFetch,
+                        adsRequested
                     )
                 }
                 AdType.BANNER -> {
+                    if (lifecycle == null && !isService) {
+                        val error =
+                            "$adName ==== $fallBackId ==== Lifecycle Supplied is Null!"
+                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        Logger.e(AdSdkConstants.TAG, error)
+                        return
+                    }
                     if (parentView == null) {
-                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null"
+                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null!"
                         bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
                     BannerAdLoader().loadBannerAd(
                         context,
+                        lifecycle,
                         parentView,
                         adName,
                         adConfig.fetchBannerAdSize(adName),
@@ -227,7 +348,7 @@ object AdSdk {
                     } else {
                         if (application == null) {
                             val error =
-                                "$adName ==== $fallBackId ==== Application context Supplied is Null"
+                                "$adName ==== $fallBackId ==== Application context Supplied is Null!"
                             bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                             Logger.e(AdSdkConstants.TAG, error)
                             return

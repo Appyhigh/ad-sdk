@@ -1,6 +1,7 @@
 package com.appyhigh.adsdk
 
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.nativead.NativeAd
 
 object AdSdkConstants {
     const val BASE_URL = "https://admob-automation.apyhi.com/"
@@ -24,5 +25,5 @@ object AdSdkConstants {
     const val APP_OPEN = "appopen"
     var adUnitsSet = HashSet<String>()
     var preloadedBannerAdMap = HashMap<String, AdView?>()
-    var preloadedNativeAdMap = HashMap<String, AdView?>()
+    var preloadedNativeAdMap = HashMap<String, NativeAd?>()
 }

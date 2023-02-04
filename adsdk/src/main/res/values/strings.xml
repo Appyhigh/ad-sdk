@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">adsdk</string>
     <string name="error_no_play_services">No Google Play Services Found on Device!</string>
+    <string name="error_reading_file">Unable to read ad_utils_response.json file.</string>
+    <string name="exception_reading_file">Exception reading ad_utils_response.json file.</string>
     <string name="sdk_successful">AdSdk Initialized Successfully</string>
     <string name="text_ad">Ad</string>
 </resources>

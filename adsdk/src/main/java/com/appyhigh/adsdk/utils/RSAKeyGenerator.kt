@@ -28,15 +28,14 @@ object RSAKeyGenerator {
     /*appId: String?, userId: String?,device_model :String,network : String*/
     fun getJwtToken(
         data: HashMap<String, String>,
-        prevIAT: Long,
-        privateKeyNotif: String
+        privateKeyNotification: String
     ): String? {
         val validityMs = TimeUnit.MINUTES.toMillis(60)
         val userId = data["user_id"]
         val api = data["api"]
         val prevJwt = data["jwt_token"]
         val exp: Date
-        var prevIAT: Long = 0
+        val prevIAT: Long = 0
 
         //get the real time in unix epoch format (milliseconds since midnight on 1 january 1970)
         val nowMillis: Long = System.currentTimeMillis()
@@ -46,7 +45,7 @@ object RSAKeyGenerator {
         return if (nowMillis - prevIAT > timeOutInMinutes * 60 * 1000) {
             var privateKey: Key? = null
             try {
-                privateKey = privateKey(privateKeyNotif)
+                privateKey = privateKey(privateKeyNotification)
             } catch (e: GeneralSecurityException) {
                 e.printStackTrace()
             }
@@ -55,7 +54,7 @@ object RSAKeyGenerator {
                 .claim("api", api)
                 .claim("iat", iat)
                 .claim("exp", exp)
-                .signWith(SignatureAlgorithm.RS256, privateKey)
+                .signWith(privateKey, SignatureAlgorithm.RS256)
                 .setAudience("adutils")
                 .compact()
             jws

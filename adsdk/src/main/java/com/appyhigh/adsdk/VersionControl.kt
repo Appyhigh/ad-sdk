@@ -21,7 +21,7 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.gson.Gson
 
-class VersionControl {
+internal class VersionControl {
 
     private var appUpdateManager: AppUpdateManager? = null
     private var view: View? = null

@@ -8,7 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
 
 
-class DynamicAds {
+internal class DynamicAds {
 
     fun fetchRemoteAdConfiguration(
         packageId: String
@@ -79,7 +79,6 @@ class DynamicAds {
                 map["api"] = "users"
                 token = RSAKeyGenerator.getJwtToken(
                     map,
-                    System.currentTimeMillis(),
                     BuildConfig.PRIVATE_KEY_NOTIF
                 ) ?: ""
             } catch (e: Exception) {

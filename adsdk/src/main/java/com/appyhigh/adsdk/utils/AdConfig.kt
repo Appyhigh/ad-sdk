@@ -11,9 +11,19 @@ import com.appyhigh.adsdk.data.model.adresponse.AdResponse
 import com.google.android.gms.ads.AdSize
 import com.google.gson.Gson
 
-class AdConfig {
-    var adResponse: AdResponse? = null
-    var adsMap = HashMap<String, AdMob>()
+internal class AdConfig {
+    private var adResponse: AdResponse? = null
+    private var adsMap = HashMap<String, AdMob>()
+
+    fun initWithLocalFile(fileData: String) {
+        if (adResponse == null) {
+            if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
+                Logger.d(AdSdkConstants.TAG, "Cache Data set using local file")
+                SharedPrefs.putString(AdSdkConstants.AD_CONFIG_RESPONSE, fileData)
+            }
+        }
+    }
+
     fun init() {
         if (adResponse == null) {
             val gson = Gson()
@@ -29,6 +39,7 @@ class AdConfig {
                 for (adItem in it.app?.adMob!!) {
                     adsMap[adItem.ad_name!!] = adItem
                 }
+                Logger.d(AdSdkConstants.TAG, "Cache Data Updated using api response")
             }
         }
     }
@@ -76,16 +87,15 @@ class AdConfig {
         return AdSize.BANNER
     }
 
-    @SuppressLint("VisibleForTests")
     fun fetchNativeAdSize(adName: String): NativeAdSize {
         adResponse?.let {
             adsMap[adName]?.size?.let { adSize ->
                 when (adSize) {
                     NativeAdSize.SMALL.name.lowercase() -> return NativeAdSize.SMALL
                     NativeAdSize.MEDIUM.name.lowercase() -> return NativeAdSize.MEDIUM
-                    NativeAdSize.BIG_V1.name.lowercase() -> return NativeAdSize.BIG_V1
-                    NativeAdSize.BIG_V2.name.lowercase() -> return NativeAdSize.BIG_V2
-                    NativeAdSize.BIG_V3.name.lowercase() -> return NativeAdSize.BIG_V3
+                    NativeAdSize.BIGV1.name.lowercase() -> return NativeAdSize.BIGV1
+                    NativeAdSize.BIGV2.name.lowercase() -> return NativeAdSize.BIGV2
+                    NativeAdSize.BIGV3.name.lowercase() -> return NativeAdSize.BIGV3
                     NativeAdSize.GRID_AD.name.lowercase() -> return NativeAdSize.GRID_AD
                     else -> return NativeAdSize.DEFAULT
                 }

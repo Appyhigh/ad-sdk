@@ -11,11 +11,10 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
-class InterstitialAdLoader {
+internal class InterstitialAdLoader {
     var interstitialAd: InterstitialAd? = null
     private var adRequestsCompleted = 0
     private var adUnits = ArrayList<String>()
-    private var currentAdUnitId: String? = null
     private var countDownTimer: CountDownTimer? = null
     private var adFailureReasonArray = ArrayList<String>()
     private var isAdLoaded = false
@@ -72,7 +71,6 @@ class InterstitialAdLoader {
         countDownTimer: CountDownTimer?,
         interstitialAdLoadListener: InterstitialAdLoadListener?
     ) {
-        currentAdUnitId = adUnit
         countDownTimer?.start()
         val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(
@@ -100,16 +98,14 @@ class InterstitialAdLoader {
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
-                    if (currentAdUnitId == ad.adUnitId) {
+                    if (!isAdLoaded) {
                         countDownTimer?.cancel()
                         Logger.d(
                             AdSdkConstants.TAG,
                             "$adName === $adUnit ==== Interstitial Ad Loaded"
                         )
                         interstitialAd = ad
-                        if (!isAdLoaded) {
-                            interstitialAdLoadListener?.onAdLoaded(ad)
-                        }
+                        interstitialAdLoadListener?.onAdLoaded(ad)
                         isAdLoaded = true
                     }
                 }

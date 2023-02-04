@@ -1,30 +1,27 @@
 package com.appyhigh.adsdk
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.appyhigh.adsdk.ads.AppOpenAdManager
 import com.appyhigh.adsdk.data.enums.AppOpenLoadType
 import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
-import com.google.android.gms.ads.OnUserEarnedRewardListener
 import com.google.android.gms.ads.appopen.AppOpenAd
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.rewarded.RewardItem
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
+import com.google.android.gms.ads.nativead.NativeAd
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         AdSdk.initialize(
             application,
             null,
+            R.raw.ad_utils_response,
             object : AdInitializeListener() {
                 override fun onSdkInitialized() {
                     AdSdk.setUpVersionControl(
@@ -68,15 +65,22 @@ class MainActivity : AppCompatActivity() {
 //                        adName = "test_banner_3",
 //                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
 //                    )
+//                    AdSdk.preloadAd(
+//                        context = this@MainActivity,
+//                        adName = "test_native_ad",
+//                        fallBackId = "ca-app-pub-3940256099942544/2247696110"
+//                    )
                 }
 
                 override fun onInitializationFailed(adSdkError: AdSdkError) {
-                    Logger.e("AdSdkError", adSdkError.message)
+                    Logger.e(AdSdkConstants.TAG, adSdkError.message)
                 }
             }
         )
 
         Handler(Looper.getMainLooper()).postDelayed({
+//            startActivity(Intent(this, NewActivity::class.java))
+//            finish()
 //            AdSdk.loadAd(
 //                this,
 //                parentView = findViewById(R.id.llAdView),
@@ -165,6 +169,7 @@ class MainActivity : AppCompatActivity() {
 //                context = this,
 //                adName = "test_app_open",
 //                fallBackId = "ca-app-pub-3940256099942544/3419835294",
+//                appOpenLoadType = AppOpenLoadType.BACKGROUND_TO_FOREGROUND,
 //                appOpenAdLoadListener = object : AppOpenAdLoadListener() {
 //                    override fun onAdLoaded(ad: AppOpenAd) {
 //                        super.onAdLoaded(ad)
@@ -172,13 +177,34 @@ class MainActivity : AppCompatActivity() {
 //                    }
 //                }
 //            )
-
-            AdSdk.loadAd(
-                context = this,
-                parentView = findViewById(R.id.llAdView3),
-                adName = "test_native_ad",
-                fallBackId = "ca-app-pub-3940256099942544/2247696110"
-            )
-        }, 1000)
+//            AdSdk.loadAd(
+//                context = this,
+//                lifecycle = lifecycle,
+//                parentView = findViewById(R.id.llAdView),
+//                adName = "test_native_ad",
+//                fallBackId = "ca-app-pub-3940256099942544/2247696110",
+//            )
+//            if (AdSdk.isSdkInitialized())
+//                AdSdk.fetchNativeAds(
+//                    context = this,
+//                    parentView = findViewById(R.id.llAdView3),
+//                    adName = "test_native_ad",
+//                    fallBackId = "ca-app-pub-3940256099942544/2247696110",
+//                    adsRequested = 5,
+//                    nativeAdLoadListener = object : NativeAdLoadListener() {
+//                        override fun onAdLoaded(nativeAd: NativeAd?) {
+//                            super.onAdLoaded(nativeAd)
+//                            Logger.d(AdSdkConstants.TAG, nativeAd.toString())
+//                        }
+//
+//                        override fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {
+//                            super.onMultipleAdsLoaded(nativeAds)
+//                            for (ad in nativeAds) {
+//                                Logger.d(AdSdkConstants.TAG, ad.toString())
+//                            }
+//                        }
+//                    }
+//                )
+        }, 5000)
     }
 }

@@ -4,23 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
 import com.appyhigh.adsdk.AdSdkConstants
-import com.appyhigh.adsdk.interfaces.RewardedAdLoadListener
 import com.appyhigh.adsdk.interfaces.RewardedInterstitialAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 
-class RewardedInterstitialAdLoader {
+internal class RewardedInterstitialAdLoader {
 
     var rewardedInterstitialAd: RewardedInterstitialAd? = null
     private var adRequestsCompleted = 0
     private var adUnits = ArrayList<String>()
     private var countDownTimer: CountDownTimer? = null
-    private var currentAdUnitId: String? = null
     private var isAdLoaded = false
     private var adFailureReasonArray = ArrayList<String>()
 
@@ -79,7 +75,6 @@ class RewardedInterstitialAdLoader {
         countDownTimer: CountDownTimer?,
         rewardedInterstitialAdLoadListener: RewardedInterstitialAdLoadListener?
     ) {
-        currentAdUnitId = adUnit
         countDownTimer?.start()
 
         val adRequest = AdRequest.Builder().build()
@@ -108,16 +103,15 @@ class RewardedInterstitialAdLoader {
                 }
 
                 override fun onAdLoaded(ad: RewardedInterstitialAd) {
-                    if (currentAdUnitId == ad.adUnitId) {
+                    if (!isAdLoaded) {
                         countDownTimer?.cancel()
                         Logger.d(
                             AdSdkConstants.TAG,
                             "$adName === $adUnit ==== Interstitial Ad Loaded"
                         )
                         rewardedInterstitialAd = ad
-                        if (!isAdLoaded) {
-                            rewardedInterstitialAdLoadListener?.onAdLoaded(ad)
-                        }
+
+                        rewardedInterstitialAdLoadListener?.onAdLoaded(ad)
                         isAdLoaded = true
                     }
                 }
