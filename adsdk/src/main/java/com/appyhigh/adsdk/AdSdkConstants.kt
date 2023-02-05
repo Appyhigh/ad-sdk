@@ -26,4 +26,5 @@ object AdSdkConstants {
     var adUnitsSet = HashSet<String>()
     var preloadedBannerAdMap = HashMap<String, AdView?>()
     var preloadedNativeAdMap = HashMap<String, NativeAd?>()
+    var enableReleaseLogging = false
 }

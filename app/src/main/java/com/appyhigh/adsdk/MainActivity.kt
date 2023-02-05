@@ -1,17 +1,13 @@
 package com.appyhigh.adsdk
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import com.appyhigh.adsdk.data.enums.AppOpenLoadType
 import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
-import com.google.android.gms.ads.appopen.AppOpenAd
-import com.google.android.gms.ads.nativead.NativeAd
 
 class MainActivity : AppCompatActivity() {
 
@@ -77,7 +73,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
-
         Handler(Looper.getMainLooper()).postDelayed({
 //            startActivity(Intent(this, NewActivity::class.java))
 //            finish()

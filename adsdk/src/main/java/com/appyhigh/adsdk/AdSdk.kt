@@ -15,6 +15,7 @@ import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.AdConfig
 import com.appyhigh.adsdk.utils.Logger
+import com.appyhigh.adsdk.R
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.common.ConnectionResult

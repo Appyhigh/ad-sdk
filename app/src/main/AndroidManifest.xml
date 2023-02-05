@@ -17,7 +17,7 @@
             android:name=".NewActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.appyhigh.adsdk.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
