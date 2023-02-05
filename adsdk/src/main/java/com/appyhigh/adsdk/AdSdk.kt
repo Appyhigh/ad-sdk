@@ -158,7 +158,10 @@ object AdSdk {
                     contentURL,
                     neighbourContentURL
                 )
-                else -> {}
+                else -> Logger.d(
+                    AdSdkConstants.TAG,
+                    "$adName ==== $fallBackId ==== ${context.getString(R.string.error_preloading_not_supported)}"
+                )
             }
         }
     }
@@ -237,13 +240,14 @@ object AdSdk {
                 AdType.NATIVE -> {
                     if (lifecycle == null && !isService) {
                         val error =
-                            "$adName ==== $fallBackId ==== Lifecycle Supplied is Null!"
+                            "$adName ==== $fallBackId ==== ${application?.getString(R.string.error_lifecycle)}"
                         bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
                     if (parentView == null) {
-                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null!"
+                        val error =
+                            "$adName ==== $fallBackId ==== ${application?.getString(R.string.error_parent_view)}"
                         bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                         Logger.e(AdSdkConstants.TAG, error)
                         return
@@ -271,13 +275,14 @@ object AdSdk {
                 AdType.BANNER -> {
                     if (lifecycle == null && !isService) {
                         val error =
-                            "$adName ==== $fallBackId ==== Lifecycle Supplied is Null!"
+                            "$adName ==== $fallBackId ==== ${application?.getString(R.string.error_lifecycle)}"
                         bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
                     if (parentView == null) {
-                        val error = "$adName ==== $fallBackId ==== Parent View Supplied is Null!"
+                        val error =
+                            "$adName ==== $fallBackId ==== ${application?.getString(R.string.error_parent_view)}"
                         bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                         Logger.e(AdSdkConstants.TAG, error)
                         return
@@ -331,7 +336,7 @@ object AdSdk {
                 AdType.APP_OPEN -> {
                     if (appOpenLoadTypeInternal == null) {
                         val error =
-                            "$adName ==== $fallBackId ==== AppOpenAdType not Supplied so switching it to AppOpenLoadType.SINGLE_LOAD"
+                            "$adName ==== $fallBackId ==== ${application?.getString(R.string.error_app_open_type)}"
                         Logger.e(AdSdkConstants.TAG, error)
                         appOpenLoadTypeInternal = AppOpenLoadType.SINGLE_LOAD
                     }
@@ -348,7 +353,7 @@ object AdSdk {
                     } else {
                         if (application == null) {
                             val error =
-                                "$adName ==== $fallBackId ==== Application context Supplied is Null!"
+                                "$adName ==== $fallBackId ==== ${context.getString(R.string.error_application_context_null)}"
                             bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
                             Logger.e(AdSdkConstants.TAG, error)
                             return
@@ -363,7 +368,10 @@ object AdSdk {
                         )
                     }
                 }
-                else -> {}
+                else -> Logger.d(
+                    AdSdkConstants.TAG,
+                    "$adName ==== $fallBackId ==== ${context.getString(R.string.unknown_ad_type)}"
+                )
             }
         }
     }

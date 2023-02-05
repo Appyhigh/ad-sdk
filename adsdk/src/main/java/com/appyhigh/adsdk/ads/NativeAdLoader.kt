@@ -56,7 +56,7 @@ internal class NativeAdLoader {
                         nativeAd?.let { nativeAd ->
                             Logger.d(
                                 AdSdkConstants.TAG,
-                                "$adName ==== $adUnitId ==== Native Ad PreLoaded"
+                                "$adName ==== $adUnitId ==== ${context.getString(R.string.native_ad_preloaded)}"
                             )
                             AdSdkConstants.preloadedNativeAdMap[adName] = nativeAd
                         }
@@ -103,7 +103,7 @@ internal class NativeAdLoader {
                     event: Lifecycle.Event
                 ) {
                     if (event == Lifecycle.Event.ON_DESTROY) {
-                        cancelRefreshTimer(adName, fallBackId)
+                        cancelRefreshTimer(adName, fallBackId, parentView.context)
                     }
                 }
             })
@@ -131,7 +131,7 @@ internal class NativeAdLoader {
             } else {
                 Logger.d(
                     AdSdkConstants.TAG,
-                    "$adName ==== $fallBackId ==== Preloaded Native Ad Displayed"
+                    "$adName ==== $fallBackId ==== ${context.getString(R.string.preloaded_native_ad_displayed)}"
                 )
                 parentView.removeAllViews()
                 parentView.addView(adView)
@@ -202,12 +202,13 @@ internal class NativeAdLoader {
 
     private fun cancelRefreshTimer(
         adName: String,
-        fallBackId: String
+        fallBackId: String,
+        context: Context
     ) {
         refreshCountDownTimer?.cancel()
         Logger.d(
             AdSdkConstants.TAG,
-            "$adName ==== $fallBackId ==== Refresh Cancelled as parent activity is destroyed."
+            "$adName ==== $fallBackId ==== ${context.getString(R.string.error_refresh_cancelled_parent_view)}"
         )
     }
 
@@ -232,7 +233,7 @@ internal class NativeAdLoader {
                 requestNextAd(
                     context,
                     lifecycle,
-                    "$adUnit ==== $adName ==== Native Ad Unit Timed Out",
+                    "$adUnit ==== $adName ==== ${context.getString(R.string.error_native_ad_timed_out)}",
                     parentView,
                     adName,
                     adSize,
@@ -301,7 +302,7 @@ internal class NativeAdLoader {
                         nativeAd?.let { nativeAd ->
                             Logger.d(
                                 AdSdkConstants.TAG,
-                                "$adName ==== $adUnit ==== Native Ad Loaded"
+                                "$adName ==== $adUnit ==== ${context.getString(R.string.native_ad_loaded)}"
                             )
                             countDownTimer?.cancel()
 
@@ -571,7 +572,7 @@ internal class NativeAdLoader {
                     } else {
                         Logger.d(
                             AdSdkConstants.TAG,
-                            "$adName refresh cancelled as view is not visible"
+                            "$adName ${context.getString(R.string.error_refresh_cancelled)}"
                         )
                         refreshCountDownTimer?.start()
                     }

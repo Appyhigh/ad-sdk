@@ -49,13 +49,16 @@ internal class BannerAdLoader {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     Logger.e(
                         AdSdkConstants.TAG,
-                        "$adName ==== $adUnitId ==== Preloading Banner Ad Failed"
+                        "$adName ==== $adUnitId ==== ${context.getString(R.string.error_preloading_banner_failed)}"
                     )
                 }
 
                 override fun onAdImpression() {}
                 override fun onAdLoaded() {
-                    Logger.d(AdSdkConstants.TAG, "$adName ==== $adUnitId ==== Preloaded Banner Ad")
+                    Logger.d(
+                        AdSdkConstants.TAG,
+                        "$adName ==== $adUnitId ==== ${context.getString(R.string.banner_preloaded)}"
+                    )
                     AdSdkConstants.preloadedBannerAdMap[adName] = mAdView
                 }
 
@@ -92,7 +95,7 @@ internal class BannerAdLoader {
                     event: Lifecycle.Event
                 ) {
                     if (event == Lifecycle.Event.ON_DESTROY) {
-                        cancelRefreshTimer(adName, fallBackId)
+                        cancelRefreshTimer(adName, fallBackId, parentView.context)
                     }
                 }
             })
@@ -108,7 +111,7 @@ internal class BannerAdLoader {
         if (AdSdkConstants.preloadedBannerAdMap[adName] != null) {
             Logger.d(
                 AdSdkConstants.TAG,
-                "$adName ==== $fallBackId ==== Preloaded Banner Ad Displayed"
+                "$adName ==== $fallBackId ==== ${context.getString(R.string.preloaded_banner_displayed)}"
             )
             parentView.removeAllViews()
             parentView.addView(AdSdkConstants.preloadedBannerAdMap[adName])
@@ -199,7 +202,7 @@ internal class BannerAdLoader {
                 requestNextAd(
                     context,
                     lifecycle,
-                    "$adUnit ==== $adName ==== Banner Ad Unit Timed Out",
+                    "$adUnit ==== $adName ==== ${context.getString(R.string.error_banner_timed_out)}",
                     parentView,
                     adName,
                     adSize,
@@ -314,7 +317,10 @@ internal class BannerAdLoader {
 
             override fun onAdLoaded() {
                 if (!isAdLoaded) {
-                    Logger.d(AdSdkConstants.TAG, "$adName ==== $adUnit ==== Banner Ad Loaded")
+                    Logger.d(
+                        AdSdkConstants.TAG,
+                        "$adName ==== $adUnit ==== ${context.getString(R.string.banner_loaded)}"
+                    )
                     bannerAdLoadListener?.onAdLoaded()
                     countDownTimer?.cancel()
                     isAdLoaded = true
@@ -370,7 +376,7 @@ internal class BannerAdLoader {
                     } else {
                         Logger.d(
                             AdSdkConstants.TAG,
-                            "$adName refresh cancelled as view is not visible"
+                            "$adName ${context.getString(R.string.error_refresh_cancelled)}"
                         )
                         refreshCountDownTimer?.start()
                     }
@@ -380,12 +386,13 @@ internal class BannerAdLoader {
 
     private fun cancelRefreshTimer(
         adName: String,
-        fallBackId: String
+        fallBackId: String,
+        context: Context
     ) {
         refreshCountDownTimer?.cancel()
         Logger.d(
             AdSdkConstants.TAG,
-            "$adName ==== $fallBackId ==== Refresh Cancelled as parent activity is destroyed."
+            "$adName ==== $fallBackId ==== ${context.getString(R.string.error_refresh_cancelled_parent_view)}"
         )
     }
 

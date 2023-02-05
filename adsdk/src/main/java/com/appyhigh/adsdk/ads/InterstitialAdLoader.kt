@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.InterstitialAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
 import com.google.android.gms.ads.AdRequest
@@ -35,8 +36,9 @@ internal class InterstitialAdLoader {
         countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
             override fun onFinish() {
+
                 val error =
-                    "$adName ==== ${adUnits[adRequestsCompleted]} ==== Interstitial Ad Unit Timed out"
+                    "$adName ==== ${adUnits[adRequestsCompleted]} ==== ${context.getString(R.string.error_interstitial_timed_out)}"
                 Logger.e(AdSdkConstants.TAG, error)
                 adFailureReasonArray.add(error)
                 adRequestsCompleted += 1
@@ -102,7 +104,7 @@ internal class InterstitialAdLoader {
                         countDownTimer?.cancel()
                         Logger.d(
                             AdSdkConstants.TAG,
-                            "$adName === $adUnit ==== Interstitial Ad Loaded"
+                            "$adName ==== $adUnit ==== ${context.getString(R.string.interstitial_ad_loaded)}"
                         )
                         interstitialAd = ad
                         interstitialAdLoadListener?.onAdLoaded(ad)

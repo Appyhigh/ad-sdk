@@ -81,12 +81,12 @@ class MainActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 //            startActivity(Intent(this, NewActivity::class.java))
 //            finish()
-//            AdSdk.loadAd(
-//                this,
-//                parentView = findViewById(R.id.llAdView),
-//                adName = "test_banner",
-//                fallBackId = "ca-app-pub-3940256099942544/6300978111"
-//            )
+            AdSdk.loadAd(
+                this,
+                parentView = findViewById(R.id.llAdView),
+                adName = "test_banner",
+                fallBackId = "ca-app-pub-3940256099942544/6300978111"
+            )
 //
 //            AdSdk.loadAd(
 //                this,

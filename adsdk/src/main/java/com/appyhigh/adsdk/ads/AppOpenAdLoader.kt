@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.os.CountDownTimer
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListener
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListenerInternal
 import com.appyhigh.adsdk.utils.Logger
@@ -41,7 +42,7 @@ internal class AppOpenAdLoader {
             override fun onTick(p0: Long) {}
             override fun onFinish() {
                 val error =
-                    "$adName ==== ${adUnits[adRequestsCompleted]} ==== AppOpen Ad Unit Timed out"
+                    "$adName ==== ${adUnits[adRequestsCompleted]} ==== ${context.getString(R.string.error_app_open_timed_out)}"
                 Logger.e(AdSdkConstants.TAG, error)
                 adFailureReasonArray.add(error)
                 adRequestsCompleted += 1
@@ -139,7 +140,7 @@ internal class AppOpenAdLoader {
                         countDownTimer?.cancel()
                         Logger.d(
                             AdSdkConstants.TAG,
-                            "$adName === $adUnit ==== AppOpen Ad Loaded"
+                            "$adName ==== $adUnit ==== ${context.getString(R.string.app_open_loaded)}"
                         )
                         appOpenAd = ad
 

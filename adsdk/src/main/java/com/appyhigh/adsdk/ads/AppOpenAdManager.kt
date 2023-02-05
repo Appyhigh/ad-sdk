@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.*
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListenerInternal
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.utils.Logger
@@ -105,11 +106,14 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
         onShowAdCompleteListener: OnShowAdCompleteListener
     ) {
         if (isShowingAd) {
-            Logger.d(AdSdkConstants.TAG, "App Open Ad Already Showing")
+            Logger.d(
+                AdSdkConstants.TAG,
+                activity.getString(R.string.error_app_open_already_showing)
+            )
             return
         }
         if (currentActivity is BypassAppOpenAd) {
-            Logger.d(AdSdkConstants.TAG, "App Open Ad Display Bypassed")
+            Logger.d(AdSdkConstants.TAG, activity.getString(R.string.error_app_open_bypassed))
             return
         }
 
