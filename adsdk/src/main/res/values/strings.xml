@@ -32,4 +32,5 @@
     <string name="error_refresh_cancelled_parent_view">Refresh Cancelled as parent activity is destroyed.</string>
     <string name="unknown_ad_type">Unknown Ad Type</string>
     <string name="error_preloading_not_supported">Preloading not supported for this ad type</string>
+    <string name="error_no_fallback_id_found">Error Loading Ad. No Fallback Id Found!</string>
 </resources>

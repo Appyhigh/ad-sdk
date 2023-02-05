@@ -104,6 +104,13 @@ internal class AdConfig {
         return NativeAdSize.DEFAULT
     }
 
+    fun fetchFallbackAdUnitId(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.primary_ids?.get(0) ?: ""
+        }
+        return ""
+    }
+
     fun fetchPrimaryAdUnitIds(adName: String): List<String> {
         adResponse?.let {
             return adsMap[adName]?.primary_ids ?: emptyList()

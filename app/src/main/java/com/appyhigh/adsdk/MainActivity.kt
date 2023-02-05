@@ -84,8 +84,7 @@ class MainActivity : AppCompatActivity() {
             AdSdk.loadAd(
                 this,
                 parentView = findViewById(R.id.llAdView),
-                adName = "test_banner",
-                fallBackId = "ca-app-pub-3940256099942544/6300978111"
+                adName = "test_banner"
             )
 //
 //            AdSdk.loadAd(

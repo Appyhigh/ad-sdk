@@ -170,7 +170,6 @@ object AdSdk {
         context: Context,
         parentView: ViewGroup? = null,
         adName: String,
-        fallBackId: String,
         adsRequested: Int,
         nativeAdLoadListener: NativeAdLoadListener,
         isService: Boolean,
@@ -186,7 +185,6 @@ object AdSdk {
             context = context,
             parentView = parentView,
             adName = adName,
-            fallBackId = fallBackId,
             nativeAdLoadListener = nativeAdLoadListener,
             isNativeFetch = true,
             adsRequested = requestedAds,
@@ -198,7 +196,6 @@ object AdSdk {
         context: Context,
         parentView: ViewGroup? = null,
         adName: String,
-        fallBackId: String,
         nativeAdLoadListener: NativeAdLoadListener,
         isService: Boolean,
     ) {
@@ -206,7 +203,6 @@ object AdSdk {
             context = context,
             parentView = parentView,
             adName = adName,
-            fallBackId = fallBackId,
             nativeAdLoadListener = nativeAdLoadListener,
             isNativeFetch = true,
             isService = isService
@@ -216,7 +212,6 @@ object AdSdk {
     fun loadAd(
         context: Context,
         adName: String,
-        fallBackId: String,
         isNativeFetch: Boolean = false,
         adsRequested: Int = 1,
         isService: Boolean = false,
@@ -235,6 +230,14 @@ object AdSdk {
     ) {
         var appOpenLoadTypeInternal = appOpenLoadType
         adConfig.init()
+        val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
+        if (fallBackId.isBlank()) {
+            val error =
+                "$adName ==== $fallBackId ==== ${application?.getString(R.string.error_no_fallback_id_found)}"
+            bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+            Logger.e(AdSdkConstants.TAG, error)
+            return
+        }
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
                 AdType.NATIVE -> {

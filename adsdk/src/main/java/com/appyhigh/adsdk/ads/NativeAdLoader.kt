@@ -104,6 +104,7 @@ internal class NativeAdLoader {
                 ) {
                     if (event == Lifecycle.Event.ON_DESTROY) {
                         cancelRefreshTimer(adName, fallBackId, parentView.context)
+                        nativeAd?.destroy()
                     }
                 }
             })
@@ -391,7 +392,6 @@ internal class NativeAdLoader {
         adFailureReasonArray.add(errorMsg)
         adRequestsCompleted += 1
         if (adUnits.size == adRequestsCompleted) {
-//            nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
             parentView.removeAllViews()
         } else {
             inflateAd(
@@ -523,8 +523,6 @@ internal class NativeAdLoader {
                 e.printStackTrace()
             }
         }
-
-
     }
 
     private fun startRefreshTimer(
