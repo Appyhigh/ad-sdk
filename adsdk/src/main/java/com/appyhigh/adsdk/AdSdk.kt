@@ -19,6 +19,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
@@ -32,15 +33,22 @@ object AdSdk {
 
     fun getConsentForEU(
         activity: Activity,
+        testDeviceHashedId: String? = null,
         consentRequestListener: ConsentRequestListener
     ) {
         try {
-            //Debugging
-//            val debugSettings = ConsentDebugSettings.Builder(activity)
-//                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-//                .addTestDeviceHashedId("1EA55AD5EAAA03034C15481D2B68CBED")
-//                .build()
-            val params = ConsentRequestParameters.Builder()
+            val params = testDeviceHashedId?.let {
+                val debugSettings = ConsentDebugSettings.Builder(activity)
+                    .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                    .addTestDeviceHashedId(it)
+                    .build()
+
+                ConsentRequestParameters.Builder()
+                    .setTagForUnderAgeOfConsent(false)
+                    .setConsentDebugSettings(debugSettings)
+                    .build()
+
+            } ?: ConsentRequestParameters.Builder()
                 .setTagForUnderAgeOfConsent(false)
                 .build()
 
