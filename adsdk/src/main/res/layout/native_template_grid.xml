@@ -10,7 +10,7 @@
     tools:ignore="MissingDefaultResource">
 
     <RelativeLayout
-        android:id="@+id/ad_unit_content"
+        android:id="@+id/rootView"
         android:layout_width="match_parent"
         android:background="@drawable/ad_sdk_bg"
         android:layout_margin="5dp"
@@ -18,6 +18,7 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/innerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"

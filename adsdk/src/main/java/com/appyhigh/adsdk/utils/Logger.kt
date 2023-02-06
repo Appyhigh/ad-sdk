@@ -2,11 +2,12 @@ package com.appyhigh.adsdk.utils
 
 
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.BuildConfig
 import timber.log.Timber
 
 object Logger {
     init {
-        if (AdSdkConstants.enableReleaseLogging) Timber.plant(Timber.DebugTree())
+        if (BuildConfig.DEBUG || AdSdkConstants.enableReleaseLogging) Timber.plant(Timber.DebugTree())
     }
 
     fun d(tag: String, s: String, vararg params: Any) =

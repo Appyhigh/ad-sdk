@@ -15,27 +15,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         AdSdk.initialize(
-            application,
-            null,
-            R.raw.ad_utils_response,
-            object : AdInitializeListener() {
+            application = application,
+            testDevice = null,
+            fileId = R.raw.ad_utils_response,
+            adInitializeListener = object : AdInitializeListener() {
                 override fun onSdkInitialized() {
                     AdSdk.setUpVersionControl(
-                        this@MainActivity,
-                        findViewById(R.id.tvDummyView),
-                        BuildConfig.VERSION_CODE,
-                        object : VersionControlListener() {
+                        activity = this@MainActivity,
+                        view = findViewById(R.id.tvDummyView),
+                        buildVersion = BuildConfig.VERSION_CODE,
+                        versionControlListener = object : VersionControlListener() {
                             override fun onUpdateDetectionSuccess(updateType: UpdateType) {
                                 when (updateType) {
                                     UpdateType.SOFT_UPDATE -> {
-                                        Logger.d(AdSdkConstants.TAG, UpdateType.SOFT_UPDATE.name)
                                     }
                                     UpdateType.HARD_UPDATE -> {
-                                        Logger.d(AdSdkConstants.TAG, UpdateType.HARD_UPDATE.name)
                                     }
-                                    else -> {
-                                        Logger.d(AdSdkConstants.TAG, UpdateType.NO_UPDATE.name)
-                                    }
+                                    else -> {}
                                 }
                             }
                         }
@@ -43,9 +39,7 @@ class MainActivity : AppCompatActivity() {
 
 //                    AdSdk.preloadAd(
 //                        this@MainActivity,
-//                        parentView = findViewById(R.id.llAdView),
-//                        adName = "test_banner",
-//                        fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//                        adName = "test_banner"
 //                    )
 //
 //                    AdSdk.preloadAd(
@@ -63,8 +57,7 @@ class MainActivity : AppCompatActivity() {
 //                    )
 //                    AdSdk.preloadAd(
 //                        context = this@MainActivity,
-//                        adName = "test_native_ad",
-//                        fallBackId = "ca-app-pub-3940256099942544/2247696110"
+//                        adName = "test_native_ad"
 //                    )
                 }
 
@@ -76,17 +69,31 @@ class MainActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 //            startActivity(Intent(this, NewActivity::class.java))
 //            finish()
-            AdSdk.loadAd(
-                this,
-                parentView = findViewById(R.id.llAdView),
-                adName = "test_banner"
-            )
-//
 //            AdSdk.loadAd(
-//                this,
+//                context = this,
+//                parentView = findViewById(R.id.llAdView),
+//                adName = "test_banner"
+//            )
+
+//            AdSdk.loadAd(
+//                context = this,
 //                parentView = findViewById(R.id.llAdView2),
-//                adName = "test_banner_2",
-//                fallBackId = "ca-app-pub-3940256099942544/6300978111"
+//                adName = "test_banner_2"
+//            )
+            AdSdk.loadAd(
+                context = this,
+                lifecycle = lifecycle,
+                parentView = findViewById(R.id.llAdView),
+                adName = "test_native_ad"
+            )
+//            AdSdk.fetchNativeAds(
+//                context = this,
+//                parentView = findViewById(R.id.llAdView),
+//                adName = "test_native_ad",
+//                adsRequested = 5,
+//                nativeAdLoadListener = object : NativeAdLoadListener() {
+//
+//                }
 //            )
 //
 //            AdSdk.loadAd(
@@ -96,11 +103,11 @@ class MainActivity : AppCompatActivity() {
 //                fallBackId = "ca-app-pub-3940256099942544/6300978111"
 //            )
 
+
 //            AdSdk.loadAd(
-//                this,
+//                context = this,
 //                adName = "test_interstitial",
-//                fallBackId = "ca-app-pub-3940256099942544/1033173712",
-//                interstitialAdLoadListener = object : InterstitialAdLoadListener {
+//                interstitialAdLoadListener = object : InterstitialAdLoadListener() {
 //                    override fun onAdFailedToLoad(adErrors: List<String>) {
 //                        for (error in adErrors) {
 //                            Logger.e(AdSdkConstants.TAG, error)
@@ -113,11 +120,11 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            )
 
+
 //            AdSdk.loadAd(
-//                this,
+//                context = this,
 //                adName = "test_rewarded",
-//                fallBackId = "ca-app-pub-3940256099942544/5224354917",
-//                rewardedAdLoadListener = object :RewardedAdLoadListener{
+//                rewardedAdLoadListener = object :RewardedAdLoadListener(){
 //                    override fun onAdFailedToLoad(adErrors: List<String>) {
 //                        for (error in adErrors) {
 //                            Logger.e(AdSdkConstants.TAG, error)
@@ -129,7 +136,6 @@ class MainActivity : AppCompatActivity() {
 //                            fun onUserEarnedReward(rewardItem: RewardItem) {
 //                                var rewardAmount = rewardItem.amount
 //                                var rewardType = rewardItem.type
-//                                Logger.d(AdSdkConstants.TAG, "User earned the reward.")
 //                            }
 //                        }
 //                    }
@@ -139,8 +145,7 @@ class MainActivity : AppCompatActivity() {
 //            AdSdk.loadAd(
 //                context = this,
 //                adName = "test_rewarded_interstitial",
-//                fallBackId = "ca-app-pub-3940256099942544/5354046379",
-//                rewardedInterstitialAdLoadListener = object : RewardedInterstitialAdLoadListener {
+//                rewardedInterstitialAdLoadListener = object : RewardedInterstitialAdLoadListener() {
 //                    override fun onAdFailedToLoad(adErrors: List<String>) {
 //                        for (error in adErrors) {
 //                            Logger.e(AdSdkConstants.TAG, error)
@@ -162,14 +167,7 @@ class MainActivity : AppCompatActivity() {
 //                application = application,
 //                context = this,
 //                adName = "test_app_open",
-//                fallBackId = "ca-app-pub-3940256099942544/3419835294",
-//                appOpenLoadType = AppOpenLoadType.BACKGROUND_TO_FOREGROUND,
-//                appOpenAdLoadListener = object : AppOpenAdLoadListener() {
-//                    override fun onAdLoaded(ad: AppOpenAd) {
-//                        super.onAdLoaded(ad)
-//                        ad.show(this@MainActivity)
-//                    }
-//                }
+//                appOpenLoadType = AppOpenLoadType.BACKGROUND_TO_FOREGROUND
 //            )
 //            AdSdk.loadAd(
 //                context = this,

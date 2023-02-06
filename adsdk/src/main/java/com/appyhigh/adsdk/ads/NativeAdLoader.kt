@@ -1,16 +1,21 @@
 package com.appyhigh.adsdk.ads
 
+import android.R.attr.*
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.R
@@ -21,6 +26,7 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.nativead.*
+
 
 internal class NativeAdLoader {
     private var isAdLoaded = false
@@ -88,6 +94,10 @@ internal class NativeAdLoader {
         secondaryAdUnitIds: List<String>,
         timeout: Int,
         refreshTimer: Int,
+        ctaColor: String,
+        textColor: String,
+        backgroundResource: Int,
+        backgroundColor: String,
         contentURL: String?,
         neighbourContentURL: List<String>?,
         nativeAdLoadListener: NativeAdLoadListener?,
@@ -125,7 +135,12 @@ internal class NativeAdLoader {
             populateUnifiedNativeAdView(
                 AdSdkConstants.preloadedNativeAdMap[adName]!!,
                 adView,
-                adSize
+                adSize,
+                textColor,
+                textColor,
+                ctaColor,
+                backgroundResource,
+                backgroundColor
             )
             if (isNativeFetch) {
                 nativeAdLoadListener?.onAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!!)
@@ -174,6 +189,10 @@ internal class NativeAdLoader {
                 adSize,
                 timeout,
                 adUnits[adRequestsCompleted],
+                ctaColor,
+                textColor,
+                backgroundResource,
+                backgroundColor,
                 contentURL,
                 neighbourContentURL,
                 nativeAdLoadListener,
@@ -193,6 +212,10 @@ internal class NativeAdLoader {
             secondaryAdUnitIds,
             timeout,
             refreshTimer,
+            ctaColor,
+            textColor,
+            backgroundResource,
+            backgroundColor,
             contentURL,
             neighbourContentURL,
             nativeAdLoadListener,
@@ -222,6 +245,10 @@ internal class NativeAdLoader {
         adSize: NativeAdSize,
         timeout: Int,
         adUnit: String,
+        ctaColor: String,
+        textColor: String,
+        backgroundResource: Int,
+        backgroundColor: String,
         contentURL: String?,
         neighbourContentURL: List<String>?,
         nativeAdLoadListener: NativeAdLoadListener?,
@@ -239,6 +266,10 @@ internal class NativeAdLoader {
                     adName,
                     adSize,
                     timeout,
+                    ctaColor,
+                    textColor,
+                    backgroundResource,
+                    backgroundColor,
                     contentURL,
                     neighbourContentURL,
                     nativeAdLoadListener,
@@ -276,6 +307,10 @@ internal class NativeAdLoader {
                         adName,
                         adSize,
                         timeout,
+                        ctaColor,
+                        textColor,
+                        backgroundResource,
+                        backgroundColor,
                         contentURL,
                         neighbourContentURL,
                         nativeAdLoadListener,
@@ -325,7 +360,11 @@ internal class NativeAdLoader {
                                 nativeAd,
                                 adView,
                                 adSize,
-                                adsRequested
+                                textColor,
+                                textColor,
+                                ctaColor,
+                                backgroundResource,
+                                backgroundColor
                             )
                             parentView.removeAllViews()
                             parentView.addView(adView)
@@ -382,6 +421,10 @@ internal class NativeAdLoader {
         adName: String,
         adSize: NativeAdSize,
         timeout: Int,
+        ctaColor: String,
+        textColor: String,
+        backgroundResource: Int,
+        backgroundColor: String,
         contentURL: String?,
         neighbourContentURL: List<String>?,
         nativeAdLoadListener: NativeAdLoadListener?,
@@ -402,6 +445,10 @@ internal class NativeAdLoader {
                 adSize,
                 timeout,
                 adUnits[adRequestsCompleted],
+                ctaColor,
+                textColor,
+                backgroundResource,
+                backgroundColor,
                 contentURL,
                 neighbourContentURL,
                 nativeAdLoadListener,
@@ -415,11 +462,34 @@ internal class NativeAdLoader {
         nativeAd: NativeAd,
         adView: NativeAdView?,
         adType: NativeAdSize,
-        textColor1: Int? = null,
-        textColor2: Int? = null,
+        textColor1: String? = null,
+        textColor2: String? = null,
         buttonColor: String? = "#000000",
+        backgroundResource: Int,
+        backgroundColor: String,
         mediaMaxHeight: Int = 250
     ) {
+        try {
+            if (adView != null) {
+                val drawable: Drawable? =
+                    ContextCompat.getDrawable(adView.context, backgroundResource)
+                drawable?.setTint(Color.parseColor(backgroundColor))
+                adView.findViewById<RelativeLayout>(R.id.rootView).background = drawable
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        try {
+            adView?.findViewById<ConstraintLayout>(R.id.innerView)
+                ?.setBackgroundResource(backgroundResource)
+        } catch (e: java.lang.Exception) {
+            try {
+                adView?.findViewById<RelativeLayout>(R.id.innerView)
+                    ?.setBackgroundResource(backgroundResource)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
         val iconView = adView?.findViewById(R.id.icon) as ImageView
         val icon = nativeAd.icon
         adView.iconView = iconView
@@ -478,7 +548,7 @@ internal class NativeAdLoader {
         val textView = headlineView as TextView
         textView.text = nativeAd.headline
         if (textColor1 != null) {
-            textView.setTextColor(textColor1)
+            textView.setTextColor(ColorStateList.valueOf(Color.parseColor(textColor1)))
         }
 
         val adBody = adView.findViewById(R.id.body) as TextView
@@ -491,7 +561,7 @@ internal class NativeAdLoader {
             val textView1 = bodyView as TextView
             textView1.text = nativeAd.body
             if (textColor2 != null) {
-                textView1.setTextColor(textColor2)
+                textView1.setTextColor(ColorStateList.valueOf(Color.parseColor(textColor2)))
             }
         }
 
@@ -502,7 +572,7 @@ internal class NativeAdLoader {
             val textView1 = adView.storeView as TextView
             textView1.text = nativeAd.store
             if (textColor2 != null) {
-                textView1.setTextColor(textColor2)
+                textView1.setTextColor(ColorStateList.valueOf(Color.parseColor(textColor2)))
             }
         } else {
             adView.storeView?.visibility = View.GONE
@@ -536,6 +606,10 @@ internal class NativeAdLoader {
         secondaryAdUnitIds: List<String>,
         timeout: Int,
         refreshTimer: Int,
+        ctaColor: String,
+        textColor: String,
+        backgroundResource: Int,
+        backgroundColor: String,
         contentURL: String?,
         neighbourContentURL: List<String>?,
         nativeAdLoadListener: NativeAdLoadListener?,
@@ -560,6 +634,10 @@ internal class NativeAdLoader {
                             secondaryAdUnitIds,
                             timeout,
                             refreshTimer,
+                            ctaColor,
+                            textColor,
+                            backgroundResource,
+                            backgroundColor,
                             contentURL,
                             neighbourContentURL,
                             nativeAdLoadListener,

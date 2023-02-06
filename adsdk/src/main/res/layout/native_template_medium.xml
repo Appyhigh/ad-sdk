@@ -7,11 +7,15 @@
     android:layout_margin="5dp"
     android:elevation="1dp"
     tools:ignore="MissingDefaultResource">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
+        android:id="@+id/rootView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_margin="5dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/innerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         android:background="@drawable/ad_sdk_bg"
         android:orientation="vertical">
@@ -174,6 +178,5 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+    </RelativeLayout>
 </com.google.android.gms.ads.nativead.NativeAdView>

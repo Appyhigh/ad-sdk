@@ -14,6 +14,12 @@ import com.google.gson.Gson
 internal class AdConfig {
     private var adResponse: AdResponse? = null
     private var adsMap = HashMap<String, AdMob>()
+    private var defaultLightCTAHex = "#000000"
+    private var defaultDarkCTAHex = "#00ff00"
+    private var defaultLightTextHex = "#000000"
+    private var defaultDarkTextHex = "#ff0000"
+    private var defaultLightBackgroundHex = "#FFFFFF"
+    private var defaultDarkBackgroundHex = "#000000"
 
     fun initWithLocalFile(fileData: String) {
         if (adResponse == null) {
@@ -137,6 +143,33 @@ internal class AdConfig {
             return adsMap[adName]?.refresh_rate_ms ?: 45000
         }
         return 45000
+    }
+
+    fun fetchLightCTAColor(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.color_hex ?: defaultLightCTAHex
+        }
+        return defaultLightCTAHex
+    }
+
+    fun fetchDarkCTAColor(adName: String): String {
+        return defaultDarkCTAHex
+    }
+
+    fun fetchLightTextColor(adName: String): String {
+        return defaultLightTextHex
+    }
+
+    fun fetchDarkTextColor(adName: String): String {
+        return defaultDarkTextHex
+    }
+
+    fun fetchLightBackgroundColor(adName: String): String {
+        return defaultLightBackgroundHex
+    }
+
+    fun fetchDarkBackgroundColor(adName: String): String {
+        return defaultDarkBackgroundHex
     }
 
 }
