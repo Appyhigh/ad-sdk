@@ -19,6 +19,9 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -26,6 +29,65 @@ import java.io.InputStream
 object AdSdk {
     private var isInitialized = false
     private var adConfig = AdConfig()
+
+    fun getConsentForEU(
+        activity: Activity,
+        consentRequestListener: ConsentRequestListener
+    ) {
+        try {
+            //Debugging
+//            val debugSettings = ConsentDebugSettings.Builder(activity)
+//                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+//                .addTestDeviceHashedId("1EA55AD5EAAA03034C15481D2B68CBED")
+//                .build()
+            val params = ConsentRequestParameters.Builder()
+                .setTagForUnderAgeOfConsent(false)
+                .build()
+
+            val consentInformation = UserMessagingPlatform.getConsentInformation(activity)
+            consentInformation.requestConsentInfoUpdate(
+                activity,
+                params,
+                {
+                    if (consentInformation.isConsentFormAvailable) {
+                        loadForm(consentInformation, activity, consentRequestListener)
+                    } else {
+                        consentRequestListener.onSuccess()
+                    }
+                },
+                {
+                    consentRequestListener.onError(it.message, it.errorCode)
+                })
+        } catch (e: Exception) {
+            consentRequestListener.onError(
+                e.message ?: activity.getString(R.string.consent_exception), 1
+            )
+        }
+    }
+
+    private fun loadForm(
+        consentInformation: ConsentInformation,
+        activity: Activity,
+        consentRequestListener: ConsentRequestListener
+    ) {
+        UserMessagingPlatform.loadConsentForm(
+            activity,
+            { consentForm ->
+                if (consentInformation.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
+                    consentForm.show(
+                        activity,
+                    ) {
+                        loadForm(consentInformation, activity, consentRequestListener)
+                    }
+                } else if (consentInformation.consentStatus == ConsentInformation.ConsentStatus.OBTAINED) {
+                    consentRequestListener.onSuccess()
+                }
+            },
+            {
+                consentRequestListener.onError(it.message, it.errorCode)
+            }
+        )
+    }
 
     fun initialize(
         application: Application,

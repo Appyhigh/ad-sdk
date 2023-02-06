@@ -8,7 +8,6 @@ import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
-import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.perf.ktx.performance
 import com.google.firebase.perf.metrics.Trace
@@ -22,6 +21,17 @@ class MainActivity : AppCompatActivity() {
         var mTraceFailure: Trace? = Firebase.performance.newTrace("initialize_ads_sdk_failure")
         mTraceSuccess?.start()
         mTraceFailure?.start()
+        AdSdk.getConsentForEU(this,object : ConsentRequestListener{
+            override fun onError(message: String, code: Int) {
+                //Give the user a prompt or call initialize anyway
+            }
+
+            override fun onSuccess() {
+                //Call initialize method now
+                // For NON-EU countries / when a consent form is not available(i.e. if the user has already accepted the consent) this is called
+            }
+
+        })
         AdSdk.initialize(
             application = application,
             testDevice = null,
@@ -209,6 +219,6 @@ class MainActivity : AppCompatActivity() {
 //                        }
 //                    }
 //                )
-        }, 5000)
+        }, 10000)
     }
 }
