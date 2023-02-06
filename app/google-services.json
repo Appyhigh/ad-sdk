@@ -1,0 +1,155 @@
+{
+  "project_info": {
+    "project_number": "973348169986",
+    "project_id": "appyhigh-vpn-suite-dev",
+    "storage_bucket": "appyhigh-vpn-suite-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973348169986:android:053d6ca59fd5c096ccba1b",
+        "android_client_info": {
+          "package_name": "com.appyhigh.adsdk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8jA8XFESs0LDXVDuJzlICHUHqfipFX0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973348169986:android:e3acc15002ea4e4bccba1b",
+        "android_client_info": {
+          "package_name": "com.appyhigh.adssdk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8jA8XFESs0LDXVDuJzlICHUHqfipFX0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973348169986:android:108f9efa4db1f5deccba1b",
+        "android_client_info": {
+          "package_name": "orange.vpn.free.proxy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8jA8XFESs0LDXVDuJzlICHUHqfipFX0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973348169986:android:e4e35ad801176b75ccba1b",
+        "android_client_info": {
+          "package_name": "orange.vpn.free.proxy.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8jA8XFESs0LDXVDuJzlICHUHqfipFX0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973348169986:android:cf4d2ca1f25af0dbccba1b",
+        "android_client_info": {
+          "package_name": "orange.vpn.free.proxy.develop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8jA8XFESs0LDXVDuJzlICHUHqfipFX0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973348169986-477j97r6u69f6m9ped9qhqg8grimbmmq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
