@@ -8,18 +8,28 @@ import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
+import com.google.firebase.FirebaseApp
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.perf.ktx.performance
+import com.google.firebase.perf.metrics.Trace
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        var mTraceSuccess: Trace? = Firebase.performance.newTrace("initialize_ads_sdk_success")
+        var mTraceFailure: Trace? = Firebase.performance.newTrace("initialize_ads_sdk_failure")
+        mTraceSuccess?.start()
+        mTraceFailure?.start()
         AdSdk.initialize(
             application = application,
             testDevice = null,
             fileId = R.raw.ad_utils_response,
             adInitializeListener = object : AdInitializeListener() {
                 override fun onSdkInitialized() {
+                    mTraceSuccess?.stop()
+                    mTraceFailure = null
                     AdSdk.setUpVersionControl(
                         activity = this@MainActivity,
                         view = findViewById(R.id.tvDummyView),
@@ -62,6 +72,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onInitializationFailed(adSdkError: AdSdkError) {
+                    mTraceSuccess = null
+                    mTraceFailure?.stop()
                     Logger.e(AdSdkConstants.TAG, adSdkError.message)
                 }
             }

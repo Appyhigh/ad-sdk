@@ -7,7 +7,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 abstract class NativeAdLoadListener {
     open fun onAdClicked() {}
     open fun onAdClosed() {}
-    open fun onAdFailedToLoad(p0: LoadAdError) {}
+    open fun onAdFailedToLoad(errors: List<String>) {}
     open fun onAdImpression() {}
     open fun onAdInflated() {}
     open fun onAdLoaded(nativeAd: NativeAd?) {}

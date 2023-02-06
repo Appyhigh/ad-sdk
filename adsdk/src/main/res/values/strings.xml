@@ -33,4 +33,5 @@
     <string name="unknown_ad_type">Unknown Ad Type</string>
     <string name="error_preloading_not_supported">Preloading not supported for this ad type</string>
     <string name="error_no_fallback_id_found">Error Loading Ad. No Fallback Id Found!</string>
+    <string name="error_sdk_not_initialized">Please initialize the SDK first to load ads!</string>
 </resources>

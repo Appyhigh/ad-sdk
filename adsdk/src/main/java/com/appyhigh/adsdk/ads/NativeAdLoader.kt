@@ -297,7 +297,6 @@ internal class NativeAdLoader {
 
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     super.onAdFailedToLoad(p0)
-                    nativeAdLoadListener?.onAdFailedToLoad(p0)
                     countDownTimer?.cancel()
                     requestNextAd(
                         context,
@@ -436,6 +435,7 @@ internal class NativeAdLoader {
         adRequestsCompleted += 1
         if (adUnits.size == adRequestsCompleted) {
             parentView.removeAllViews()
+            nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
         } else {
             inflateAd(
                 context,

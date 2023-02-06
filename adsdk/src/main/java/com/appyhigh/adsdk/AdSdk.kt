@@ -231,10 +231,33 @@ object AdSdk {
         var appOpenLoadTypeInternal = appOpenLoadType
         adConfig.init()
         val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
+        if (!isSdkInitialized()) {
+            val error =
+                "$adName ==== $fallBackId ==== ${context.getString(R.string.error_sdk_not_initialized)}"
+            triggerAdFailedCallback(
+                bannerAdLoadListener,
+                interstitialAdLoadListener,
+                rewardedAdLoadListener,
+                rewardedInterstitialAdLoadListener,
+                appOpenAdLoadListener,
+                nativeAdLoadListener,
+                error
+            )
+            Logger.e(AdSdkConstants.TAG, error)
+            return
+        }
         if (fallBackId.isBlank()) {
             val error =
                 "$adName ==== $fallBackId ==== ${context.getString(R.string.error_no_fallback_id_found)}"
-            bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+            triggerAdFailedCallback(
+                bannerAdLoadListener,
+                interstitialAdLoadListener,
+                rewardedAdLoadListener,
+                rewardedInterstitialAdLoadListener,
+                appOpenAdLoadListener,
+                nativeAdLoadListener,
+                error
+            )
             Logger.e(AdSdkConstants.TAG, error)
             return
         }
@@ -244,14 +267,30 @@ object AdSdk {
                     if (lifecycle == null && !isService) {
                         val error =
                             "$adName ==== $fallBackId ==== ${context.getString(R.string.error_lifecycle)}"
-                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        triggerAdFailedCallback(
+                            bannerAdLoadListener,
+                            interstitialAdLoadListener,
+                            rewardedAdLoadListener,
+                            rewardedInterstitialAdLoadListener,
+                            appOpenAdLoadListener,
+                            nativeAdLoadListener,
+                            error
+                        )
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
                     if (parentView == null) {
                         val error =
                             "$adName ==== $fallBackId ==== ${context.getString(R.string.error_parent_view)}"
-                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        triggerAdFailedCallback(
+                            bannerAdLoadListener,
+                            interstitialAdLoadListener,
+                            rewardedAdLoadListener,
+                            rewardedInterstitialAdLoadListener,
+                            appOpenAdLoadListener,
+                            nativeAdLoadListener,
+                            error
+                        )
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
@@ -287,14 +326,30 @@ object AdSdk {
                     if (lifecycle == null && !isService) {
                         val error =
                             "$adName ==== $fallBackId ==== ${context.getString(R.string.error_lifecycle)}"
-                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        triggerAdFailedCallback(
+                            bannerAdLoadListener,
+                            interstitialAdLoadListener,
+                            rewardedAdLoadListener,
+                            rewardedInterstitialAdLoadListener,
+                            appOpenAdLoadListener,
+                            nativeAdLoadListener,
+                            error
+                        )
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
                     if (parentView == null) {
                         val error =
                             "$adName ==== $fallBackId ==== ${context.getString(R.string.error_parent_view)}"
-                        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                        triggerAdFailedCallback(
+                            bannerAdLoadListener,
+                            interstitialAdLoadListener,
+                            rewardedAdLoadListener,
+                            rewardedInterstitialAdLoadListener,
+                            appOpenAdLoadListener,
+                            nativeAdLoadListener,
+                            error
+                        )
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
@@ -365,7 +420,15 @@ object AdSdk {
                         if (application == null) {
                             val error =
                                 "$adName ==== $fallBackId ==== ${context.getString(R.string.error_application_context_null)}"
-                            bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+                            triggerAdFailedCallback(
+                                bannerAdLoadListener,
+                                interstitialAdLoadListener,
+                                rewardedAdLoadListener,
+                                rewardedInterstitialAdLoadListener,
+                                appOpenAdLoadListener,
+                                nativeAdLoadListener,
+                                error
+                            )
                             Logger.e(AdSdkConstants.TAG, error)
                             return
                         }
@@ -385,6 +448,23 @@ object AdSdk {
                 )
             }
         }
+    }
+
+    private fun triggerAdFailedCallback(
+        bannerAdLoadListener: BannerAdLoadListener? = null,
+        interstitialAdLoadListener: InterstitialAdLoadListener? = null,
+        rewardedAdLoadListener: RewardedAdLoadListener? = null,
+        rewardedInterstitialAdLoadListener: RewardedInterstitialAdLoadListener? = null,
+        appOpenAdLoadListener: AppOpenAdLoadListener? = null,
+        nativeAdLoadListener: NativeAdLoadListener? = null,
+        error: String
+    ) {
+        bannerAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+        interstitialAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+        rewardedAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+        rewardedInterstitialAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+        appOpenAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
+        nativeAdLoadListener?.onAdFailedToLoad(arrayListOf(error))
     }
 
     private fun isAdActive(adName: String): Boolean {
