@@ -46,7 +46,27 @@ Add these configurations to you `AndroidManifest.xml`
 </manifest>
  ```
 
+## Handle Consent for EU Countries [(Ref)](https://developers.google.com/admob/android/privacy)
+
+Call getConsentForEU method to automatically handle the consent and forms inside the current activity. This method provides a callback with success and failure listener, handle them in your app.
+
+For NON-EU countries / when a consent form is not available(i.e. if the user has already accepted the consent) onSuccess() method is automatically called.
+
+_Debugging : Pass your test device hashed id, after getting it from logcat first (filter: UserMessagingPlatform)_ 
+
+```kotlin
+AdSdk.getConsentForEU( YOUR ACTIVITY , YOUR TEST DEVICE HASHED ID string, object : ConsentRequestListener{
+    override fun onError(message: String, code: Int) {
+       //Give the user a prompt or call initialize anyway
+    }
+
+    override fun onSuccess() {
+	//Call initialize method now for AdSdk
+    }
+})
+```
 ## SDK Initialization
+
 ```kotlin
 /**  
  * @param application -> Pass your application context here  
