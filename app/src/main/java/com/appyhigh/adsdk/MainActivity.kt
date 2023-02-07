@@ -21,41 +21,38 @@ class MainActivity : AppCompatActivity() {
         var mTraceFailure: Trace? = Firebase.performance.newTrace("initialize_ads_sdk_failure")
         mTraceSuccess?.start()
         mTraceFailure?.start()
-        AdSdk.getConsentForEU(this,object : ConsentRequestListener{
+        AdSdk.getConsentForEU(this,"1EA55AD5EAAA03034C15481D2B68CBED", object : ConsentRequestListener{
             override fun onError(message: String, code: Int) {
                 //Give the user a prompt or call initialize anyway
+                println("$message $code")
             }
 
             override fun onSuccess() {
-                //Call initialize method now
-                // For NON-EU countries / when a consent form is not available(i.e. if the user has already accepted the consent) this is called
-            }
-
-        })
-        AdSdk.initialize(
-            application = application,
-            testDevice = null,
-            fileId = R.raw.ad_utils_response,
-            adInitializeListener = object : AdInitializeListener() {
-                override fun onSdkInitialized() {
-                    mTraceSuccess?.stop()
-                    mTraceFailure = null
-                    AdSdk.setUpVersionControl(
-                        activity = this@MainActivity,
-                        view = findViewById(R.id.tvDummyView),
-                        buildVersion = BuildConfig.VERSION_CODE,
-                        versionControlListener = object : VersionControlListener() {
-                            override fun onUpdateDetectionSuccess(updateType: UpdateType) {
-                                when (updateType) {
-                                    UpdateType.SOFT_UPDATE -> {
+                println("SUCCESS")
+                AdSdk.initialize(
+                    application = application,
+                    testDevice = null,
+                    fileId = R.raw.ad_utils_response,
+                    adInitializeListener = object : AdInitializeListener() {
+                        override fun onSdkInitialized() {
+                            mTraceSuccess?.stop()
+                            mTraceFailure = null
+                            AdSdk.setUpVersionControl(
+                                activity = this@MainActivity,
+                                view = findViewById(R.id.tvDummyView),
+                                buildVersion = BuildConfig.VERSION_CODE,
+                                versionControlListener = object : VersionControlListener() {
+                                    override fun onUpdateDetectionSuccess(updateType: UpdateType) {
+                                        when (updateType) {
+                                            UpdateType.SOFT_UPDATE -> {
+                                            }
+                                            UpdateType.HARD_UPDATE -> {
+                                            }
+                                            else -> {}
+                                        }
                                     }
-                                    UpdateType.HARD_UPDATE -> {
-                                    }
-                                    else -> {}
                                 }
-                            }
-                        }
-                    )
+                            )
 
 //                    AdSdk.preloadAd(
 //                        this@MainActivity,
@@ -79,16 +76,22 @@ class MainActivity : AppCompatActivity() {
 //                        context = this@MainActivity,
 //                        adName = "test_native_ad"
 //                    )
-                }
+                        }
 
-                override fun onInitializationFailed(adSdkError: AdSdkError) {
-                    mTraceSuccess = null
-                    mTraceFailure?.stop()
-                    Logger.e(AdSdkConstants.TAG, adSdkError.message)
-                }
+                        override fun onInitializationFailed(adSdkError: AdSdkError) {
+                            mTraceSuccess = null
+                            mTraceFailure?.stop()
+                            Logger.e(AdSdkConstants.TAG, adSdkError.message)
+                        }
+                    }
+                )
+                //Call initialize method now
+                // For NON-EU countries / when a consent form is not available(i.e. if the user has already accepted the consent) this is called
             }
-        )
-        Handler(Looper.getMainLooper()).postDelayed({
+
+        })
+
+//        Handler(Looper.getMainLooper()).postDelayed({
 //            startActivity(Intent(this, NewActivity::class.java))
 //            finish()
 //            AdSdk.loadAd(
@@ -101,13 +104,13 @@ class MainActivity : AppCompatActivity() {
 //                context = this,
 //                parentView = findViewById(R.id.llAdView2),
 //                adName = "test_banner_2"
+////            )
+//            AdSdk.loadAd(
+//                context = this,
+//                lifecycle = lifecycle,
+//                parentView = findViewById(R.id.llAdView),
+//                adName = "test_native_ad"
 //            )
-            AdSdk.loadAd(
-                context = this,
-                lifecycle = lifecycle,
-                parentView = findViewById(R.id.llAdView),
-                adName = "test_native_ad"
-            )
 //            AdSdk.fetchNativeAds(
 //                context = this,
 //                parentView = findViewById(R.id.llAdView),
@@ -219,6 +222,6 @@ class MainActivity : AppCompatActivity() {
 //                        }
 //                    }
 //                )
-        }, 10000)
+//        }, 10000)
     }
 }

@@ -2,14 +2,15 @@ package com.appyhigh.adsdk.ads
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.BannerAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
@@ -35,7 +36,10 @@ internal class BannerAdLoader {
     ) {
         if (AdSdkConstants.preloadedBannerAdMap[adName] == null) {
             val builder = AdRequest.Builder()
-                .addNetworkExtrasBundle(AdMobAdapter::class.java, getConsentEnabledBundle())
+                .addNetworkExtrasBundle(
+                    AdMobAdapter::class.java,
+                    if (AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                )
             contentURL?.let { builder.setContentUrl(it) }
             neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
             val adRequest = builder.build()
@@ -214,7 +218,10 @@ internal class BannerAdLoader {
             }
         }.start()
         val builder = AdRequest.Builder()
-            .addNetworkExtrasBundle(AdMobAdapter::class.java, getConsentEnabledBundle())
+            .addNetworkExtrasBundle(
+                AdMobAdapter::class.java,
+                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+            )
         contentURL?.let { builder.setContentUrl(it) }
         neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
         val adRequest = builder.build()
@@ -396,8 +403,4 @@ internal class BannerAdLoader {
         )
     }
 
-    private val extras = Bundle()
-    private fun getConsentEnabledBundle(): Bundle {
-        return extras
-    }
 }

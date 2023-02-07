@@ -3,10 +3,13 @@ package com.appyhigh.adsdk.ads
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
+import androidx.core.os.bundleOf
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.InterstitialAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -74,7 +77,10 @@ internal class InterstitialAdLoader {
         interstitialAdLoadListener: InterstitialAdLoadListener?
     ) {
         countDownTimer?.start()
-        val adRequest = AdRequest.Builder().build()
+        val adRequest = AdRequest.Builder().addNetworkExtrasBundle(
+            AdMobAdapter::class.java,
+            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+        ).build()
         InterstitialAd.load(
             context,
             adUnit,
