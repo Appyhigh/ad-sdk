@@ -47,10 +47,11 @@ object AdSdk {
                     .setTagForUnderAgeOfConsent(false)
                     .setConsentDebugSettings(debugSettings)
                     .build()
-
-            } ?: ConsentRequestParameters.Builder()
-                .setTagForUnderAgeOfConsent(false)
-                .build()
+            } ?: run {
+                ConsentRequestParameters.Builder()
+                    .setTagForUnderAgeOfConsent(false)
+                    .build()
+            }
 
             val consentInformation = UserMessagingPlatform.getConsentInformation(activity)
             consentInformation.requestConsentInfoUpdate(
@@ -60,13 +61,16 @@ object AdSdk {
                     if (consentInformation.isConsentFormAvailable) {
                         loadForm(consentInformation, activity, consentRequestListener)
                     } else {
+                        AdSdkConstants.consentStatus = true
                         consentRequestListener.onSuccess()
                     }
                 },
                 {
+                    AdSdkConstants.consentStatus = false
                     consentRequestListener.onError(it.message, it.errorCode)
                 })
         } catch (e: Exception) {
+            AdSdkConstants.consentStatus = false
             consentRequestListener.onError(
                 e.message ?: activity.getString(R.string.consent_exception), 1
             )
@@ -81,17 +85,22 @@ object AdSdk {
         UserMessagingPlatform.loadConsentForm(
             activity,
             { consentForm ->
-                if (consentInformation.consentStatus == ConsentInformation.ConsentStatus.REQUIRED) {
-                    consentForm.show(
-                        activity,
-                    ) {
-                        loadForm(consentInformation, activity, consentRequestListener)
+                when (consentInformation.consentStatus) {
+                    ConsentInformation.ConsentStatus.REQUIRED -> {
+                        consentForm.show(
+                            activity,
+                        ) {
+                            loadForm(consentInformation, activity, consentRequestListener)
+                        }
                     }
-                } else if (consentInformation.consentStatus == ConsentInformation.ConsentStatus.OBTAINED) {
-                    consentRequestListener.onSuccess()
+                    else -> {
+                        AdSdkConstants.consentStatus = true
+                        consentRequestListener.onSuccess()
+                    }
                 }
             },
             {
+                AdSdkConstants.consentStatus = false
                 consentRequestListener.onError(it.message, it.errorCode)
             }
         )

@@ -5,12 +5,15 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListenerInternal
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.utils.Logger
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -53,7 +56,10 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
             return
         }
         isLoadingAd = true
-        val request = AdRequest.Builder().build()
+        val request = AdRequest.Builder().addNetworkExtrasBundle(
+            AdMobAdapter::class.java,
+            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+        ).build()
         AppOpenAd.load(
             context, adUnit!!, request,
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,

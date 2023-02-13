@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,10 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.data.enums.NativeAdSize
 import com.appyhigh.adsdk.interfaces.NativeAdLoadListener
@@ -405,7 +406,7 @@ internal class NativeAdLoader {
     ): AdRequest.Builder {
         val builder = AdRequest.Builder().addNetworkExtrasBundle(
             AdMobAdapter::class.java,
-            getConsentEnabledBundle()
+            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
         )
         contentURL?.let { builder.setContentUrl(it) }
         neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
@@ -476,7 +477,7 @@ internal class NativeAdLoader {
                 drawable?.setTint(Color.parseColor(backgroundColor))
                 adView.findViewById<RelativeLayout>(R.id.rootView).background = drawable
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         try {
@@ -654,11 +655,5 @@ internal class NativeAdLoader {
                     }
                 }
             }.start()
-    }
-
-
-    private val extras = Bundle()
-    private fun getConsentEnabledBundle(): Bundle {
-        return extras
     }
 }

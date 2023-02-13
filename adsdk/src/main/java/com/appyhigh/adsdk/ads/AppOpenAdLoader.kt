@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.os.CountDownTimer
+import androidx.core.os.bundleOf
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListener
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListenerInternal
 import com.appyhigh.adsdk.utils.Logger
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
@@ -130,7 +133,10 @@ internal class AppOpenAdLoader {
         countDownTimer: CountDownTimer?,
         appOpenAdLoadListener: AppOpenAdLoadListener?
     ) {
-        val request = AdRequest.Builder().build()
+        val request = AdRequest.Builder().addNetworkExtrasBundle(
+            AdMobAdapter::class.java,
+            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+        ).build()
         AppOpenAd.load(
             context, adUnit!!, request,
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
