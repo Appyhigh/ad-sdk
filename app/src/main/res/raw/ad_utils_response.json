@@ -1,12 +1,12 @@
 {
     "status": "success",
-    "message": "App info served from cache",
+    "message": "App info",
     "app": {
         "showAppAds": true,
         "isActive": true,
         "_id": "63d6c69d700bede5026f7f32",
         "appName": "Ad Utils",
-        "packageId": "com.appyhigh.adsdk",
+        "packageId": "com.appyhigh.adssdk",
         "platform": "ANDROID",
         "latestVersion": 1,
         "criticalVersion": 1,
@@ -26,7 +26,13 @@
                 "refresh_rate_ms": 45000,
                 "color_hex": "#000000",
                 "size": "banner",
-                "primary_adload_timeout_ms": 6000
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             },
             {
                 "primary_ids": [
@@ -42,7 +48,13 @@
                 "refresh_rate_ms": 45000,
                 "color_hex": "#000000",
                 "size": "large_banner",
-                "primary_adload_timeout_ms": 6000
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             },
             {
                 "primary_ids": [
@@ -58,7 +70,13 @@
                 "refresh_rate_ms": 45000,
                 "color_hex": "#000000",
                 "size": "medium_rectangle",
-                "primary_adload_timeout_ms": 6000
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             },
             {
                 "primary_ids": [
@@ -74,7 +92,13 @@
                 "refresh_rate_ms": 0,
                 "color_hex": "#000000",
                 "size": "",
-                "primary_adload_timeout_ms": 6000
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             },
             {
                 "primary_ids": [
@@ -90,7 +114,13 @@
                 "refresh_rate_ms": 0,
                 "color_hex": "#000000",
                 "size": "",
-                "primary_adload_timeout_ms": 6000
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             },
             {
                 "primary_ids": [
@@ -106,7 +136,13 @@
                 "refresh_rate_ms": 0,
                 "color_hex": "#000000",
                 "size": "",
-                "primary_adload_timeout_ms": 6000
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             },
             {
                 "primary_ids": [
@@ -122,7 +158,13 @@
                 "refresh_rate_ms": 0,
                 "color_hex": "#000000",
                 "size": "",
-                "primary_adload_timeout_ms": 6000
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             },
             {
                 "primary_ids": [
@@ -137,12 +179,18 @@
                 "isActive": true,
                 "refresh_rate_ms": 10000,
                 "color_hex": "#000000",
-                "size": "grid_ad",
-                "primary_adload_timeout_ms": 6000
+                "size": "small",
+                "primary_adload_timeout_ms": 6000,
+                "background_threshold": 4000,
+                "bg_color": "#000000",
+                "bg_color_dark": "#000000",
+                "color_hex_dark": "#000000",
+                "text_color": "#000000",
+                "text_color_dark": "#000000"
             }
         ],
         "createdAt": "2023-01-29T19:18:53.983Z",
-        "updatedAt": "2023-02-02T15:48:21.645Z",
+        "updatedAt": "2023-02-24T07:41:53.817Z",
         "__v": 0
     }
 }

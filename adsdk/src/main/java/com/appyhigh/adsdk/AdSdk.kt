@@ -308,11 +308,9 @@ object AdSdk {
         nativeAdLoadListener: NativeAdLoadListener? = null
     ) {
         var appOpenLoadTypeInternal = appOpenLoadType
-        adConfig.init()
-        val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
         if (!isSdkInitialized()) {
             val error =
-                "$adName ==== $fallBackId ==== ${context.getString(R.string.error_sdk_not_initialized)}"
+                "${context.getString(R.string.error_sdk_not_initialized)}"
             triggerAdFailedCallback(
                 bannerAdLoadListener,
                 interstitialAdLoadListener,
@@ -325,6 +323,8 @@ object AdSdk {
             Logger.e(AdSdkConstants.TAG, error)
             return
         }
+        adConfig.init()
+        val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
         if (fallBackId.isBlank()) {
             val error =
                 "$adName ==== $fallBackId ==== ${context.getString(R.string.error_no_fallback_id_found)}"
@@ -517,7 +517,8 @@ object AdSdk {
                             adName,
                             fallBackId,
                             adConfig.fetchPrimaryAdUnitIds(adName),
-                            adConfig.fetchSecondaryAdUnitIds(adName)
+                            adConfig.fetchSecondaryAdUnitIds(adName),
+                            adConfig.fetchBackgroundThreshold(adName)
                         )
                     }
                 }

@@ -78,6 +78,7 @@ internal class AppOpenAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        backgroundThreshold: Int,
         appOpenAdLoadListener: AppOpenAdLoadListener? = null
     ) {
         adUnits.addAll(primaryAdUnitIds)
@@ -108,7 +109,9 @@ internal class AppOpenAdLoader {
                     super.onAdLoaded(ad)
                     appOpenAdLoadListener?.onAdLoaded(ad)
                 }
-            })
+            },
+            backgroundThreshold
+        )
         requestAd(context, adName, adUnits[adRequestsCompleted])
         appOpenAdLoadListener?.onInitSuccess(appOpenAdManager)
     }

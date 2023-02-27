@@ -15,10 +15,10 @@ internal class AdConfig {
     private var adResponse: AdResponse? = null
     private var adsMap = HashMap<String, AdMob>()
     private var defaultLightCTAHex = "#000000"
-    private var defaultDarkCTAHex = "#00ff00"
-    private var defaultLightTextHex = "#000000"
-    private var defaultDarkTextHex = "#ff0000"
-    private var defaultLightBackgroundHex = "#FFFFFF"
+    private var defaultDarkCTAHex = "#ffffff"
+    private var defaultLightTextHex = "#ffffff"
+    private var defaultDarkTextHex = "#000000"
+    private var defaultLightBackgroundHex = "#ffffff"
     private var defaultDarkBackgroundHex = "#000000"
 
     fun initWithLocalFile(fileData: String) {
@@ -153,23 +153,45 @@ internal class AdConfig {
     }
 
     fun fetchDarkCTAColor(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.color_hex_dark ?: defaultDarkCTAHex
+        }
         return defaultDarkCTAHex
     }
 
     fun fetchLightTextColor(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.text_color ?: defaultLightTextHex
+        }
         return defaultLightTextHex
     }
 
     fun fetchDarkTextColor(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.text_color_dark ?: defaultDarkTextHex
+        }
         return defaultDarkTextHex
     }
 
     fun fetchLightBackgroundColor(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.bg_color ?: defaultLightBackgroundHex
+        }
         return defaultLightBackgroundHex
     }
 
     fun fetchDarkBackgroundColor(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.bg_color_dark ?: defaultDarkBackgroundHex
+        }
         return defaultDarkBackgroundHex
+    }
+
+    fun fetchBackgroundThreshold(adName: String): Int {
+        adResponse?.let {
+            return adsMap[adName]?.background_threshold ?: 4000
+        }
+        return 4000
     }
 
 }

@@ -29,16 +29,26 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
     private var loadTime: Long = 0
     private var adName: String? = null
     private var adUnit: String? = null
+    private var backgroundThreshold: Int = 4000
     private var appOpenAdLoadListener: AppOpenAdLoadListenerInternal? = null
+    private var appCount = 0
+    private var backgroundTime: Long = 0
+    private var isPremium: Boolean = false
+
+    companion object {
+        var isPremiumUser: Boolean = false
+    }
 
     fun init(
         application: Application,
         adName: String,
         adUnit: String,
-        appOpenAdLoadListener: AppOpenAdLoadListenerInternal?
+        appOpenAdLoadListener: AppOpenAdLoadListenerInternal?,
+        backgroundThreshold: Int,
     ) {
         application.registerActivityLifecycleCallbacks(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        this.backgroundTime = backgroundThreshold.toLong()
         this.adName = adName
         this.adUnit = adUnit
         this.appOpenAdLoadListener = appOpenAdLoadListener
@@ -169,10 +179,22 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         if (event == Lifecycle.Event.ON_START) {
-            currentActivity?.let {
-                showAdIfAvailable(it)
+            if (appCount > 0 && !currentActivity.toString()
+                    .contains("CallerIdActivity") && !currentActivity.toString()
+                    .contains("CallActivity")
+            ) {
+                val appBackgroundTime = System.currentTimeMillis() - backgroundTime
+                isPremium = isPremiumUser
+                if (appBackgroundTime > backgroundThreshold && !isPremium)
+                    currentActivity?.let {
+                        showAdIfAvailable(it)
+                    }
             }
         }
+        if (event == Lifecycle.Event.ON_STOP){
+            backgroundTime = System.currentTimeMillis()
+        }
+        appCount++
     }
 
 }

@@ -9,6 +9,12 @@ data class AdMob(
     var isActive: Boolean = true,
     var refresh_rate_ms: Int?,
     var color_hex: String?,
+    var color_hex_dark: String?,
+    var bg_color: String?,
+    var bg_color_dark: String?,
+    var text_color: String?,
+    var text_color_dark: String?,
     var size: String?,
-    var primary_adload_timeout_ms: Int
+    var primary_adload_timeout_ms: Int,
+    var background_threshold: Int
 )
