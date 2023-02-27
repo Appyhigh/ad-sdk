@@ -71,7 +71,7 @@ AdSdk.getConsentForEU( YOUR ACTIVITY , YOUR TEST DEVICE HASHED ID string, object
 /**  
  * @param application -> Pass your application context here  
  * @param testDevice -> Pass the test device id here. Eg: 59106BA0F480E2EC4CD8CC7AA2C49B81  
- * @param fileId -> Pass the local response file reference her. (R.raw.ad_utils_response)  
+ * @param fileId -> Pass the local response file reference here. (R.raw.ad_utils_response)  
  * @param adInitializeListener -> register the adInitializeLister here to listen to success/failure of initialization.  
  */
 fun initialize(  

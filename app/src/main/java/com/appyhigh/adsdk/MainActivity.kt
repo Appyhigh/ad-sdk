@@ -9,11 +9,8 @@ import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.perf.ktx.performance
-import com.google.firebase.perf.metrics.Trace
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), BypassAppOpenAd {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
