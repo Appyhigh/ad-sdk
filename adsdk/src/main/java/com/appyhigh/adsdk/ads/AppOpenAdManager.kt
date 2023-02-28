@@ -5,7 +5,10 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.core.os.bundleOf
+import androidx.core.os.postDelayed
 import androidx.lifecycle.*
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
@@ -178,23 +181,26 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_START) {
-            if (appCount > 0 && !currentActivity.toString()
-                    .contains("CallerIdActivity") && !currentActivity.toString()
-                    .contains("CallActivity")
-            ) {
-                val appBackgroundTime = System.currentTimeMillis() - backgroundTime
-                isPremium = isPremiumUser
-                if (appBackgroundTime > backgroundThreshold && !isPremium)
-                    currentActivity?.let {
-                        showAdIfAvailable(it)
-                    }
-            }
-        }
-        if (event == Lifecycle.Event.ON_STOP){
-            backgroundTime = System.currentTimeMillis()
-        }
-        appCount++
+       Handler(Looper.getMainLooper()).postDelayed({
+           if (event == Lifecycle.Event.ON_START) {
+               if (appCount > 0 && !currentActivity.toString()
+                       .contains("CallerIdActivity") && !currentActivity.toString()
+                       .contains("CallActivity") && !currentActivity.toString()
+                       .contains("AdActivity")
+               ) {
+                   val appBackgroundTime = System.currentTimeMillis() - backgroundTime
+                   isPremium = isPremiumUser
+                   if (appBackgroundTime > backgroundThreshold && !isPremium)
+                       currentActivity?.let {
+                           showAdIfAvailable(it)
+                       }
+               }
+           }
+           if (event == Lifecycle.Event.ON_STOP){
+               backgroundTime = System.currentTimeMillis()
+           }
+           appCount++
+       },300)
     }
 
 }

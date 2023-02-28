@@ -9,6 +9,7 @@ import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.perf.ktx.performance
 import com.google.firebase.perf.metrics.Trace
@@ -126,21 +127,21 @@ class MainActivity : AppCompatActivity() {
 //            )
 
 
-//            AdSdk.loadAd(
-//                context = this,
-//                adName = "test_interstitial",
-//                interstitialAdLoadListener = object : InterstitialAdLoadListener() {
-//                    override fun onAdFailedToLoad(adErrors: List<String>) {
-//                        for (error in adErrors) {
-//                            Logger.e(AdSdkConstants.TAG, error)
-//                        }
-//                    }
-//
-//                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
-//                        interstitialAd.show(this@MainActivity)
-//                    }
-//                }
-//            )
+            AdSdk.loadAd(
+                context = this,
+                adName = "test_interstitial",
+                interstitialAdLoadListener = object : InterstitialAdLoadListener() {
+                    override fun onAdFailedToLoad(adErrors: List<String>) {
+                        for (error in adErrors) {
+                            Logger.e(AdSdkConstants.TAG, error)
+                        }
+                    }
+
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        interstitialAd.show(this@MainActivity)
+                    }
+                }
+            )
 
 
 //            AdSdk.loadAd(
@@ -219,6 +220,6 @@ class MainActivity : AppCompatActivity() {
 //                        }
 //                    }
 //                )
-        }, 2000)
+        }, 5000)
     }
 }
