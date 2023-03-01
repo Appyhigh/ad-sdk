@@ -438,24 +438,29 @@ internal class NativeAdLoader {
             parentView.removeAllViews()
             nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
         } else {
-            inflateAd(
-                context,
-                lifecycle,
-                parentView,
-                adName,
-                adSize,
-                timeout,
-                adUnits[adRequestsCompleted],
-                ctaColor,
-                textColor,
-                backgroundResource,
-                backgroundColor,
-                contentURL,
-                neighbourContentURL,
-                nativeAdLoadListener,
-                isNativeFetch,
-                adsRequested
-            )
+            if (adUnits.size > adRequestsCompleted) {
+                inflateAd(
+                    context,
+                    lifecycle,
+                    parentView,
+                    adName,
+                    adSize,
+                    timeout,
+                    adUnits[adRequestsCompleted],
+                    ctaColor,
+                    textColor,
+                    backgroundResource,
+                    backgroundColor,
+                    contentURL,
+                    neighbourContentURL,
+                    nativeAdLoadListener,
+                    isNativeFetch,
+                    adsRequested
+                )
+            }else{
+                parentView.removeAllViews()
+                nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
+            }
         }
     }
 
