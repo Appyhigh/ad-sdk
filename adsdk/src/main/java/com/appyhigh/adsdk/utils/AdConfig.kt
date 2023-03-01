@@ -194,4 +194,11 @@ internal class AdConfig {
         return 4000
     }
 
+    fun fetchMediaHeight(adName: String): Int {
+        adResponse?.let {
+            return adsMap[adName]?.media_height ?: 300
+        }
+        return 300
+    }
+
 }

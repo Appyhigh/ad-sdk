@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.appyhigh.adsdk'
-    compileSdk 33
+    compileSdk 32
 
     defaultConfig {
         minSdk 23

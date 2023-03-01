@@ -127,21 +127,21 @@ class MainActivity : AppCompatActivity() {
 //            )
 
 
-            AdSdk.loadAd(
-                context = this,
-                adName = "test_interstitial",
-                interstitialAdLoadListener = object : InterstitialAdLoadListener() {
-                    override fun onAdFailedToLoad(adErrors: List<String>) {
-                        for (error in adErrors) {
-                            Logger.e(AdSdkConstants.TAG, error)
-                        }
-                    }
-
-                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                        interstitialAd.show(this@MainActivity)
-                    }
-                }
-            )
+//            AdSdk.loadAd(
+//                context = this,
+//                adName = "test_interstitial",
+//                interstitialAdLoadListener = object : InterstitialAdLoadListener() {
+//                    override fun onAdFailedToLoad(adErrors: List<String>) {
+//                        for (error in adErrors) {
+//                            Logger.e(AdSdkConstants.TAG, error)
+//                        }
+//                    }
+//
+//                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+//                        interstitialAd.show(this@MainActivity)
+//                    }
+//                }
+//            )
 
 
 //            AdSdk.loadAd(
@@ -186,12 +186,12 @@ class MainActivity : AppCompatActivity() {
 //                    }
 //                }
 //            )
-            AdSdk.loadAd(
-                application = application,
-                context = this,
-                adName = "test_app_open",
-                appOpenLoadType = AppOpenLoadType.BACKGROUND_TO_FOREGROUND
-            )
+//            AdSdk.loadAd(
+//                application = application,
+//                context = this,
+//                adName = "test_app_open",
+//                appOpenLoadType = AppOpenLoadType.BACKGROUND_TO_FOREGROUND
+//            )
             AdSdk.loadAd(
                 context = this,
                 lifecycle = lifecycle,
