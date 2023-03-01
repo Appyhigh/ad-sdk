@@ -17,5 +17,5 @@ data class AdMob(
     var size: String?,
     var primary_adload_timeout_ms: Int,
     var background_threshold: Int,
-    var media_height: Int
+    var mediaHeight: Int
 )
