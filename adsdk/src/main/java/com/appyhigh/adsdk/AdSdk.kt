@@ -398,7 +398,8 @@ object AdSdk {
                         nativeAdLoadListener,
                         false,
                         isNativeFetch,
-                        adsRequested
+                        adsRequested,
+                        adConfig.fetchMediaHeight(adName)
                     )
                 }
                 AdType.BANNER -> {

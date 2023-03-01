@@ -104,7 +104,8 @@ internal class NativeAdLoader {
         nativeAdLoadListener: NativeAdLoadListener?,
         isLocalRefresh: Boolean = false,
         isNativeFetch: Boolean = false,
-        adsRequested: Int
+        adsRequested: Int,
+        mediaMaxHeight: Int
     ) {
 
         if (!isLocalRefresh) {
@@ -141,7 +142,8 @@ internal class NativeAdLoader {
                 textColor,
                 ctaColor,
                 backgroundResource,
-                backgroundColor
+                backgroundColor,
+                mediaMaxHeight
             )
             if (isNativeFetch) {
                 nativeAdLoadListener?.onAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!!)
@@ -198,7 +200,8 @@ internal class NativeAdLoader {
                 neighbourContentURL,
                 nativeAdLoadListener,
                 isNativeFetch,
-                adsRequested
+                adsRequested,
+                mediaMaxHeight
             )
         }
 
@@ -221,7 +224,8 @@ internal class NativeAdLoader {
             neighbourContentURL,
             nativeAdLoadListener,
             isNativeFetch,
-            adsRequested
+            adsRequested,
+            mediaMaxHeight
         )
     }
 
@@ -254,7 +258,8 @@ internal class NativeAdLoader {
         neighbourContentURL: List<String>?,
         nativeAdLoadListener: NativeAdLoadListener?,
         isNativeFetch: Boolean = false,
-        adsRequested: Int
+        adsRequested: Int,
+        mediaMaxHeight: Int
     ) {
         val countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
@@ -275,7 +280,8 @@ internal class NativeAdLoader {
                     neighbourContentURL,
                     nativeAdLoadListener,
                     isNativeFetch,
-                    adsRequested
+                    adsRequested,
+                    mediaMaxHeight
                 )
             }
         }.start()
@@ -315,7 +321,8 @@ internal class NativeAdLoader {
                         neighbourContentURL,
                         nativeAdLoadListener,
                         isNativeFetch,
-                        adsRequested
+                        adsRequested,
+                        mediaMaxHeight
                     )
                 }
 
@@ -364,7 +371,8 @@ internal class NativeAdLoader {
                                 textColor,
                                 ctaColor,
                                 backgroundResource,
-                                backgroundColor
+                                backgroundColor,
+                                mediaMaxHeight
                             )
                             parentView.removeAllViews()
                             parentView.addView(adView)
@@ -429,7 +437,8 @@ internal class NativeAdLoader {
         neighbourContentURL: List<String>?,
         nativeAdLoadListener: NativeAdLoadListener?,
         isNativeFetch: Boolean = false,
-        adsRequested: Int
+        adsRequested: Int,
+        mediaMaxHeight: Int
     ) {
         Logger.e(AdSdkConstants.TAG, errorMsg)
         adFailureReasonArray.add(errorMsg)
@@ -438,24 +447,30 @@ internal class NativeAdLoader {
             parentView.removeAllViews()
             nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
         } else {
-            inflateAd(
-                context,
-                lifecycle,
-                parentView,
-                adName,
-                adSize,
-                timeout,
-                adUnits[adRequestsCompleted],
-                ctaColor,
-                textColor,
-                backgroundResource,
-                backgroundColor,
-                contentURL,
-                neighbourContentURL,
-                nativeAdLoadListener,
-                isNativeFetch,
-                adsRequested
-            )
+            if (adUnits.size > adRequestsCompleted) {
+                inflateAd(
+                    context,
+                    lifecycle,
+                    parentView,
+                    adName,
+                    adSize,
+                    timeout,
+                    adUnits[adRequestsCompleted],
+                    ctaColor,
+                    textColor,
+                    backgroundResource,
+                    backgroundColor,
+                    contentURL,
+                    neighbourContentURL,
+                    nativeAdLoadListener,
+                    isNativeFetch,
+                    adsRequested,
+                    mediaMaxHeight
+                )
+            } else {
+                parentView.removeAllViews()
+                nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
+            }
         }
     }
 
@@ -468,7 +483,7 @@ internal class NativeAdLoader {
         buttonColor: String? = "#000000",
         backgroundResource: Int,
         backgroundColor: String,
-        mediaMaxHeight: Int = 250
+        mediaMaxHeight: Int
     ) {
         try {
             if (adView != null) {
@@ -615,7 +630,8 @@ internal class NativeAdLoader {
         neighbourContentURL: List<String>?,
         nativeAdLoadListener: NativeAdLoadListener?,
         isNativeFetch: Boolean = false,
-        adsRequested: Int
+        adsRequested: Int,
+        mediaMaxHeight: Int
     ) {
         refreshCountDownTimer =
             object : CountDownTimer(refreshTimer.toLong(), refreshTimer.toLong()) {
@@ -644,7 +660,8 @@ internal class NativeAdLoader {
                             nativeAdLoadListener,
                             true,
                             isNativeFetch,
-                            adsRequested
+                            adsRequested,
+                            mediaMaxHeight
                         )
                     } else {
                         Logger.d(

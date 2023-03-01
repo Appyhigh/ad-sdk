@@ -264,18 +264,23 @@ internal class BannerAdLoader {
             bannerAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
             parentView.removeAllViews()
         } else {
-            inflateAd(
-                context,
-                lifecycle,
-                parentView,
-                adName,
-                adSize,
-                timeout,
-                adUnits[adRequestsCompleted],
-                contentURL,
-                neighbourContentURL,
-                bannerAdLoadListener
-            )
+            if (adUnits.size > adRequestsCompleted) {
+                inflateAd(
+                    context,
+                    lifecycle,
+                    parentView,
+                    adName,
+                    adSize,
+                    timeout,
+                    adUnits[adRequestsCompleted],
+                    contentURL,
+                    neighbourContentURL,
+                    bannerAdLoadListener
+                )
+            } else {
+                bannerAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
+                parentView.removeAllViews()
+            }
         }
     }
 

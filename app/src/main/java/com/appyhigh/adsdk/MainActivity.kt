@@ -9,6 +9,7 @@ import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.*
 import com.appyhigh.adsdk.utils.Logger
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.perf.ktx.performance
 import com.google.firebase.perf.metrics.Trace
@@ -185,12 +186,12 @@ class MainActivity : AppCompatActivity() {
 //                    }
 //                }
 //            )
-            AdSdk.loadAd(
-                application = application,
-                context = this,
-                adName = "test_app_open",
-                appOpenLoadType = AppOpenLoadType.BACKGROUND_TO_FOREGROUND
-            )
+//            AdSdk.loadAd(
+//                application = application,
+//                context = this,
+//                adName = "test_app_open",
+//                appOpenLoadType = AppOpenLoadType.BACKGROUND_TO_FOREGROUND
+//            )
             AdSdk.loadAd(
                 context = this,
                 lifecycle = lifecycle,
@@ -219,6 +220,6 @@ class MainActivity : AppCompatActivity() {
 //                        }
 //                    }
 //                )
-        }, 2000)
+        }, 5000)
     }
 }
