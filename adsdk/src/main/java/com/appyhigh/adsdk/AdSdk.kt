@@ -528,6 +528,20 @@ object AdSdk {
                     "$adName ==== $fallBackId ==== ${context.getString(R.string.unknown_ad_type)}"
                 )
             }
+        } else {
+            val error =
+                "${context.getString(R.string.error_ad_is_disabled)}"
+            triggerAdFailedCallback(
+                bannerAdLoadListener,
+                interstitialAdLoadListener,
+                rewardedAdLoadListener,
+                rewardedInterstitialAdLoadListener,
+                appOpenAdLoadListener,
+                nativeAdLoadListener,
+                error
+            )
+            Logger.e(AdSdkConstants.TAG, error)
+            return
         }
     }
 

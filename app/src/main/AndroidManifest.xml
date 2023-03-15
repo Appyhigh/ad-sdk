@@ -15,10 +15,25 @@
         android:theme="@style/Theme.AdSdk"
         tools:targetApi="31">
         <activity
-            android:name=".NewActivity"
+            android:name=".AppOpenAdExampleActivity"
             android:exported="false" />
         <activity
-            android:name="com.appyhigh.adsdk.MainActivity"
+            android:name=".RewardedInterstitialAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RewardedAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NativeAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InterstitialAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BannerAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +41,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

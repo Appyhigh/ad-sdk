@@ -4,47 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp"
     tools:context="com.appyhigh.adsdk.MainActivity">
 
-    <View
-        android:id="@+id/tvDummyView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
-
-    <LinearLayout
-        android:id="@+id/llAdView"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bannerAdButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical" />
+        android:background="@color/purple_500"
+        android:textAllCaps="false"
+        android:text="@string/banner_ad_example"
+        android:textColor="@color/white" />
 
-    <LinearLayout
-        android:id="@+id/llAdView2"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/interstitialAdButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical" />
+        android:layout_marginTop="10dp"
+        android:background="@color/purple_500"
+        android:textAllCaps="false"
+        android:text="@string/interstitial_ad_example"
+        android:textColor="@color/white" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/rewardedAdButton"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="false"
+        android:background="@color/purple_500"
+        android:text="@string/rewarded_ad_example"
+        android:textColor="@color/white" />
 
-        <LinearLayout
-            android:id="@+id/llAdView3"
-            android:layout_width="0dp"
-            android:layout_height="250dp"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:orientation="vertical" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/rewardedInterstitialAdButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="false"
+        android:background="@color/purple_500"
+        android:text="@string/rewarded_interstitial_ad_example"
+        android:textColor="@color/white" />
 
-        <LinearLayout
-            android:id="@+id/llAdView4"
-            android:layout_width="0dp"
-            android:layout_height="250dp"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:orientation="vertical" />
-    </LinearLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/nativeAdButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="false"
+        android:background="@color/purple_500"
+        android:text="@string/native_ad_example"
+        android:textColor="@color/white" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/appOpenAdButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="false"
+        android:background="@color/purple_500"
+        android:text="@string/appopen_ad_example"
+        android:textColor="@color/white" />
 
 </LinearLayout>

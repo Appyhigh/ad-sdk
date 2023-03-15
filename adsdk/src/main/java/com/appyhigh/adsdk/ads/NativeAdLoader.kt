@@ -513,13 +513,13 @@ internal class NativeAdLoader {
         if (iconView1 != null) {
             if (icon == null) {
                 if (adType == NativeAdSize.DEFAULT) {
-                    iconView1.layoutParams = LinearLayout.LayoutParams(1, mediaMaxHeight)
+                    iconView1.layoutParams = LinearLayout.LayoutParams(1, 100)
                 }
             } else {
                 if (adType == NativeAdSize.DEFAULT) {
                     iconView1.layoutParams = LinearLayout.LayoutParams(
-                        mediaMaxHeight,
-                        mediaMaxHeight
+                        100,
+                        100
                     )
                 }
                 (iconView1 as ImageView).setImageDrawable(icon.drawable)

@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">AdSdk</string>
+    <string name="admob">AdMob</string>
+    <string name="banner_ad_example">Banner Ad Example</string>
+    <string name="interstitial_ad_example">Interstitial Ad Example</string>
+    <string name="rewarded_ad_example">Rewarded Ad Example</string>
+    <string name="rewarded_interstitial_ad_example">Rewarded Interstitial Ad Example</string>
+    <string name="native_ad_example">Native Ad Example</string>
+    <string name="appopen_ad_example">AppOpen Ad Example</string>
+    <string name="small_banner">Small Banner</string>
+    <string name="medium_rectangle">Medium Rectangle</string>
+    <string name="large_banner">Large Banner</string>
+    <string name="show_interstitial_ad">Show Interstitial Ad</string>
+    <string name="show_rewarded_ad">Show Rewarded Ad</string>
+    <string name="show_rewarded_interstitial_ad">Show Rewarded Interstitial Ad</string>
+    <string name="move_the_app_in_background_and_wait_for_5_seconds_to_comeback_to_see_the_ad">Move the app in background and wait for 5 seconds to comeback to see the ad.</string>
+    <string name="show_app_open_ad">Show App Open Ad</string>
+    <string name="medium_native">Medium Native</string>
+    <string name="native_small">Native Small</string>
+    <string name="bigv1_native">BigV1 Native</string>
+    <string name="bigv2_native">Bigv2 Native</string>
+    <string name="bigv3_native">BigV3 Native</string>
+    <string name="grid_native">Grid Native</string>
 </resources>
