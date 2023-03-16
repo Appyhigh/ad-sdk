@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.core.os.postDelayed
 import androidx.lifecycle.*
@@ -21,6 +22,7 @@ import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.appopen.AppOpenAd
 import java.util.*
 
@@ -32,6 +34,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
     private var loadTime: Long = 0
     private var adName: String? = null
     private var adUnit: String? = null
+    private var adUnitProvider: String? = null
     private var backgroundThreshold: Int = 4000
     private var appOpenAdLoadListener: AppOpenAdLoadListenerInternal? = null
     private var appCount = 0
@@ -54,6 +57,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
         this.backgroundTime = backgroundThreshold.toLong()
         this.adName = adName
         this.adUnit = adUnit
+        this.adUnitProvider = adUnitProvider
         this.appOpenAdLoadListener = appOpenAdLoadListener
     }
 
@@ -61,24 +65,37 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
     fun loadAd(
         context: Context,
         adName: String?,
-        adUnit: String?
+        adUnit: String?,
+        adUnitProvider: String?
     ) {
         this.adName = adName
         this.adUnit = adUnit
+        this.adUnitProvider = adUnitProvider
         if (isLoadingAd || isAdAvailable()) {
             return
         }
         isLoadingAd = true
-        val request = AdRequest.Builder().addNetworkExtrasBundle(
+        val request = if (adUnitProvider == "admob") {
+            AdRequest.Builder()
+        } else {
+            AdManagerAdRequest.Builder()
+        }
+
+        request.addNetworkExtrasBundle(
             AdMobAdapter::class.java,
             if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        ).build()
+        )
+
         AppOpenAd.load(
-            context, adUnit!!, request,
+            context, adUnit!!, request.build(),
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
 
                 override fun onAdLoaded(ad: AppOpenAd) {
+                    Logger.d(
+                        AdSdkConstants.TAG,
+                        "$adName ==== $adUnit ==== ${context.getString(R.string.app_open_loaded)}"
+                    )
                     loadTime = Date().time
                     appOpenAd = ad
                     isLoadingAd = false
@@ -138,7 +155,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
 
         if (!isAdAvailable()) {
             onShowAdCompleteListener.onShowAdComplete()
-            loadAd(activity, adName, adUnit)
+            loadAd(activity, adName, adUnit, adUnitProvider)
             return
         }
 
@@ -147,14 +164,14 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
                 appOpenAd = null
                 isShowingAd = false
                 onShowAdCompleteListener.onShowAdComplete()
-                loadAd(activity, adName, adUnit)
+                loadAd(activity, adName, adUnit, adUnitProvider)
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                 appOpenAd = null
                 isShowingAd = false
                 onShowAdCompleteListener.onShowAdComplete()
-                loadAd(activity, adName, adUnit)
+                loadAd(activity, adName, adUnit, adUnitProvider)
             }
 
             override fun onAdShowedFullScreenContent() {
@@ -181,26 +198,26 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-       Handler(Looper.getMainLooper()).postDelayed({
-           if (event == Lifecycle.Event.ON_START) {
-               if (appCount > 0 && !currentActivity.toString()
-                       .contains("CallerIdActivity") && !currentActivity.toString()
-                       .contains("CallActivity") && !currentActivity.toString()
-                       .contains("AdActivity")
-               ) {
-                   val appBackgroundTime = System.currentTimeMillis() - backgroundTime
-                   isPremium = isPremiumUser
-                   if (appBackgroundTime > backgroundThreshold && !isPremium)
-                       currentActivity?.let {
-                           showAdIfAvailable(it)
-                       }
-               }
-           }
-           if (event == Lifecycle.Event.ON_STOP){
-               backgroundTime = System.currentTimeMillis()
-           }
-           appCount++
-       },300)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (event == Lifecycle.Event.ON_START) {
+                if (appCount > 0 && !currentActivity.toString()
+                        .contains("CallerIdActivity") && !currentActivity.toString()
+                        .contains("CallActivity") && !currentActivity.toString()
+                        .contains("AdActivity")
+                ) {
+                    val appBackgroundTime = System.currentTimeMillis() - backgroundTime
+                    isPremium = isPremiumUser
+                    if (appBackgroundTime > backgroundThreshold && !isPremium)
+                        currentActivity?.let {
+                            showAdIfAvailable(it)
+                        }
+                }
+            }
+            if (event == Lifecycle.Event.ON_STOP) {
+                backgroundTime = System.currentTimeMillis()
+            }
+            appCount++
+        }, 300)
     }
 
 }

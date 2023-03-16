@@ -383,6 +383,8 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         adConfig.fetchAdUnitRefreshTimer(adName),
                         adConfig.fetchDarkCTAColor(adName).takeIf { isDarkModeEnabled }
@@ -442,6 +444,8 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         adConfig.fetchAdUnitRefreshTimer(adName),
                         contentURL,
@@ -456,6 +460,8 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         interstitialAdLoadListener
                     )
@@ -466,6 +472,8 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         rewardedInterstitialAdLoadListener
                     )
@@ -476,6 +484,8 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         rewardedAdLoadListener
                     )
@@ -493,6 +503,8 @@ object AdSdk {
                             fallBackId,
                             adConfig.fetchPrimaryAdUnitIds(adName),
                             adConfig.fetchSecondaryAdUnitIds(adName),
+                            adConfig.fetchPrimaryAdProvider(adName),
+                            adConfig.fetchSecondaryAdProvider(adName),
                             adConfig.fetchAdUnitTimeout(adName),
                             appOpenAdLoadListener
                         )

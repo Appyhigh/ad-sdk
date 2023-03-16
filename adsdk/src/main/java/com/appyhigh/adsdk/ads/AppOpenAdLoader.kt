@@ -14,6 +14,7 @@ import com.appyhigh.adsdk.utils.Logger
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.appopen.AppOpenAd
 import java.util.*
 import kotlin.collections.ArrayList
@@ -22,6 +23,7 @@ internal class AppOpenAdLoader {
 
     private var appOpenAdManager: AppOpenAdManager? = null
     private var adUnits = ArrayList<String>()
+    private var adUnitsProvider = ArrayList<String>()
     private var adRequestsCompleted = 0
     private var adFailureReasonArray = ArrayList<String>()
     private var countDownTimer: CountDownTimer? = null
@@ -34,12 +36,22 @@ internal class AppOpenAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        primaryAdUnitProvider: String,
+        secondaryAdUnitProvider: String,
         timeout: Int,
         appOpenAdLoadListener: AppOpenAdLoadListener? = null
     ) {
-        adUnits.addAll(primaryAdUnitIds)
-        adUnits.addAll(secondaryAdUnitIds)
+        for (adUnit in primaryAdUnitIds) {
+            adUnits.add(adUnit)
+            adUnitsProvider.add(primaryAdUnitProvider)
+        }
+
+        for (adUnit in secondaryAdUnitIds) {
+            adUnits.add(adUnit)
+            adUnitsProvider.add(secondaryAdUnitProvider)
+        }
         adUnits.add(fallBackId)
+        adUnitsProvider.add("admob")
 
         countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
@@ -99,7 +111,7 @@ internal class AppOpenAdLoader {
                     adFailureReasonArray.add(error)
                     adRequestsCompleted += 1
                     if (adRequestsCompleted < adUnits.size) {
-                        requestAd(context, adName, adUnits[adRequestsCompleted])
+                        requestAd(context, adName, adUnits[adRequestsCompleted], adUnitsProvider[adRequestsCompleted])
                     } else {
                         appOpenAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
                     }
@@ -112,19 +124,21 @@ internal class AppOpenAdLoader {
             },
             backgroundThreshold
         )
-        requestAd(context, adName, adUnits[adRequestsCompleted])
+        requestAd(context, adName, adUnits[adRequestsCompleted], adUnits[adRequestsCompleted])
         appOpenAdLoadListener?.onInitSuccess(appOpenAdManager)
     }
 
     private fun requestAd(
         context: Context,
         adName: String,
-        adUnit: String
+        adUnit: String,
+        adUniProvider:String,
     ) {
         appOpenAdManager?.loadAd(
             context,
             adName,
-            adUnit
+            adUnit,
+            adUniProvider
         )
     }
 
@@ -136,12 +150,19 @@ internal class AppOpenAdLoader {
         countDownTimer: CountDownTimer?,
         appOpenAdLoadListener: AppOpenAdLoadListener?
     ) {
-        val request = AdRequest.Builder().addNetworkExtrasBundle(
+        val request = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+            AdRequest.Builder()
+        } else {
+            AdManagerAdRequest.Builder()
+        }
+
+        request.addNetworkExtrasBundle(
             AdMobAdapter::class.java,
             if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        ).build()
+        )
+
         AppOpenAd.load(
-            context, adUnit!!, request,
+            context, adUnit!!, request.build(),
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(ad: AppOpenAd) {

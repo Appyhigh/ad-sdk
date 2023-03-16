@@ -26,6 +26,7 @@ import com.appyhigh.adsdk.utils.Logger
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.nativead.*
 
 
@@ -34,6 +35,7 @@ internal class NativeAdLoader {
     private var adRequestsCompleted = 0
     private var adFailureReasonArray = ArrayList<String>()
     private var adUnits = ArrayList<String>()
+    private var adUnitsProvider = ArrayList<String>()
     private var refreshCountDownTimer: CountDownTimer? = null
     private var nativeAd: NativeAd? = null
     private var requestedAdsArray = ArrayList<NativeAd?>()
@@ -93,6 +95,8 @@ internal class NativeAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        primaryAdUnitProvider: String,
+        secondaryAdUnitProvider: String,
         timeout: Int,
         refreshTimer: Int,
         ctaColor: String,
@@ -159,9 +163,17 @@ internal class NativeAdLoader {
             AdSdkConstants.preloadedNativeAdMap[adName] = null
 
         } else {
-            adUnits.addAll(primaryAdUnitIds)
-            adUnits.addAll(secondaryAdUnitIds)
+            for (adUnit in primaryAdUnitIds) {
+                adUnits.add(adUnit)
+                adUnitsProvider.add(primaryAdUnitProvider)
+            }
+
+            for (adUnit in secondaryAdUnitIds) {
+                adUnits.add(adUnit)
+                adUnitsProvider.add(secondaryAdUnitProvider)
+            }
             adUnits.add(fallBackId)
+            adUnitsProvider.add("admob")
 
             if (!isLocalRefresh && !isNativeFetch) {
                 val nativeShimmerBaseView =
@@ -214,6 +226,8 @@ internal class NativeAdLoader {
             fallBackId,
             primaryAdUnitIds,
             secondaryAdUnitIds,
+            primaryAdUnitProvider,
+            secondaryAdUnitProvider,
             timeout,
             refreshTimer,
             ctaColor,
@@ -412,10 +426,17 @@ internal class NativeAdLoader {
         contentURL: String?,
         neighbourContentURL: List<String>?,
     ): AdRequest.Builder {
-        val builder = AdRequest.Builder().addNetworkExtrasBundle(
-            AdMobAdapter::class.java,
-            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        )
+        val builder = if (adUnitsProvider[adRequestsCompleted] == "admob"){
+            AdRequest.Builder().addNetworkExtrasBundle(
+                AdMobAdapter::class.java,
+                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+            )
+        }else{
+            AdManagerAdRequest.Builder().addNetworkExtrasBundle(
+                AdMobAdapter::class.java,
+                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+            )
+        }
         contentURL?.let { builder.setContentUrl(it) }
         neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
         return builder
@@ -620,6 +641,8 @@ internal class NativeAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        primaryAdUnitProvider: String,
+        secondaryAdUnitProvider: String,
         timeout: Int,
         refreshTimer: Int,
         ctaColor: String,
@@ -649,6 +672,8 @@ internal class NativeAdLoader {
                             fallBackId,
                             primaryAdUnitIds,
                             secondaryAdUnitIds,
+                            primaryAdUnitProvider,
+                            secondaryAdUnitProvider,
                             timeout,
                             refreshTimer,
                             ctaColor,

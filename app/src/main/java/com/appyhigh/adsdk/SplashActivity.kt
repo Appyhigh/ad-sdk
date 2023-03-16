@@ -16,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         AdSdk.getConsentForEU(
             activity = this,
-            "1EA55AD5EAAA03034C15481D2B68CBED",
+            "D3D0E14422C7B10ADA2BAA773B14EFB6",
             object : ConsentRequestListener {
                 override fun onError(message: String, code: Int) {}
                 override fun onSuccess() {
@@ -29,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
     fun initializeAdSdk() {
         AdSdk.initialize(
             application = application,
-            testDevice = null,
+            testDevice = "D3D0E14422C7B10ADA2BAA773B14EFB6",
             fileId = R.raw.ad_utils_response,
             adInitializeListener = object : AdInitializeListener() {
                 override fun onSdkInitialized() {

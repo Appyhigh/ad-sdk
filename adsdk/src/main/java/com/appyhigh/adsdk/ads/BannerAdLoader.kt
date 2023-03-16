@@ -17,12 +17,14 @@ import com.appyhigh.adsdk.utils.Logger
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 
 internal class BannerAdLoader {
     private var isAdLoaded = false
     private var adRequestsCompleted = 0
     private var adFailureReasonArray = ArrayList<String>()
     private var adUnits = ArrayList<String>()
+    private var adUnitsProvider = ArrayList<String>()
     private var refreshCountDownTimer: CountDownTimer? = null
 
     @SuppressLint("VisibleForTests")
@@ -84,6 +86,8 @@ internal class BannerAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        primaryAdUnitProvider: String,
+        secondaryAdUnitProvider: String,
         timeout: Int,
         refreshTimer: Int,
         contentURL: String?,
@@ -136,9 +140,18 @@ internal class BannerAdLoader {
             AdSdkConstants.preloadedBannerAdMap[adName] = null
 
         } else {
-            adUnits.addAll(primaryAdUnitIds)
-            adUnits.addAll(secondaryAdUnitIds)
+            for (adUnit in primaryAdUnitIds) {
+                adUnits.add(adUnit)
+                adUnitsProvider.add(primaryAdUnitProvider)
+            }
+
+            for (adUnit in secondaryAdUnitIds) {
+                adUnits.add(adUnit)
+                adUnitsProvider.add(secondaryAdUnitProvider)
+            }
             adUnits.add(fallBackId)
+            adUnitsProvider.add("admob")
+
             if (!isLocalRefresh) {
                 val bannerShimmerBaseView =
                     View.inflate(parentView.context, R.layout.shimmer_parent_view, null)
@@ -179,6 +192,8 @@ internal class BannerAdLoader {
             fallBackId,
             primaryAdUnitIds,
             secondaryAdUnitIds,
+            primaryAdUnitProvider,
+            secondaryAdUnitProvider,
             timeout,
             refreshTimer,
             contentURL,
@@ -217,11 +232,16 @@ internal class BannerAdLoader {
                 )
             }
         }.start()
-        val builder = AdRequest.Builder()
-            .addNetworkExtrasBundle(
-                AdMobAdapter::class.java,
-                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-            )
+        val builder = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+            AdRequest.Builder()
+        } else {
+            AdManagerAdRequest.Builder()
+
+        }
+        builder.addNetworkExtrasBundle(
+            AdMobAdapter::class.java,
+            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+        )
         contentURL?.let { builder.setContentUrl(it) }
         neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
         val adRequest = builder.build()
@@ -356,6 +376,8 @@ internal class BannerAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        primaryAdUnitProvider: String,
+        secondaryAdUnitProvider: String,
         timeout: Int,
         refreshTimer: Int,
         contentURL: String?,
@@ -378,6 +400,8 @@ internal class BannerAdLoader {
                             fallBackId,
                             primaryAdUnitIds,
                             secondaryAdUnitIds,
+                            primaryAdUnitProvider,
+                            secondaryAdUnitProvider,
                             timeout,
                             refreshTimer,
                             contentURL,

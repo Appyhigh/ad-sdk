@@ -12,6 +12,7 @@ import com.appyhigh.adsdk.utils.Logger
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback
 
@@ -20,6 +21,7 @@ internal class RewardedInterstitialAdLoader {
     var rewardedInterstitialAd: RewardedInterstitialAd? = null
     private var adRequestsCompleted = 0
     private var adUnits = ArrayList<String>()
+    private var adUnitsProvider = ArrayList<String>()
     private var countDownTimer: CountDownTimer? = null
     private var isAdLoaded = false
     private var adFailureReasonArray = ArrayList<String>()
@@ -30,13 +32,23 @@ internal class RewardedInterstitialAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        primaryAdUnitProvider: String,
+        secondaryAdUnitProvider: String,
         timeout: Int,
         rewardedInterstitialAdLoadListener: RewardedInterstitialAdLoadListener?
     ) {
 
-        adUnits.addAll(primaryAdUnitIds)
-        adUnits.addAll(secondaryAdUnitIds)
+        for (adUnit in primaryAdUnitIds) {
+            adUnits.add(adUnit)
+            adUnitsProvider.add(primaryAdUnitProvider)
+        }
+
+        for (adUnit in secondaryAdUnitIds) {
+            adUnits.add(adUnit)
+            adUnitsProvider.add(secondaryAdUnitProvider)
+        }
         adUnits.add(fallBackId)
+        adUnitsProvider.add("admob")
 
         countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
@@ -81,14 +93,21 @@ internal class RewardedInterstitialAdLoader {
     ) {
         countDownTimer?.start()
 
-        val adRequest = AdRequest.Builder().addNetworkExtrasBundle(
+        val adRequest = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+            AdRequest.Builder()
+        } else {
+            AdManagerAdRequest.Builder()
+        }
+
+        adRequest.addNetworkExtrasBundle(
             AdMobAdapter::class.java,
             if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        ).build()
+        )
+
         RewardedInterstitialAd.load(
             context,
             adUnit,
-            adRequest,
+            adRequest.build(),
             object : RewardedInterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     countDownTimer?.cancel()

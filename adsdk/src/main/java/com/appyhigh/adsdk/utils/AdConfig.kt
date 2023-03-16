@@ -20,6 +20,8 @@ internal class AdConfig {
     private var defaultDarkTextHex = "#000000"
     private var defaultLightBackgroundHex = "#ffffff"
     private var defaultDarkBackgroundHex = "#000000"
+    private var defaultPrimaryAdProvider = "admob"
+    private var defaultSecondaryAdProvider = "admanager"
 
     fun initWithLocalFile(fileData: String) {
         if (adResponse == null) {
@@ -199,6 +201,20 @@ internal class AdConfig {
             return adsMap[adName]?.mediaHeight ?: 300
         }
         return 300
+    }
+
+    fun fetchPrimaryAdProvider(adName: String): String {
+        adResponse?.let {
+            return defaultPrimaryAdProvider
+        }
+        return defaultPrimaryAdProvider
+    }
+
+    fun fetchSecondaryAdProvider(adName: String): String {
+        adResponse?.let {
+            return defaultSecondaryAdProvider
+        }
+        return defaultSecondaryAdProvider
     }
 
 }

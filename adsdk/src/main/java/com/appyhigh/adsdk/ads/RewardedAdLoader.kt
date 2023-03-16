@@ -12,6 +12,7 @@ import com.appyhigh.adsdk.utils.Logger
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 
@@ -20,6 +21,7 @@ internal class RewardedAdLoader {
     var rewardedAd: RewardedAd? = null
     private var adRequestsCompleted = 0
     private var adUnits = ArrayList<String>()
+    private var adUnitsProvider = ArrayList<String>()
     private var countDownTimer: CountDownTimer? = null
     private var isAdLoaded = false
     private var adFailureReasonArray = ArrayList<String>()
@@ -30,13 +32,23 @@ internal class RewardedAdLoader {
         fallBackId: String,
         primaryAdUnitIds: List<String>,
         secondaryAdUnitIds: List<String>,
+        primaryAdUnitProvider: String,
+        secondaryAdUnitProvider: String,
         timeout: Int,
         rewardedAdLoadListener: RewardedAdLoadListener?
     ) {
 
-        adUnits.addAll(primaryAdUnitIds)
-        adUnits.addAll(secondaryAdUnitIds)
+        for (adUnit in primaryAdUnitIds) {
+            adUnits.add(adUnit)
+            adUnitsProvider.add(primaryAdUnitProvider)
+        }
+
+        for (adUnit in secondaryAdUnitIds) {
+            adUnits.add(adUnit)
+            adUnitsProvider.add(secondaryAdUnitProvider)
+        }
         adUnits.add(fallBackId)
+        adUnitsProvider.add("admob")
 
         countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
@@ -80,15 +92,20 @@ internal class RewardedAdLoader {
         rewardedAdLoadListener: RewardedAdLoadListener?
     ) {
         countDownTimer?.start()
+        val adRequest = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+            AdRequest.Builder()
+        } else {
+            AdManagerAdRequest.Builder()
+        }
 
-        val adRequest = AdRequest.Builder().addNetworkExtrasBundle(
+        adRequest.addNetworkExtrasBundle(
             AdMobAdapter::class.java,
             if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        ).build()
+        )
         RewardedAd.load(
             context,
             adUnit,
-            adRequest,
+            adRequest.build(),
             object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     countDownTimer?.cancel()
