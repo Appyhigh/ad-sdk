@@ -1,9 +1,14 @@
 package com.appyhigh.adsdk.ads
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.CountDownTimer
 import androidx.core.os.bundleOf
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxInterstitialAd
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
@@ -26,7 +31,7 @@ internal class InterstitialAdLoader {
     private var isAdLoaded = false
 
     fun loadInterstitialAd(
-        context: Context,
+        activity: Activity,
         adName: String,
         fallBackId: String,
         primaryAdUnitIds: List<String>,
@@ -53,7 +58,7 @@ internal class InterstitialAdLoader {
             override fun onFinish() {
 
                 val error =
-                    "$adName ==== ${adUnits[adRequestsCompleted]} ==== ${context.getString(R.string.error_interstitial_timed_out)}"
+                    "$adName ==== ${adUnits[adRequestsCompleted]} ==== ${activity.getString(R.string.error_interstitial_timed_out)}"
                 Logger.e(AdSdkConstants.TAG, error)
                 adFailureReasonArray.add(error)
                 adRequestsCompleted += 1
@@ -61,7 +66,7 @@ internal class InterstitialAdLoader {
                     requestAd(
                         adName,
                         adUnits[adRequestsCompleted],
-                        context,
+                        activity,
                         countDownTimer,
                         interstitialAdLoadListener
                     )
@@ -74,7 +79,7 @@ internal class InterstitialAdLoader {
         requestAd(
             adName,
             adUnits[adRequestsCompleted],
-            context,
+            activity,
             countDownTimer,
             interstitialAdLoadListener
         )
@@ -84,28 +89,39 @@ internal class InterstitialAdLoader {
     private fun requestAd(
         adName: String,
         adUnit: String,
-        context: Context,
+        activity: Activity,
         countDownTimer: CountDownTimer?,
         interstitialAdLoadListener: InterstitialAdLoadListener?
     ) {
         countDownTimer?.start()
-        val adRequest = if (adUnitsProvider[adRequestsCompleted] == "admob") {
-            AdRequest.Builder()
-        } else {
-            AdManagerAdRequest.Builder()
-        }
-        adRequest.addNetworkExtrasBundle(
-            AdMobAdapter::class.java,
-            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        )
-        InterstitialAd.load(
-            context,
-            adUnit,
-            adRequest.build(),
-            object : InterstitialAdLoadCallback() {
-                override fun onAdFailedToLoad(adError: LoadAdError) {
+        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+            val interstitialAd = MaxInterstitialAd(adUnit, activity)
+            interstitialAd.loadAd()
+            interstitialAd.setListener(object : MaxAdListener {
+                override fun onAdLoaded(ad: MaxAd?) {
+                    if (!isAdLoaded) {
+                        countDownTimer?.cancel()
+                        Logger.d(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnit ==== ${activity.getString(R.string.interstitial_ad_loaded)}"
+                        )
+                        interstitialAdLoadListener?.onApplovinAdLoaded(interstitialAd)
+                        isAdLoaded = true
+                    }
+                }
+
+                override fun onAdDisplayed(p0: MaxAd?) {
+                }
+
+                override fun onAdHidden(p0: MaxAd?) {
+                }
+
+                override fun onAdClicked(p0: MaxAd?) {
+                }
+
+                override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
                     countDownTimer?.cancel()
-                    val error = "$adName ==== $adUnit ==== ${adError.message}"
+                    val error = "$adName ==== $adUnit ==== ${p1?.message}"
                     adFailureReasonArray.add(error)
                     Logger.e(AdSdkConstants.TAG, error)
                     adRequestsCompleted += 1
@@ -113,7 +129,7 @@ internal class InterstitialAdLoader {
                         requestAd(
                             adName,
                             adUnits[adRequestsCompleted],
-                            context,
+                            activity,
                             countDownTimer,
                             interstitialAdLoadListener
                         )
@@ -122,18 +138,57 @@ internal class InterstitialAdLoader {
                     }
                 }
 
-                override fun onAdLoaded(ad: InterstitialAd) {
-                    if (!isAdLoaded) {
-                        countDownTimer?.cancel()
-                        Logger.d(
-                            AdSdkConstants.TAG,
-                            "$adName ==== $adUnit ==== ${context.getString(R.string.interstitial_ad_loaded)}"
-                        )
-                        interstitialAd = ad
-                        interstitialAdLoadListener?.onAdLoaded(ad)
-                        isAdLoaded = true
-                    }
+                override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
                 }
+
             })
+        } else {
+            val adRequest = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+                AdRequest.Builder()
+            } else {
+                AdManagerAdRequest.Builder()
+            }
+            adRequest.addNetworkExtrasBundle(
+                AdMobAdapter::class.java,
+                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+            )
+            InterstitialAd.load(
+                activity,
+                adUnit,
+                adRequest.build(),
+                object : InterstitialAdLoadCallback() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        countDownTimer?.cancel()
+                        val error = "$adName ==== $adUnit ==== ${adError.message}"
+                        adFailureReasonArray.add(error)
+                        Logger.e(AdSdkConstants.TAG, error)
+                        adRequestsCompleted += 1
+                        if (adRequestsCompleted < adUnits.size) {
+                            requestAd(
+                                adName,
+                                adUnits[adRequestsCompleted],
+                                activity,
+                                countDownTimer,
+                                interstitialAdLoadListener
+                            )
+                        } else {
+                            interstitialAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
+                        }
+                    }
+
+                    override fun onAdLoaded(ad: InterstitialAd) {
+                        if (!isAdLoaded) {
+                            countDownTimer?.cancel()
+                            Logger.d(
+                                AdSdkConstants.TAG,
+                                "$adName ==== $adUnit ==== ${activity.getString(R.string.interstitial_ad_loaded)}"
+                            )
+                            interstitialAd = ad
+                            interstitialAdLoadListener?.onAdLoaded(ad)
+                            isAdLoaded = true
+                        }
+                    }
+                })
+        }
     }
 }

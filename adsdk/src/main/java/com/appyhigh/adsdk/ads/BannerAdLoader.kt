@@ -2,13 +2,20 @@ package com.appyhigh.adsdk.ads
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdViewAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxAdView
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
@@ -232,23 +239,38 @@ internal class BannerAdLoader {
                 )
             }
         }.start()
-        val builder = if (adUnitsProvider[adRequestsCompleted] == "admob") {
-            AdRequest.Builder()
+        var mAdView = if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+            MaxAdView(adUnit, context)
         } else {
-            AdManagerAdRequest.Builder()
-
+            AdView(context)
         }
-        builder.addNetworkExtrasBundle(
-            AdMobAdapter::class.java,
-            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        )
-        contentURL?.let { builder.setContentUrl(it) }
-        neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
-        val adRequest = builder.build()
-        val mAdView = AdView(context)
-        mAdView.setAdSize(adSize)
-        mAdView.adUnitId = adUnit
-        mAdView.loadAd(adRequest)
+        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+            mAdView = MaxAdView(adUnit, context)
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val heightPx = context.resources.getDimensionPixelSize(R.dimen.banner_height)
+            mAdView.layoutParams = FrameLayout.LayoutParams(width, heightPx)
+            mAdView.setBackgroundColor(Color.WHITE)
+            parentView.removeAllViews()
+            parentView.addView(mAdView)
+            mAdView.loadAd()
+        } else {
+            val builder = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+                AdRequest.Builder()
+            } else {
+                AdManagerAdRequest.Builder()
+            }
+            builder.addNetworkExtrasBundle(
+                AdMobAdapter::class.java,
+                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+            )
+            contentURL?.let { builder.setContentUrl(it) }
+            neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
+            val adRequest = builder.build()
+            mAdView = AdView(context)
+            mAdView.setAdSize(adSize)
+            mAdView.adUnitId = adUnit
+            mAdView.loadAd(adRequest)
+        }
         setAdViewListener(
             context,
             lifecycle,
@@ -307,7 +329,7 @@ internal class BannerAdLoader {
     private fun setAdViewListener(
         context: Context,
         lifecycle: Lifecycle?,
-        mAdView: AdView,
+        mAdView: ViewGroup,
         countDownTimer: CountDownTimer?,
         parentView: ViewGroup,
         adName: String,
@@ -318,52 +340,124 @@ internal class BannerAdLoader {
         neighbourContentURL: List<String>?,
         bannerAdLoadListener: BannerAdLoadListener?,
     ) {
-        mAdView.adListener = object : AdListener() {
-            override fun onAdClicked() {
-                bannerAdLoadListener?.onAdClicked()
-            }
+        if (mAdView is AdView) {
+            mAdView.adListener = object : AdListener() {
+                override fun onAdClicked() {
+                    bannerAdLoadListener?.onAdClicked()
+                }
 
-            override fun onAdClosed() {
-                bannerAdLoadListener?.onAdClosed()
-            }
+                override fun onAdClosed() {
+                    bannerAdLoadListener?.onAdClosed()
+                }
 
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                countDownTimer?.cancel()
-                requestNextAd(
-                    context,
-                    lifecycle,
-                    adUnit + " ==== " + adName + " ==== " + adError.message,
-                    parentView,
-                    adName,
-                    adSize,
-                    timeout,
-                    contentURL,
-                    neighbourContentURL,
-                    bannerAdLoadListener
-                )
-            }
-
-            override fun onAdImpression() {
-                bannerAdLoadListener?.onAdImpression()
-            }
-
-            override fun onAdLoaded() {
-                if (!isAdLoaded) {
-                    Logger.d(
-                        AdSdkConstants.TAG,
-                        "$adName ==== $adUnit ==== ${context.getString(R.string.banner_loaded)}"
-                    )
-                    bannerAdLoadListener?.onAdLoaded()
+                override fun onAdFailedToLoad(adError: LoadAdError) {
                     countDownTimer?.cancel()
-                    isAdLoaded = true
-                    parentView.removeAllViews()
-                    parentView.addView(mAdView)
+                    requestNextAd(
+                        context,
+                        lifecycle,
+                        adUnit + " ==== " + adName + " ==== " + adError.message,
+                        parentView,
+                        adName,
+                        adSize,
+                        timeout,
+                        contentURL,
+                        neighbourContentURL,
+                        bannerAdLoadListener
+                    )
+                }
+
+                override fun onAdImpression() {
+                    bannerAdLoadListener?.onAdImpression()
+                }
+
+                override fun onAdLoaded() {
+                    if (!isAdLoaded) {
+                        Logger.d(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnit ==== ${context.getString(R.string.banner_loaded)}"
+                        )
+                        bannerAdLoadListener?.onAdLoaded()
+                        countDownTimer?.cancel()
+                        isAdLoaded = true
+                        parentView.removeAllViews()
+                        parentView.addView(mAdView)
+                    }
+                }
+
+                override fun onAdOpened() {
+                    bannerAdLoadListener?.onAdOpened()
                 }
             }
+        } else if (mAdView is MaxAdView) {
+            mAdView.setListener(
+                object : MaxAdViewAdListener {
+                    override fun onAdLoaded(ad: MaxAd) {
+                        if (!isAdLoaded) {
+                            Logger.d(
+                                AdSdkConstants.TAG,
+                                "$adName ==== $adUnit ==== ${context.getString(R.string.banner_loaded)}"
+                            )
+                            bannerAdLoadListener?.onAdLoaded()
+                            countDownTimer?.cancel()
+                            isAdLoaded = true
+                            parentView.removeAllViews()
+                            parentView.addView(mAdView)
+                        }
+                    }
 
-            override fun onAdOpened() {
-                bannerAdLoadListener?.onAdOpened()
-            }
+                    override fun onAdLoadFailed(adUnitId: String, error: MaxError) {
+                        countDownTimer?.cancel()
+                        requestNextAd(
+                            context,
+                            lifecycle,
+                            adUnit + " ==== " + adName + " ==== " + error.message,
+                            parentView,
+                            adName,
+                            adSize,
+                            timeout,
+                            contentURL,
+                            neighbourContentURL,
+                            bannerAdLoadListener
+                        )
+                    }
+
+                    override fun onAdDisplayFailed(ad: MaxAd, error: MaxError) {
+                        countDownTimer?.cancel()
+                        requestNextAd(
+                            context,
+                            lifecycle,
+                            adUnit + " ==== " + adName + " ==== " + error.message,
+                            parentView,
+                            adName,
+                            adSize,
+                            timeout,
+                            contentURL,
+                            neighbourContentURL,
+                            bannerAdLoadListener
+                        )
+                    }
+
+                    override fun onAdDisplayed(ad: MaxAd) {
+                        bannerAdLoadListener?.onAdImpression()
+                    }
+
+                    override fun onAdClicked(ad: MaxAd) {
+                        bannerAdLoadListener?.onAdClicked()
+                    }
+
+                    override fun onAdHidden(ad: MaxAd) {
+                        bannerAdLoadListener?.onAdClosed()
+                    }
+
+                    override fun onAdExpanded(ad: MaxAd) {
+                        bannerAdLoadListener?.onAdOpened()
+                    }
+
+                    override fun onAdCollapsed(ad: MaxAd) {
+                        bannerAdLoadListener?.onAdClosed()
+                    }
+                }
+            )
         }
     }
 

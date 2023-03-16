@@ -13,6 +13,25 @@
         android:background="@color/purple_500"
         android:gravity="center"
         android:padding="10dp"
+        android:text="@string/applovin_banner_ad_example"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/banner_container_app_lovin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@color/purple_500"
+        android:gravity="center"
+        android:padding="10dp"
         android:text="@string/small_banner"
         android:textColor="@color/white"
         android:textSize="20sp"

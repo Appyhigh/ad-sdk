@@ -8,6 +8,7 @@
     <string name="text_ad">Ad</string>
     <string name="error_lifecycle">Lifecycle Supplied is Null!</string>
     <string name="error_parent_view">Parent View Supplied is Null!</string>
+    <string name="error_activity">Activity Supplied is Null!</string>
     <string name="error_app_open_type">AppOpenAdType not Supplied so switching it to AppOpenLoadType.SINGLE_LOAD</string>
     <string name="error_preloading_banner_failed">Preloading Banner Ad Failed</string>
     <string name="banner_preloaded">Preloaded Banner Ad</string>

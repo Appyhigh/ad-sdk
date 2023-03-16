@@ -20,8 +20,8 @@ internal class AdConfig {
     private var defaultDarkTextHex = "#000000"
     private var defaultLightBackgroundHex = "#ffffff"
     private var defaultDarkBackgroundHex = "#000000"
-    private var defaultPrimaryAdProvider = "admob"
-    private var defaultSecondaryAdProvider = "admanager"
+    private var defaultPrimaryAdProvider = "applovin"
+    private var defaultSecondaryAdProvider = "applovin"
 
     fun initWithLocalFile(fileData: String) {
         if (adResponse == null) {
