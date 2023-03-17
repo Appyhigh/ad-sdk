@@ -22,4 +22,8 @@
     <string name="bigv3_native">BigV3 Native</string>
     <string name="grid_native">Grid Native</string>
     <string name="applovin_banner_ad_example">Applovin Banner Ad Example</string>
+    <string name="admanager_ads">AdManager Ads</string>
+    <string name="admob_ads">AdMob Ads</string>
+    <string name="applovin_ads">Applovin Ads</string>
+    <string name="big_native">Big Native</string>
 </resources>

@@ -5,7 +5,8 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.nativead.NativeAd
 
 object AdSdkConstants {
-    const val BASE_URL = "https://admob-automation.apyhi.com/"
+//    const val BASE_URL = "https://admob-automation.apyhi.com/"
+
     const val AUTHORIZATION_HEADER = "Authorization"
     const val TAG = "AdSdkLogger"
     const val PACKAGE_ID = "packageId"

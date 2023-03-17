@@ -4,13 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 
-class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
-    private var testNativeAdName = "native_small_admob"
-    private var testNativeAdMediumName = "native_medium_admob"
-    private var testNativeAdBigv1Name = "native_bigv1_admob"
-    private var testNativeAdBigv2Name = "native_bigv2_admob"
-    private var testNativeAdBigv3Name = "native_bigv3_admob"
-    private var testNativeAdGridName = "native_grid_admob"
+class NativeAdManagerAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
+    private var testNativeAdName = "native_small_admanager"
+    private var testNativeAdMediumName = "native_medium_admanager"
+    private var testNativeAdBigv1Name = "native_bigv1_admanager"
+    private var testNativeAdBigv2Name = "native_bigv2_admanager"
+    private var testNativeAdBigv3Name = "native_bigv3_admanager"
+    private var testNativeAdGridName = "native_grid_admanager"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_native_ad_example)

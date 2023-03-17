@@ -577,6 +577,8 @@ object AdSdk {
                             fallBackId,
                             adConfig.fetchPrimaryAdUnitIds(adName),
                             adConfig.fetchSecondaryAdUnitIds(adName),
+                            adConfig.fetchPrimaryAdProvider(adName),
+                            adConfig.fetchSecondaryAdProvider(adName),
                             adConfig.fetchBackgroundThreshold(adName)
                         )
                     }

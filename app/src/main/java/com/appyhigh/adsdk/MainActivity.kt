@@ -1,19 +1,9 @@
 package com.appyhigh.adsdk
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import com.applovin.mediation.MaxAd
-import com.applovin.mediation.MaxAdViewAdListener
-import com.applovin.mediation.MaxError
-import com.applovin.mediation.ads.MaxAdView
-import com.applovin.sdk.AppLovinSdk
-import com.applovin.sdk.AppLovinSdkConfiguration
-import com.appyhigh.adsdk.interfaces.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,16 +15,41 @@ class MainActivity : AppCompatActivity() {
         findViewById<AppCompatButton>(R.id.bannerAdButton).setOnClickListener {
             start(BannerAdExampleActivity())
         }
+
         findViewById<AppCompatButton>(R.id.interstitialAdButton).setOnClickListener {
-            start(InterstitialAdExampleActivity())
+            start(InterstitialAdExampleActivity(), "admob")
+        }
+
+        findViewById<AppCompatButton>(R.id.interstitialAdManagerAdButton).setOnClickListener {
+            start(InterstitialAdExampleActivity(), "admanager")
+        }
+
+        findViewById<AppCompatButton>(R.id.interstitialAppLovinAdButton).setOnClickListener {
+            start(InterstitialAdExampleActivity(), "applovin")
         }
 
         findViewById<AppCompatButton>(R.id.nativeAdButton).setOnClickListener {
             start(NativeAdExampleActivity())
         }
 
+        findViewById<AppCompatButton>(R.id.nativeAdManagerAdButton).setOnClickListener {
+            start(NativeAdManagerAdExampleActivity())
+        }
+
+        findViewById<AppCompatButton>(R.id.nativeAppLovinAdButton).setOnClickListener {
+            start(NativeAppLovinAdExampleActivity())
+        }
+
         findViewById<AppCompatButton>(R.id.rewardedAdButton).setOnClickListener {
-            start(RewardedAdExampleActivity())
+            start(RewardedAdExampleActivity(), "admob")
+        }
+
+        findViewById<AppCompatButton>(R.id.rewardedAdManagerAdButton).setOnClickListener {
+            start(RewardedAdExampleActivity(), "admanager")
+        }
+
+        findViewById<AppCompatButton>(R.id.rewardedAppLovinAdButton).setOnClickListener {
+            start(RewardedAdExampleActivity(), "applovin")
         }
 
         findViewById<AppCompatButton>(R.id.rewardedInterstitialAdButton).setOnClickListener {
@@ -42,12 +57,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<AppCompatButton>(R.id.appOpenAdButton).setOnClickListener {
-            start(AppOpenAdExampleActivity())
+            start(AppOpenAdExampleActivity(), "admob")
+        }
+
+        findViewById<AppCompatButton>(R.id.appOpenAdManagerAdButton).setOnClickListener {
+            start(AppOpenAdExampleActivity(), "admanager")
+        }
+
+        findViewById<AppCompatButton>(R.id.appOpenAppLovinAdButton).setOnClickListener {
+            start(AppOpenAdExampleActivity(), "applovin")
+        }
+
+        findViewById<AppCompatButton>(R.id.bannerAdManagerAdButton).setOnClickListener {
+            start(BannerAdManagerAdExampleActivity())
+        }
+
+        findViewById<AppCompatButton>(R.id.bannerAppLovinAdButton).setOnClickListener {
+            start(BannerApplovinAdExampleActivity())
         }
     }
 }
 
 
-fun AppCompatActivity.start(activity: AppCompatActivity) {
-    startActivity(Intent(this, activity::class.java))
+fun AppCompatActivity.start(activity: AppCompatActivity, adProvider: String = "admob") {
+    val intent = Intent(this, activity::class.java)
+    with(intent) {
+        putExtra("adProvider", adProvider)
+        startActivity(this)
+    }
 }

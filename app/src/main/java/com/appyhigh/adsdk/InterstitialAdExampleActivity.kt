@@ -14,18 +14,21 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.interstitial.InterstitialAd
 
 class InterstitialAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
-    private var testInterstitialName = "test_interstitial"
-    private var testApplovinInterstitialName = "test_interstitial_app_lovin"
+    private var testInterstitialName = "interstitial_admob"
+    private var testInterstitialAdManagerName = "interstitial_appmanager"
+    private var testApplovinInterstitialName = "interstitial_applovin"
     private var mInterstitialAd: InterstitialAd? = null
     private var mMaxInterstitialAd: MaxInterstitialAd? = null
     private var loadInterstitialAdButton: AppCompatButton? = null
+    private var adProvider = "admob"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_interstitial_ad_example)
+        adProvider = intent.getStringExtra("adProvider").toString()
         loadInterstitialAdButton = findViewById(R.id.show_interstitial_ad)
         loadInterstitialAd()
         loadInterstitialAdButton?.setOnClickListener {
-            if (mMaxInterstitialAd?.isReady!!) {
+            if (adProvider == "applovin" && mMaxInterstitialAd?.isReady!!) {
                 mMaxInterstitialAd?.showAd()
                 mMaxInterstitialAd?.setListener(object : MaxAdListener {
                     override fun onAdLoaded(p0: MaxAd?) {
@@ -48,22 +51,23 @@ class InterstitialAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
                         loadInterstitialAd()
                     }
                 })
-            }
-            mInterstitialAd?.show(this)
-            mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-                override fun onAdDismissedFullScreenContent() {
-                    super.onAdDismissedFullScreenContent()
-                    loadInterstitialAd()
-                }
+            }else {
+                mInterstitialAd?.show(this)
+                mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent()
+                        loadInterstitialAd()
+                    }
 
-                override fun onAdShowedFullScreenContent() {
-                    super.onAdShowedFullScreenContent()
-                    mInterstitialAd = null
-                }
+                    override fun onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent()
+                        mInterstitialAd = null
+                    }
 
-                override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-                    super.onAdFailedToShowFullScreenContent(p0)
-                    loadInterstitialAd()
+                    override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                        super.onAdFailedToShowFullScreenContent(p0)
+                        loadInterstitialAd()
+                    }
                 }
             }
         }
@@ -75,7 +79,11 @@ class InterstitialAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
             context = this,
             activity = this,
             lifecycle = lifecycle,
-            adName = testApplovinInterstitialName,
+            adName = when (adProvider) {
+                "admob" -> testInterstitialName
+                "admanager" -> testInterstitialAdManagerName
+                else -> testApplovinInterstitialName
+            },
             interstitialAdLoadListener = object : InterstitialAdLoadListener() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     super.onAdLoaded(interstitialAd)

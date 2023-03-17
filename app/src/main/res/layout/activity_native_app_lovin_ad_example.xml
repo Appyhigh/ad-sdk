@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".BannerAdExampleActivity">
+    tools:context=".NativeAdExampleActivity">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
@@ -13,17 +13,18 @@
         android:background="@color/purple_500"
         android:gravity="center"
         android:padding="10dp"
-        android:text="@string/small_banner"
+        android:text="@string/native_small"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/banner_container"
+        android:id="@+id/native_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:layout_marginBottom="20dp"
         android:orientation="vertical" />
+
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
@@ -32,36 +33,16 @@
         android:background="@color/purple_500"
         android:gravity="center"
         android:padding="10dp"
-        android:text="@string/medium_rectangle"
+        android:text="@string/big_native"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/banner_container_medium"
+        android:id="@+id/native_container_medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:orientation="vertical" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:background="@color/purple_500"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/large_banner"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:id="@+id/banner_container_large"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="vertical" />
-
 
 </LinearLayout>

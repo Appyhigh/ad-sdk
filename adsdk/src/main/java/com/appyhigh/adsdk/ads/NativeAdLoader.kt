@@ -17,6 +17,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.*
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.nativeAds.MaxNativeAdListener
+import com.applovin.mediation.nativeAds.MaxNativeAdLoader
+import com.applovin.mediation.nativeAds.MaxNativeAdView
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
@@ -300,29 +305,30 @@ internal class NativeAdLoader {
             }
         }.start()
 
-        val adLoader: AdLoader = AdLoader.Builder(context, adUnit)
-            .forNativeAd { ad ->
-                nativeAd = ad
-                requestedAdsArray.add(nativeAd)
-            }
-            .withAdListener(object : AdListener() {
-                override fun onAdClicked() {
-                    super.onAdClicked()
-                    nativeAdLoadListener?.onAdClicked()
+        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+            val nativeAdLoader = MaxNativeAdLoader(adUnit, context)
+            nativeAdLoader.loadAd()
+            nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
+
+                override fun onNativeAdLoaded(nativeAdView: MaxNativeAdView?, ad: MaxAd) {
+                    if (!isAdLoaded) {
+                        Logger.d(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnit ==== ${context.getString(R.string.native_ad_loaded)}"
+                        )
+                        countDownTimer?.cancel()
+                        parentView.removeAllViews()
+                        parentView.addView(nativeAdView)
+                        isAdLoaded = true
+                    }
                 }
 
-                override fun onAdClosed() {
-                    super.onAdClosed()
-                    nativeAdLoadListener?.onAdClosed()
-                }
-
-                override fun onAdFailedToLoad(p0: LoadAdError) {
-                    super.onAdFailedToLoad(p0)
+                override fun onNativeAdLoadFailed(adUnitId: String, error: MaxError) {
                     countDownTimer?.cancel()
                     requestNextAd(
                         context,
                         lifecycle,
-                        "$adUnit ==== $adName ==== ${p0.message}",
+                        "$adUnit ==== $adName ==== ${error.message}",
                         parentView,
                         adName,
                         adSize,
@@ -340,85 +346,131 @@ internal class NativeAdLoader {
                     )
                 }
 
-                override fun onAdImpression() {
-                    super.onAdImpression()
-                    nativeAdLoadListener?.onAdImpression()
+                override fun onNativeAdClicked(ad: MaxAd) {
+                    // Optional click callback
                 }
+            })
+        } else {
+            val adLoader: AdLoader = AdLoader.Builder(context, adUnit)
+                .forNativeAd { ad ->
+                    nativeAd = ad
+                    requestedAdsArray.add(nativeAd)
+                }
+                .withAdListener(object : AdListener() {
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        nativeAdLoadListener?.onAdClicked()
+                    }
 
-                override fun onAdLoaded() {
-                    super.onAdLoaded()
-                    if (!isAdLoaded) {
-                        if (isNativeFetch) {
-                            countDownTimer?.cancel()
-                            if (requestedAdsArray.size == adsRequested) {
-                                nativeAdLoadListener?.onMultipleAdsLoaded(requestedAdsArray)
+                    override fun onAdClosed() {
+                        super.onAdClosed()
+                        nativeAdLoadListener?.onAdClosed()
+                    }
+
+                    override fun onAdFailedToLoad(p0: LoadAdError) {
+                        super.onAdFailedToLoad(p0)
+                        countDownTimer?.cancel()
+                        requestNextAd(
+                            context,
+                            lifecycle,
+                            "$adUnit ==== $adName ==== ${p0.message}",
+                            parentView,
+                            adName,
+                            adSize,
+                            timeout,
+                            ctaColor,
+                            textColor,
+                            backgroundResource,
+                            backgroundColor,
+                            contentURL,
+                            neighbourContentURL,
+                            nativeAdLoadListener,
+                            isNativeFetch,
+                            adsRequested,
+                            mediaMaxHeight
+                        )
+                    }
+
+                    override fun onAdImpression() {
+                        super.onAdImpression()
+                        nativeAdLoadListener?.onAdImpression()
+                    }
+
+                    override fun onAdLoaded() {
+                        super.onAdLoaded()
+                        if (!isAdLoaded) {
+                            if (isNativeFetch) {
+                                countDownTimer?.cancel()
+                                if (requestedAdsArray.size == adsRequested) {
+                                    nativeAdLoadListener?.onMultipleAdsLoaded(requestedAdsArray)
+                                    isAdLoaded = true
+                                }
+                                return
+                            }
+                            nativeAd?.let { nativeAd ->
+                                Logger.d(
+                                    AdSdkConstants.TAG,
+                                    "$adName ==== $adUnit ==== ${context.getString(R.string.native_ad_loaded)}"
+                                )
+                                countDownTimer?.cancel()
+
+                                val layoutId = when (adSize) {
+                                    NativeAdSize.SMALL -> R.layout.native_template_small
+                                    NativeAdSize.MEDIUM -> R.layout.native_template_medium
+                                    NativeAdSize.BIGV1 -> R.layout.native_template_big_v1
+                                    NativeAdSize.BIGV2 -> R.layout.native_template_big_v2
+                                    NativeAdSize.BIGV3 -> R.layout.native_template_big_v3
+                                    NativeAdSize.GRID_AD -> R.layout.native_template_grid
+                                    else -> R.layout.native_template_small
+                                }
+                                val adView = View.inflate(
+                                    context,
+                                    layoutId,
+                                    null
+                                ) as NativeAdView
+                                populateUnifiedNativeAdView(
+                                    nativeAd,
+                                    adView,
+                                    adSize,
+                                    textColor,
+                                    textColor,
+                                    ctaColor,
+                                    backgroundResource,
+                                    backgroundColor,
+                                    mediaMaxHeight
+                                )
+                                parentView.removeAllViews()
+                                parentView.addView(adView)
+                                nativeAdLoadListener?.onAdInflated()
                                 isAdLoaded = true
                             }
-                            return
-                        }
-                        nativeAd?.let { nativeAd ->
-                            Logger.d(
-                                AdSdkConstants.TAG,
-                                "$adName ==== $adUnit ==== ${context.getString(R.string.native_ad_loaded)}"
-                            )
-                            countDownTimer?.cancel()
 
-                            val layoutId = when (adSize) {
-                                NativeAdSize.SMALL -> R.layout.native_template_small
-                                NativeAdSize.MEDIUM -> R.layout.native_template_medium
-                                NativeAdSize.BIGV1 -> R.layout.native_template_big_v1
-                                NativeAdSize.BIGV2 -> R.layout.native_template_big_v2
-                                NativeAdSize.BIGV3 -> R.layout.native_template_big_v3
-                                NativeAdSize.GRID_AD -> R.layout.native_template_grid
-                                else -> R.layout.native_template_small
-                            }
-                            val adView = View.inflate(
-                                context,
-                                layoutId,
-                                null
-                            ) as NativeAdView
-                            populateUnifiedNativeAdView(
-                                nativeAd,
-                                adView,
-                                adSize,
-                                textColor,
-                                textColor,
-                                ctaColor,
-                                backgroundResource,
-                                backgroundColor,
-                                mediaMaxHeight
-                            )
-                            parentView.removeAllViews()
-                            parentView.addView(adView)
-                            nativeAdLoadListener?.onAdInflated()
-                            isAdLoaded = true
                         }
-
                     }
-                }
 
-                override fun onAdOpened() {
-                    super.onAdOpened()
-                    nativeAdLoadListener?.onAdOpened()
-                }
+                    override fun onAdOpened() {
+                        super.onAdOpened()
+                        nativeAdLoadListener?.onAdOpened()
+                    }
 
-                override fun onAdSwipeGestureClicked() {
-                    super.onAdSwipeGestureClicked()
-                    nativeAdLoadListener?.onAdSwipeGestureClicked()
-                }
-            }).withNativeAdOptions(
-                NativeAdOptions.Builder()
-                    .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)
-                    .setRequestCustomMuteThisAd(true)
-                    .build()
+                    override fun onAdSwipeGestureClicked() {
+                        super.onAdSwipeGestureClicked()
+                        nativeAdLoadListener?.onAdSwipeGestureClicked()
+                    }
+                }).withNativeAdOptions(
+                    NativeAdOptions.Builder()
+                        .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)
+                        .setRequestCustomMuteThisAd(true)
+                        .build()
+                )
+                .build()
+
+            val builder = createNativeAdBuilder(contentURL, neighbourContentURL)
+            adLoader.loadAds(
+                builder.build(),
+                adsRequested
             )
-            .build()
-
-        val builder = createNativeAdBuilder(contentURL, neighbourContentURL)
-        adLoader.loadAds(
-            builder.build(),
-            adsRequested
-        )
+        }
     }
 
     @SuppressLint("VisibleForTests")
@@ -426,12 +478,12 @@ internal class NativeAdLoader {
         contentURL: String?,
         neighbourContentURL: List<String>?,
     ): AdRequest.Builder {
-        val builder = if (adUnitsProvider[adRequestsCompleted] == "admob"){
+        val builder = if (adUnitsProvider[adRequestsCompleted] == "admob") {
             AdRequest.Builder().addNetworkExtrasBundle(
                 AdMobAdapter::class.java,
                 if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
             )
-        }else{
+        } else {
             AdManagerAdRequest.Builder().addNetworkExtrasBundle(
                 AdMobAdapter::class.java,
                 if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()

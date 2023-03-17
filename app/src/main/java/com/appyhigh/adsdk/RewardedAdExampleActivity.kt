@@ -15,14 +15,17 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 
 class RewardedAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
-    private var rewardedAdName = "test_rewarded"
-    private var rewardedApplovinAdName = "test_rewarded_app_lovin"
+    private var rewardedAdName = "rewarded_admob"
+    private var rewardedAdManagerAdName = "rewarded_admanager"
+    private var rewardedApplovinAdName = "rewarded_applovin"
     private var mRewardedAd: RewardedAd? = null
     private var mMaxRewardedAd: MaxRewardedAd? = null
     private var loadRewardedAdButton: AppCompatButton? = null
+    private var adProvider = "admob"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rewarded_ad_example)
+        adProvider = intent.getStringExtra("adProvider").toString()
         loadRewardedAdButton = findViewById(R.id.show_rewarded_ad)
         loadRewardedAd()
         loadRewardedAdButton?.setOnClickListener {
@@ -86,7 +89,11 @@ class RewardedAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
             context = this,
             activity = this,
             lifecycle = lifecycle,
-            adName = rewardedApplovinAdName,
+            adName = when (adProvider) {
+                "admob" -> rewardedAdName
+                "admanager" -> rewardedAdManagerAdName
+                else -> rewardedApplovinAdName
+            },
             rewardedAdLoadListener = object : RewardedAdLoadListener() {
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
                     super.onAdLoaded(rewardedAd)

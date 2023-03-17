@@ -205,14 +205,14 @@ internal class AdConfig {
 
     fun fetchPrimaryAdProvider(adName: String): String {
         adResponse?.let {
-            return defaultPrimaryAdProvider
+            return adsMap[adName]?.primary_adprovider?.lowercase() ?: defaultPrimaryAdProvider
         }
         return defaultPrimaryAdProvider
     }
 
     fun fetchSecondaryAdProvider(adName: String): String {
         adResponse?.let {
-            return defaultSecondaryAdProvider
+            return adsMap[adName]?.secondary_adprovider?.lowercase() ?: defaultPrimaryAdProvider
         }
         return defaultSecondaryAdProvider
     }

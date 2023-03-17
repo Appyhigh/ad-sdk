@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/show_app_open_ad"
+        android:visibility="gone"
         android:gravity="center"
         android:padding="20dp"
         android:text="@string/move_the_app_in_background_and_wait_for_5_seconds_to_comeback_to_see_the_ad" />
