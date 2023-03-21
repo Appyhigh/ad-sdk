@@ -40,42 +40,90 @@ internal class BannerAdLoader {
         adName: String,
         adSize: AdSize,
         adUnitId: String,
+        adProvider: String,
         contentURL: String?,
         neighbourContentURL: List<String>?
     ) {
         if (AdSdkConstants.preloadedBannerAdMap[adName] == null) {
-            val builder = AdRequest.Builder()
-                .addNetworkExtrasBundle(
+            if (adProvider == "applovin") {
+                val mAdView = MaxAdView(adUnitId, context)
+                val width = ViewGroup.LayoutParams.MATCH_PARENT
+                val heightPx = context.resources.getDimensionPixelSize(R.dimen.banner_height)
+                mAdView.layoutParams = FrameLayout.LayoutParams(width, heightPx)
+                mAdView.setBackgroundColor(Color.WHITE)
+                mAdView.loadAd()
+                mAdView.setListener(object : MaxAdViewAdListener {
+                    override fun onAdLoaded(p0: MaxAd?) {
+                        Logger.d(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnitId ==== ${context.getString(R.string.banner_preloaded)}"
+                        )
+                        AdSdkConstants.preloadedBannerAdMap[adName] = mAdView
+                    }
+
+                    override fun onAdDisplayed(p0: MaxAd?) {
+                    }
+
+                    override fun onAdHidden(p0: MaxAd?) {
+                    }
+
+                    override fun onAdClicked(p0: MaxAd?) {
+                    }
+
+                    override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+                        Logger.e(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnitId ==== ${context.getString(R.string.error_preloading_banner_failed)}"
+                        )
+                    }
+
+                    override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+                    }
+
+                    override fun onAdExpanded(p0: MaxAd?) {
+                    }
+
+                    override fun onAdCollapsed(p0: MaxAd?) {
+                    }
+                })
+            } else {
+                val builder = if (adProvider == "admob") {
+                    AdRequest.Builder()
+                } else {
+                    AdManagerAdRequest.Builder()
+                }
+                builder.addNetworkExtrasBundle(
                     AdMobAdapter::class.java,
                     if (AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
                 )
-            contentURL?.let { builder.setContentUrl(it) }
-            neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
-            val adRequest = builder.build()
-            val mAdView = AdView(context)
-            mAdView.setAdSize(adSize)
-            mAdView.adUnitId = adUnitId
-            mAdView.loadAd(adRequest)
-            mAdView.adListener = object : AdListener() {
-                override fun onAdClicked() {}
-                override fun onAdClosed() {}
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    Logger.e(
-                        AdSdkConstants.TAG,
-                        "$adName ==== $adUnitId ==== ${context.getString(R.string.error_preloading_banner_failed)}"
-                    )
-                }
+                contentURL?.let { builder.setContentUrl(it) }
+                neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
+                val adRequest = builder.build()
+                val mAdView = AdView(context)
+                mAdView.setAdSize(adSize)
+                mAdView.adUnitId = adUnitId
+                mAdView.loadAd(adRequest)
+                mAdView.adListener = object : AdListener() {
+                    override fun onAdClicked() {}
+                    override fun onAdClosed() {}
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        Logger.e(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnitId ==== ${context.getString(R.string.error_preloading_banner_failed)}"
+                        )
+                    }
 
-                override fun onAdImpression() {}
-                override fun onAdLoaded() {
-                    Logger.d(
-                        AdSdkConstants.TAG,
-                        "$adName ==== $adUnitId ==== ${context.getString(R.string.banner_preloaded)}"
-                    )
-                    AdSdkConstants.preloadedBannerAdMap[adName] = mAdView
-                }
+                    override fun onAdImpression() {}
+                    override fun onAdLoaded() {
+                        Logger.d(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnitId ==== ${context.getString(R.string.banner_preloaded)}"
+                        )
+                        AdSdkConstants.preloadedBannerAdMap[adName] = mAdView
+                    }
 
-                override fun onAdOpened() {}
+                    override fun onAdOpened() {}
+                }
             }
 
         } else {
@@ -129,7 +177,11 @@ internal class BannerAdLoader {
                 "$adName ==== $fallBackId ==== ${context.getString(R.string.preloaded_banner_displayed)}"
             )
             parentView.removeAllViews()
-            parentView.addView(AdSdkConstants.preloadedBannerAdMap[adName])
+            if (AdSdkConstants.preloadedBannerAdMap[adName] is MaxAdView) {
+                parentView.addView(AdSdkConstants.preloadedBannerAdMap[adName] as MaxAdView)
+            } else {
+                parentView.addView(AdSdkConstants.preloadedBannerAdMap[adName] as AdView)
+            }
             setAdViewListener(
                 context,
                 lifecycle,
@@ -239,11 +291,7 @@ internal class BannerAdLoader {
                 )
             }
         }.start()
-        var mAdView = if (adUnitsProvider[adRequestsCompleted] == "applovin") {
-            MaxAdView(adUnit, context)
-        } else {
-            AdView(context)
-        }
+        val mAdView: ViewGroup
         if (adUnitsProvider[adRequestsCompleted] == "applovin") {
             mAdView = MaxAdView(adUnit, context)
             val width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -329,7 +377,7 @@ internal class BannerAdLoader {
     private fun setAdViewListener(
         context: Context,
         lifecycle: Lifecycle?,
-        mAdView: ViewGroup,
+        mAdView: Any,
         countDownTimer: CountDownTimer?,
         parentView: ViewGroup,
         adName: String,

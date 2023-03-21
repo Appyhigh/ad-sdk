@@ -26,4 +26,6 @@
     <string name="admob_ads">AdMob Ads</string>
     <string name="applovin_ads">Applovin Ads</string>
     <string name="big_native">Big Native</string>
+    <string name="preload_test_activity">Preload Test Activity</string>
+    <string name="first_banner_ad_and_first_native_ad_is_preloaded_for_every_section_you_will_need_to_launch_the_activity_again_if_you_want_to_check_preloading_again">First Banner ad and First Native ad is preloaded for every section. You will need to launch the activity again if you want to check preloading again!</string>
 </resources>

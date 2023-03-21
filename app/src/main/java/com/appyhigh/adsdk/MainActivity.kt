@@ -12,6 +12,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        findViewById<AppCompatButton>(R.id.preloadButton).setOnClickListener {
+            start(PreloadMainActivity())
+        }
+
         findViewById<AppCompatButton>(R.id.bannerAdButton).setOnClickListener {
             start(BannerAdExampleActivity())
         }
@@ -79,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<AppCompatButton>(R.id.bannerAppLovinAdButton).setOnClickListener {
             start(BannerApplovinAdExampleActivity())
         }
+
     }
 }
 

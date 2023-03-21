@@ -19,6 +19,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxError
+import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.applovin.mediation.nativeAds.MaxNativeAdListener
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
@@ -50,41 +51,78 @@ internal class NativeAdLoader {
         context: Context,
         adName: String,
         adUnitId: String,
+        adProvider: String,
         contentURL: String?,
         neighbourContentURL: List<String>?,
     ) {
         if (AdSdkConstants.preloadedNativeAdMap[adName] == null) {
-            val builder = createNativeAdBuilder(contentURL, neighbourContentURL)
-            val adLoader: AdLoader = AdLoader.Builder(context, adUnitId)
-                .forNativeAd { ad ->
-                    nativeAd = ad
-                }
-                .withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(p0: LoadAdError) {
-                        super.onAdFailedToLoad(p0)
-                        Logger.e(AdSdkConstants.TAG, "$adName ==== $adUnitId ==== ${p0.message}")
+            if (adProvider == "applovin") {
+                val nativeAdLoader = MaxNativeAdLoader(adUnitId, context)
+                nativeAdLoader.loadAd()
+                nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
+                    override fun onNativeAdLoaded(p0: MaxNativeAdView?, p1: MaxAd?) {
+                        Logger.d(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnitId ==== ${context.getString(R.string.native_ad_preloaded)}"
+                        )
+                        AdSdkConstants.preloadedNativeAdMap[adName] = p0
                     }
 
-                    override fun onAdLoaded() {
-                        super.onAdLoaded()
-                        nativeAd?.let { nativeAd ->
-                            Logger.d(
-                                AdSdkConstants.TAG,
-                                "$adName ==== $adUnitId ==== ${context.getString(R.string.native_ad_preloaded)}"
-                            )
-                            AdSdkConstants.preloadedNativeAdMap[adName] = nativeAd
-                        }
+                    override fun onNativeAdLoadFailed(adUnitId: String, error: MaxError) {
+                        Logger.e(
+                            AdSdkConstants.TAG,
+                            "$adName ==== $adUnitId ==== ${error.message}"
+                        )
                     }
-                }).withNativeAdOptions(
-                    NativeAdOptions.Builder()
-                        .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)
-                        .setRequestCustomMuteThisAd(true)
-                        .build()
+                })
+            } else {
+                val builder = if (adProvider == "admob") {
+                    AdRequest.Builder().addNetworkExtrasBundle(
+                        AdMobAdapter::class.java,
+                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                    )
+                } else {
+                    AdManagerAdRequest.Builder().addNetworkExtrasBundle(
+                        AdMobAdapter::class.java,
+                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                    )
+                }
+                contentURL?.let { builder.setContentUrl(it) }
+                neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
+                val adLoader: AdLoader = AdLoader.Builder(context, adUnitId)
+                    .forNativeAd { ad ->
+                        nativeAd = ad
+                    }
+                    .withAdListener(object : AdListener() {
+                        override fun onAdFailedToLoad(p0: LoadAdError) {
+                            super.onAdFailedToLoad(p0)
+                            Logger.e(
+                                AdSdkConstants.TAG,
+                                "$adName ==== $adUnitId ==== ${p0.message}"
+                            )
+                        }
+
+                        override fun onAdLoaded() {
+                            super.onAdLoaded()
+                            nativeAd?.let { nativeAd ->
+                                Logger.d(
+                                    AdSdkConstants.TAG,
+                                    "$adName ==== $adUnitId ==== ${context.getString(R.string.native_ad_preloaded)}"
+                                )
+                                AdSdkConstants.preloadedNativeAdMap[adName] = nativeAd
+                            }
+                        }
+                    }).withNativeAdOptions(
+                        NativeAdOptions.Builder()
+                            .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)
+                            .setRequestCustomMuteThisAd(true)
+                            .build()
+                    )
+                    .build()
+                adLoader.loadAd(
+                    builder.build()
                 )
-                .build()
-            adLoader.loadAd(
-                builder.build()
-            )
+            }
         } else {
             return
         }
@@ -140,33 +178,41 @@ internal class NativeAdLoader {
             AdSdkConstants.adUnitsSet.add(adName + parentView.toString())
         }
         if (AdSdkConstants.preloadedNativeAdMap[adName] != null) {
-            val adView =
-                View.inflate(context, R.layout.native_template_small, null)
-                        as NativeAdView
-            populateUnifiedNativeAdView(
-                AdSdkConstants.preloadedNativeAdMap[adName]!!,
-                adView,
-                adSize,
-                textColor,
-                textColor,
-                ctaColor,
-                backgroundResource,
-                backgroundColor,
-                mediaMaxHeight
-            )
-            if (isNativeFetch) {
-                nativeAdLoadListener?.onAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!!)
-            } else {
-                Logger.d(
-                    AdSdkConstants.TAG,
-                    "$adName ==== $fallBackId ==== ${context.getString(R.string.preloaded_native_ad_displayed)}"
+            if (AdSdkConstants.preloadedNativeAdMap[adName] is NativeAd) {
+                val adView =
+                    View.inflate(context, R.layout.native_template_small, null)
+                            as NativeAdView
+                populateUnifiedNativeAdView(
+                    AdSdkConstants.preloadedNativeAdMap[adName]!! as NativeAd,
+                    adView,
+                    adSize,
+                    textColor,
+                    textColor,
+                    ctaColor,
+                    backgroundResource,
+                    backgroundColor,
+                    mediaMaxHeight
                 )
+                if (isNativeFetch) {
+                    if (AdSdkConstants.preloadedNativeAdMap[adName]!! is MaxAd) {
+                        nativeAdLoadListener?.onMaxAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!! as MaxNativeAd)
+                    } else {
+                        nativeAdLoadListener?.onAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!! as NativeAd)
+                    }
+                } else {
+                    Logger.d(
+                        AdSdkConstants.TAG,
+                        "$adName ==== $fallBackId ==== ${context.getString(R.string.preloaded_native_ad_displayed)}"
+                    )
+                    parentView.removeAllViews()
+                    parentView.addView(adView)
+                    nativeAdLoadListener?.onAdInflated()
+                }
+                AdSdkConstants.preloadedNativeAdMap[adName] = null
+            } else {
                 parentView.removeAllViews()
-                parentView.addView(adView)
-                nativeAdLoadListener?.onAdInflated()
+                parentView.addView(AdSdkConstants.preloadedNativeAdMap[adName] as View)
             }
-            AdSdkConstants.preloadedNativeAdMap[adName] = null
-
         } else {
             for (adUnit in primaryAdUnitIds) {
                 adUnits.add(adUnit)

@@ -230,14 +230,15 @@ object AdSdk {
         contentURL: String? = null,
         neighbourContentURL: List<String>? = null
     ) {
-        val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
         adConfig.init()
+        val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
                 AdType.NATIVE -> NativeAdLoader().preloadNativeAd(
                     context,
                     adName,
                     fallBackId,
+                    adConfig.fetchPrimaryAdProvider(adName),
                     contentURL,
                     neighbourContentURL
                 )
@@ -246,6 +247,7 @@ object AdSdk {
                     adName,
                     adConfig.fetchBannerAdSize(adName),
                     fallBackId,
+                    adConfig.fetchPrimaryAdProvider(adName),
                     contentURL,
                     neighbourContentURL
                 )
