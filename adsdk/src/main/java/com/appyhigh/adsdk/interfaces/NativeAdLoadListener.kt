@@ -1,5 +1,7 @@
 package com.appyhigh.adsdk.interfaces
 
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 
@@ -11,6 +13,7 @@ abstract class NativeAdLoadListener {
     open fun onAdImpression() {}
     open fun onAdInflated() {}
     open fun onAdLoaded(nativeAd: NativeAd?) {}
+    open fun onMaxAdLoaded(nativeAd: MaxNativeAd?) {}
     open fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {}
     open fun onAdOpened() {}
     open fun onAdSwipeGestureClicked() {}

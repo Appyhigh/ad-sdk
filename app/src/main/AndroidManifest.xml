@@ -15,10 +15,40 @@
         android:theme="@style/Theme.AdSdk"
         tools:targetApi="31">
         <activity
-            android:name=".NewActivity"
+            android:name=".PreloadMainActivity"
             android:exported="false" />
         <activity
-            android:name="com.appyhigh.adsdk.MainActivity"
+            android:name=".NativeAppLovinAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BannerAdManagerAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AppOpenAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RewardedInterstitialAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RewardedAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NativeAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InterstitialAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BannerAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BannerApplovinAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NativeAdManagerAdExampleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,10 +56,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-4310459535775382~1651107026" />
+        <meta-data
+            android:name="applovin.sdk.key"
+            android:value="pA3NAGLWSFkdUbKoK9gLEDnpXe6x8XU6D2TgT5vsHlZXt4FATcoLWTvA3fHBVhG6hh7HJWJa6JD1akUlTlVgwx" />
     </application>
 
 </manifest>

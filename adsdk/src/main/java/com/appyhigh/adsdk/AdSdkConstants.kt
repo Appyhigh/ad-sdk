@@ -5,7 +5,8 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.nativead.NativeAd
 
 object AdSdkConstants {
-    const val BASE_URL = "https://admob-automation.apyhi.com/"
+//    const val BASE_URL = "https://admob-automation.apyhi.com/"
+
     const val AUTHORIZATION_HEADER = "Authorization"
     const val TAG = "AdSdkLogger"
     const val PACKAGE_ID = "packageId"
@@ -25,8 +26,8 @@ object AdSdkConstants {
     const val REWARDED = "rewarded"
     const val APP_OPEN = "appopen"
     var adUnitsSet = HashSet<String>()
-    var preloadedBannerAdMap = HashMap<String, AdView?>()
-    var preloadedNativeAdMap = HashMap<String, NativeAd?>()
+    var preloadedBannerAdMap = HashMap<String, Any?>()
+    var preloadedNativeAdMap = HashMap<String, Any?>()
     var enableReleaseLogging = false
     var consentStatus = true
     inline val consentDisabledBundle

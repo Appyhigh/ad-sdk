@@ -4,12 +4,14 @@ package com.appyhigh.adsdk
 import com.appyhigh.adsdk.data.local.SharedPrefs
 import com.appyhigh.adsdk.utils.Logger
 import com.appyhigh.adsdk.utils.RSAKeyGenerator
+import com.pluto.plugins.network.PlutoInterceptor
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
 
 
 internal class DynamicAds {
+    private val baseUrl = "https://admob-automation-qa.apyhi.com/api/"
 
     fun fetchRemoteAdConfiguration(
         packageId: String
@@ -30,6 +32,7 @@ internal class DynamicAds {
         val clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
         clientBuilder.addInterceptor(headerAuthorizationInterceptor)
         clientBuilder.addInterceptor(interceptor)
+        clientBuilder.addInterceptor(PlutoInterceptor())
 
 
         val formBody: RequestBody = FormBody.Builder()
@@ -38,7 +41,7 @@ internal class DynamicAds {
             .build()
 
         val request: Request = Request.Builder()
-            .url(AdSdkConstants.BASE_URL + "api/v2/app/info")
+            .url(baseUrl + "v2/app/info")
             .post(formBody)
             .addHeader(AdSdkConstants.AUTHORIZATION_HEADER, fetchToken())
             .build()

@@ -6,6 +6,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
+import com.applovin.sdk.AppLovinSdk
 import com.appyhigh.adsdk.ads.*
 import com.appyhigh.adsdk.data.enums.AdSdkErrorCode
 import com.appyhigh.adsdk.data.enums.AdType
@@ -109,6 +110,7 @@ object AdSdk {
     fun initialize(
         application: Application,
         testDevice: String?,
+        advertisingId: String?,
         fileId: Int,
         adInitializeListener: AdInitializeListener
     ) {
@@ -138,13 +140,16 @@ object AdSdk {
         }
 
         if (isGooglePlayServicesAvailable(application)) {
+            addTestDevice(testDevice, advertisingId, application)
             MobileAds.initialize(application) {
-                isInitialized = true
-                adInitializeListener.onSdkInitialized()
-                addTestDevice(testDevice)
-                Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
-                SharedPrefs.init(application)
-                DynamicAds().fetchRemoteAdConfiguration(application.packageName)
+                AppLovinSdk.getInstance(application).initializeSdk {
+                    AppLovinSdk.getInstance(application).mediationProvider = "max"
+                    isInitialized = true
+                    adInitializeListener.onSdkInitialized()
+                    Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
+                    SharedPrefs.init(application)
+                    DynamicAds().fetchRemoteAdConfiguration(application.packageName)
+                }
             }
         } else {
             adInitializeListener.onInitializationFailed(
@@ -189,7 +194,13 @@ object AdSdk {
 
     fun isSdkInitialized() = isInitialized
 
-    private fun addTestDevice(testDevice: String?) {
+    private fun addTestDevice(
+        testDevice: String?,
+        advertisingId: String?,
+        application: Application
+    ) {
+        AppLovinSdk.getInstance(application).settings.testDeviceAdvertisingIds =
+            arrayListOf(advertisingId)
         testDevice?.let {
             val build = RequestConfiguration.Builder()
                 .setTestDeviceIds(listOf(it)).build()
@@ -219,14 +230,15 @@ object AdSdk {
         contentURL: String? = null,
         neighbourContentURL: List<String>? = null
     ) {
-        val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
         adConfig.init()
+        val fallBackId = adConfig.fetchFallbackAdUnitId(adName)
         if (isAdActive(adName)) {
             when (adConfig.fetchAdType(adName)) {
                 AdType.NATIVE -> NativeAdLoader().preloadNativeAd(
                     context,
                     adName,
                     fallBackId,
+                    adConfig.fetchPrimaryAdProvider(adName),
                     contentURL,
                     neighbourContentURL
                 )
@@ -235,6 +247,7 @@ object AdSdk {
                     adName,
                     adConfig.fetchBannerAdSize(adName),
                     fallBackId,
+                    adConfig.fetchPrimaryAdProvider(adName),
                     contentURL,
                     neighbourContentURL
                 )
@@ -289,6 +302,7 @@ object AdSdk {
 
     fun loadAd(
         context: Context,
+        activity: Activity? = null,
         adName: String,
         isDarkModeEnabled: Boolean = false,
         isNativeFetch: Boolean = false,
@@ -383,6 +397,8 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         adConfig.fetchAdUnitRefreshTimer(adName),
                         adConfig.fetchDarkCTAColor(adName).takeIf { isDarkModeEnabled }
@@ -442,6 +458,8 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         adConfig.fetchAdUnitRefreshTimer(adName),
                         contentURL,
@@ -449,16 +467,34 @@ object AdSdk {
                         bannerAdLoadListener
                     )
                 }
-                AdType.INTERSTITIAL ->
+                AdType.INTERSTITIAL -> {
+                    if (activity == null) {
+                        val error =
+                            "$adName ==== $fallBackId ==== ${context.getString(R.string.error_activity)}"
+                        triggerAdFailedCallback(
+                            bannerAdLoadListener,
+                            interstitialAdLoadListener,
+                            rewardedAdLoadListener,
+                            rewardedInterstitialAdLoadListener,
+                            appOpenAdLoadListener,
+                            nativeAdLoadListener,
+                            error
+                        )
+                        Logger.e(AdSdkConstants.TAG, error)
+                        return
+                    }
                     InterstitialAdLoader().loadInterstitialAd(
-                        context,
+                        activity,
                         adName,
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         interstitialAdLoadListener
                     )
+                }
                 AdType.REWARDED_INTERSTITIAL ->
                     RewardedInterstitialAdLoader().loadInterstitialRewardedAd(
                         context,
@@ -466,19 +502,41 @@ object AdSdk {
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         rewardedInterstitialAdLoadListener
                     )
-                AdType.REWARDED ->
+                AdType.REWARDED -> {
+                    if (activity == null) {
+                        val error =
+                            "$adName ==== $fallBackId ==== ${context.getString(R.string.error_activity)}"
+                        triggerAdFailedCallback(
+                            bannerAdLoadListener,
+                            interstitialAdLoadListener,
+                            rewardedAdLoadListener,
+                            rewardedInterstitialAdLoadListener,
+                            appOpenAdLoadListener,
+                            nativeAdLoadListener,
+                            error
+                        )
+                        Logger.e(AdSdkConstants.TAG, error)
+                        return
+                    }
+
                     RewardedAdLoader().loadRewardedAd(
                         context,
+                        activity,
                         adName,
                         fallBackId,
                         adConfig.fetchPrimaryAdUnitIds(adName),
                         adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
                         adConfig.fetchAdUnitTimeout(adName),
                         rewardedAdLoadListener
                     )
+                }
                 AdType.APP_OPEN -> {
                     if (appOpenLoadTypeInternal == null) {
                         val error =
@@ -493,6 +551,8 @@ object AdSdk {
                             fallBackId,
                             adConfig.fetchPrimaryAdUnitIds(adName),
                             adConfig.fetchSecondaryAdUnitIds(adName),
+                            adConfig.fetchPrimaryAdProvider(adName),
+                            adConfig.fetchSecondaryAdProvider(adName),
                             adConfig.fetchAdUnitTimeout(adName),
                             appOpenAdLoadListener
                         )
@@ -519,6 +579,8 @@ object AdSdk {
                             fallBackId,
                             adConfig.fetchPrimaryAdUnitIds(adName),
                             adConfig.fetchSecondaryAdUnitIds(adName),
+                            adConfig.fetchPrimaryAdProvider(adName),
+                            adConfig.fetchSecondaryAdProvider(adName),
                             adConfig.fetchBackgroundThreshold(adName)
                         )
                     }
@@ -528,6 +590,20 @@ object AdSdk {
                     "$adName ==== $fallBackId ==== ${context.getString(R.string.unknown_ad_type)}"
                 )
             }
+        } else {
+            val error =
+                "${context.getString(R.string.error_ad_is_disabled)}"
+            triggerAdFailedCallback(
+                bannerAdLoadListener,
+                interstitialAdLoadListener,
+                rewardedAdLoadListener,
+                rewardedInterstitialAdLoadListener,
+                appOpenAdLoadListener,
+                nativeAdLoadListener,
+                error
+            )
+            Logger.e(AdSdkConstants.TAG, error)
+            return
         }
     }
 

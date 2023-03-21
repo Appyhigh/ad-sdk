@@ -20,6 +20,8 @@ internal class AdConfig {
     private var defaultDarkTextHex = "#000000"
     private var defaultLightBackgroundHex = "#ffffff"
     private var defaultDarkBackgroundHex = "#000000"
+    private var defaultPrimaryAdProvider = "applovin"
+    private var defaultSecondaryAdProvider = "applovin"
 
     fun initWithLocalFile(fileData: String) {
         if (adResponse == null) {
@@ -199,6 +201,20 @@ internal class AdConfig {
             return adsMap[adName]?.mediaHeight ?: 300
         }
         return 300
+    }
+
+    fun fetchPrimaryAdProvider(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.primary_adprovider?.lowercase() ?: defaultPrimaryAdProvider
+        }
+        return defaultPrimaryAdProvider
+    }
+
+    fun fetchSecondaryAdProvider(adName: String): String {
+        adResponse?.let {
+            return adsMap[adName]?.secondary_adprovider?.lowercase() ?: defaultPrimaryAdProvider
+        }
+        return defaultSecondaryAdProvider
     }
 
 }

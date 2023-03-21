@@ -19,20 +19,23 @@
         "secondary_ids": [
           "ca-app-pub-3940256099942544/6300978111"
         ],
-        "_id": "63d6c7455d6d1b9a9ebec863",
-        "ad_name": "test_banner",
+        "_id": "641417618e00b0712912d74a",
+        "ad_name": "small_banner_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
         "ad_type": "banner",
         "isActive": true,
         "refresh_rate_ms": 45000,
-        "color_hex": "#210303",
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
         "size": "banner",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
-        "bg_color": "#000000",
-        "bg_color_dark": "#000000",
-        "color_hex_dark": "#000000",
-        "text_color": "#000000",
-        "text_color_dark": "#000000"
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
       },
       {
         "primary_ids": [
@@ -41,42 +44,48 @@
         "secondary_ids": [
           "ca-app-pub-3940256099942544/6300978111"
         ],
-        "_id": "63d6c87ce5b267076cbbbfe7",
-        "ad_name": "test_banner_2",
+        "_id": "641417878e00b0432712d74e",
+        "ad_name": "medium_banner_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
         "ad_type": "banner",
         "isActive": true,
         "refresh_rate_ms": 45000,
         "color_hex": "#000000",
-        "size": "large_banner",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
-        "bg_color": "#000000",
-        "bg_color_dark": "#000000",
         "color_hex_dark": "#000000",
         "text_color": "#000000",
-        "text_color_dark": "#000000"
-      },
-      {
-        "primary_ids": [
-          "ca-app-pub-3940256099942544/6300978111"
-        ],
-        "secondary_ids": [
-          "ca-app-pub-3940256099942544/6300978111"
-        ],
-        "_id": "63d6c8cf5d6d1b6a9cbecb00",
-        "ad_name": "test_banner_3",
-        "ad_type": "banner",
-        "isActive": true,
-        "refresh_rate_ms": 45000,
-        "color_hex": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
         "size": "medium_rectangle",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
-        "bg_color": "#000000",
-        "bg_color_dark": "#000000",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/6300978111"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/6300978111"
+        ],
+        "_id": "641417ab8e00b09e6a12d752",
+        "ad_name": "large_banner_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "banner",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
         "color_hex_dark": "#000000",
         "text_color": "#000000",
-        "text_color_dark": "#000000"
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "large_banner",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
       },
       {
         "primary_ids": [
@@ -85,42 +94,23 @@
         "secondary_ids": [
           "ca-app-pub-3940256099942544/1033173712"
         ],
-        "_id": "63d78cde652cc37c773f0f4f",
-        "ad_name": "test_interstitial",
+        "_id": "641417cd8e00b04ba412d756",
+        "ad_name": "interstitial_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
         "ad_type": "interstitial",
         "isActive": true,
-        "refresh_rate_ms": 0,
-        "color_hex": "#000001",
-        "size": "",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
-        "bg_color": "#000000",
-        "bg_color_dark": "#000000",
-        "color_hex_dark": "#000000",
-        "text_color": "#000000",
-        "text_color_dark": "#000000"
-      },
-      {
-        "primary_ids": [
-          "ca-app-pub-3940256099942544/5224354917"
-        ],
-        "secondary_ids": [
-          "ca-app-pub-3940256099942544/5224354917"
-        ],
-        "_id": "63d7e4cc5d6d1b11ecc17b4e",
-        "ad_name": "test_rewarded",
-        "ad_type": "rewarded",
-        "isActive": true,
-        "refresh_rate_ms": 0,
+        "refresh_rate_ms": 45000,
         "color_hex": "#000000",
-        "size": "",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
-        "bg_color": "#000000",
-        "bg_color_dark": "#000000",
         "color_hex_dark": "#000000",
         "text_color": "#000000",
-        "text_color_dark": "#000000"
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
       },
       {
         "primary_ids": [
@@ -129,20 +119,48 @@
         "secondary_ids": [
           "ca-app-pub-3940256099942544/5354046379"
         ],
-        "_id": "63d7e9e0700bed56637249c6",
-        "ad_name": "test_rewarded_interstitial",
+        "_id": "6414183c8e00b030ed12d75a",
+        "ad_name": "rewarded_interstitial_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
         "ad_type": "rewardInterstitial",
         "isActive": true,
-        "refresh_rate_ms": 0,
+        "refresh_rate_ms": 45000,
         "color_hex": "#000000",
-        "size": "",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
-        "bg_color": "#000000",
-        "bg_color_dark": "#000000",
         "color_hex_dark": "#000000",
         "text_color": "#000000",
-        "text_color_dark": "#000000"
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/5224354917"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/5224354917"
+        ],
+        "_id": "641418688e00b0180c12d75e",
+        "ad_name": "rewarded_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "rewarded",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
       },
       {
         "primary_ids": [
@@ -151,47 +169,652 @@
         "secondary_ids": [
           "ca-app-pub-3940256099942544/3419835294"
         ],
-        "_id": "63d7ed8f652cc33e36405022",
-        "ad_name": "test_app_open",
+        "_id": "641418978e00b0c59a12d762",
+        "ad_name": "app_open_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "appopen",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 4000,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "_id": "641419898e00b017e412d776",
+        "ad_name": "native_small_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#0de8f8",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "small",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "_id": "641419b68e00b046cd12d77a",
+        "ad_name": "native_medium_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#12b5de",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "medium",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "_id": "641419ed8e00b0623912d77e",
+        "ad_name": "native_bigv1_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#14c3e6",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "bigv1",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "_id": "64141a238e00b0e8ac12d782",
+        "ad_name": "native_bigv2_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#0fd6f0",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "bigv2",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "_id": "64141a538e00b0c38b12d786",
+        "ad_name": "native_bigv3_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#10eadb",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "bigv3",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "secondary_ids": [
+          "ca-app-pub-3940256099942544/2247696110"
+        ],
+        "_id": "64141a848e00b0520e12d78a",
+        "ad_name": "native_grid_admob",
+        "primary_adprovider": "Admob",
+        "secondary_adprovider": "Admob",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#11e0ee",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "grid_ad",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/banner"
+        ],
+        "secondary_ids": [
+          "/6499/example/banner"
+        ],
+        "_id": "64141abc8e00b0a8d412d78e",
+        "ad_name": "banner_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "banner",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "banner",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/banner"
+        ],
+        "secondary_ids": [
+          "/6499/example/banner"
+        ],
+        "_id": "64141ae78e00b0b2b712d792",
+        "ad_name": "banner_medium_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "banner",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "medium_rectangle",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/banner"
+        ],
+        "secondary_ids": [
+          "/6499/example/banner"
+        ],
+        "_id": "64141b068e00b0d78412d796",
+        "ad_name": "banner_large_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "banner",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "large_banner",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/interstitial"
+        ],
+        "secondary_ids": [
+          "/6499/example/interstitial"
+        ],
+        "_id": "64141b708e00b0464412d79a",
+        "ad_name": "interstitial_appmanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "interstitial",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/app-open"
+        ],
+        "secondary_ids": [
+          "/6499/example/app-open"
+        ],
+        "_id": "64141ba68e00b09cb912d79e",
+        "ad_name": "app_open_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "appopen",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 4000,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/rewarded"
+        ],
+        "secondary_ids": [
+          "/6499/example/rewarded"
+        ],
+        "_id": "64141c008e00b06dd312d7a2",
+        "ad_name": "rewarded_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "rewarded",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/21775744923/example/rewarded_interstitial"
+        ],
+        "secondary_ids": [
+          "/6499//21775744923/example/rewarded_interstitial/app-open"
+        ],
+        "_id": "64141c288e00b060c912d7a6",
+        "ad_name": "rewarded_interstitial_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "rewardInterstitial",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/native"
+        ],
+        "secondary_ids": [
+          "/6499/example/native"
+        ],
+        "_id": "64141c6f8e00b07fdc12d7ad",
+        "ad_name": "native_small_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#dd1313",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "small",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/native"
+        ],
+        "secondary_ids": [
+          "/6499/example/native"
+        ],
+        "_id": "64141ca08e00b083a012d7b1",
+        "ad_name": "native_medium_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#e81111",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "medium",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/native"
+        ],
+        "secondary_ids": [
+          "/6499/example/native"
+        ],
+        "_id": "64141cd38e00b0769012d7b5",
+        "ad_name": "native_bigv1_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#f01919",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "bigv1",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/native"
+        ],
+        "secondary_ids": [
+          "/6499/example/native"
+        ],
+        "_id": "64141cff8e00b0658412d7b9",
+        "ad_name": "native_bigv2_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#f20707",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "bigv2",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/native"
+        ],
+        "secondary_ids": [
+          "/6499/example/native"
+        ],
+        "_id": "64141d278e00b042ee12d7bd",
+        "ad_name": "native_bigv3_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#f20707",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "bigv3",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "/6499/example/native"
+        ],
+        "secondary_ids": [
+          "/6499/example/native"
+        ],
+        "_id": "64141d518e00b0575912d7c1",
+        "ad_name": "native_grid_admanager",
+        "primary_adprovider": "Admanager",
+        "secondary_adprovider": "Admanager",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#f20d0d",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#ffffff",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#2c2c2c",
+        "size": "grid_ad",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "qwertyuiop"
+        ],
+        "secondary_ids": [
+          "qwertyuiop"
+        ],
+        "_id": "64141d8b8e00b07e6f12d7c5",
+        "ad_name": "banner_applovin",
+        "primary_adprovider": "Applovin",
+        "secondary_adprovider": "Applovin",
+        "ad_type": "banner",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "banner",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "qwertyuiop"
+        ],
+        "secondary_ids": [
+          "qwertyuiop"
+        ],
+        "_id": "64141dac8e00b0d12912d7c9",
+        "ad_name": "interstitial_applovin",
+        "primary_adprovider": "Applovin",
+        "secondary_adprovider": "Applovin",
+        "ad_type": "interstitial",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "7d71db44c25d773b"
+        ],
+        "secondary_ids": [
+          "7d71db44c25d773b"
+        ],
+        "_id": "64141dd48e00b09aa012d7cd",
+        "ad_name": "app_open_applovin",
+        "primary_adprovider": "Applovin",
+        "secondary_adprovider": "Applovin",
         "ad_type": "appopen",
         "isActive": true,
         "refresh_rate_ms": 0,
         "color_hex": "#000000",
-        "size": "",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
-        "bg_color": "#000000",
-        "bg_color_dark": "#000000",
         "color_hex_dark": "#000000",
         "text_color": "#000000",
-        "text_color_dark": "#000000"
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 4000,
+        "mediaHeight": 300
       },
       {
         "primary_ids": [
-          "ca-app-pub-3940256099942544/2247696110"
+          "qwertyuiop"
         ],
         "secondary_ids": [
-          "ca-app-pub-3940256099942544/2247696110"
+          "qwertyuiop"
         ],
-        "_id": "63d94c19e5b2672794c221a7",
-        "ad_name": "test_native_ad",
-        "ad_type": "native",
+        "_id": "64141e2d8e00b01aea12d7d1",
+        "ad_name": "rewarded_applovin",
+        "primary_adprovider": "Applovin",
+        "secondary_adprovider": "Applovin",
+        "ad_type": "rewarded",
         "isActive": true,
-        "refresh_rate_ms": 10000,
+        "refresh_rate_ms": 45000,
         "color_hex": "#000000",
-        "size": "small",
-        "primary_adload_timeout_ms": 6000,
-        "background_threshold": 4000,
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
         "bg_color": "#ffffff",
         "bg_color_dark": "#000000",
-        "color_hex_dark": "#2c2c2c",
+        "size": "",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "91eae1b0fdcc2de9"
+        ],
+        "secondary_ids": [
+          "91eae1b0fdcc2de9"
+        ],
+        "_id": "64141e5f8e00b0db3712d7d5",
+        "ad_name": "native_small_applovin",
+        "primary_adprovider": "Applovin",
+        "secondary_adprovider": "Applovin",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
         "text_color": "#000000",
-        "text_color_dark": "#ffffff",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "small",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
+        "mediaHeight": 300
+      },
+      {
+        "primary_ids": [
+          "91eae1b0fdcc2de9"
+        ],
+        "secondary_ids": [
+          "91eae1b0fdcc2de9"
+        ],
+        "_id": "64141e878e00b0ab8212d7d9",
+        "ad_name": "native_big_applovin",
+        "primary_adprovider": "Applovin",
+        "secondary_adprovider": "Applovin",
+        "ad_type": "native",
+        "isActive": true,
+        "refresh_rate_ms": 45000,
+        "color_hex": "#000000",
+        "color_hex_dark": "#000000",
+        "text_color": "#000000",
+        "text_color_dark": "#000000",
+        "bg_color": "#ffffff",
+        "bg_color_dark": "#000000",
+        "size": "bigv1",
+        "primary_adload_timeout_ms": 8000,
+        "background_threshold": 0,
         "mediaHeight": 300
       }
     ],
     "createdAt": "2023-01-29T19:18:53.983Z",
-    "updatedAt": "2023-03-01T12:04:01.167Z",
+    "updatedAt": "2023-03-17T08:02:15.848Z",
     "__v": 0
   }
 }
