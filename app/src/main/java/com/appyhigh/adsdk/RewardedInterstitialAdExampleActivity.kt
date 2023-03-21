@@ -10,12 +10,15 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd
 
 class RewardedInterstitialAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
-    private var rewardedAdName = "test_rewarded_interstitial"
+    private var rewardedAdName = "rewarded_interstitial_admob"
+    private var testInterstitialAdManagerName = "rewarded_interstitial_admanager"
     private var mRewardedInterstitialAd: RewardedInterstitialAd? = null
     private var loadRewardedInterstitialAdButton: AppCompatButton? = null
+    private var adProvider = "admob"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rewarded_interstitial_ad_example)
+        adProvider = intent.getStringExtra("adProvider").toString()
         loadRewardedInterstitialAdButton = findViewById(R.id.show_rewarded_interstitial_ad)
         loadRewardedInterstitialAd()
         loadRewardedInterstitialAdButton?.setOnClickListener {
@@ -47,7 +50,11 @@ class RewardedInterstitialAdExampleActivity : AppCompatActivity(), BypassAppOpen
         AdSdk.loadAd(
             context = this,
             lifecycle = lifecycle,
-            adName = rewardedAdName,
+            adName = when (adProvider) {
+                "admob" -> rewardedAdName
+                "admanager" -> testInterstitialAdManagerName
+                else -> rewardedAdName
+            },
             rewardedInterstitialAdLoadListener = object : RewardedInterstitialAdLoadListener() {
                 override fun onAdLoaded(rewardedInterstitialAd: RewardedInterstitialAd) {
                     super.onAdLoaded(rewardedInterstitialAd)

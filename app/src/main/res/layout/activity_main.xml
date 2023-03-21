@@ -109,6 +109,17 @@
             android:textAllCaps="false"
             android:textColor="@color/white" />
 
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/rewardedInterstitialAdManagerAdButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/purple_500"
+            android:text="@string/rewarded_interstitial_ad_example"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/rewardedAdManagerAdButton"
             android:layout_width="match_parent"
@@ -179,15 +190,6 @@
             android:textAllCaps="false"
             android:textColor="@color/white" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/rewardedInterstitialAppLovinAdButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@color/purple_500"
-            android:text="@string/rewarded_interstitial_ad_example"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/nativeAppLovinAdButton"

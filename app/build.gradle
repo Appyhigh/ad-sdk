@@ -55,6 +55,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:21.4.0'
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:31.2.0')
+    debugImplementation 'com.plutolib:pluto:2.0.6'
+    releaseImplementation 'com.plutolib:pluto-no-op:2.0.6'
+    debugImplementation 'com.plutolib.plugins:bundle-core:2.0.6'
+    releaseImplementation 'com.plutolib.plugins:bundle-core-no-op:2.0.6'
 
     // Add the dependency for the Performance Monitoring library
     // When using the BoM, you don't specify versions in Firebase library dependencies

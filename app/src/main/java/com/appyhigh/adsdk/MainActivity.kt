@@ -53,7 +53,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<AppCompatButton>(R.id.rewardedInterstitialAdButton).setOnClickListener {
-            start(RewardedInterstitialAdExampleActivity())
+            start(RewardedInterstitialAdExampleActivity(), "admob")
+        }
+
+        findViewById<AppCompatButton>(R.id.rewardedInterstitialAdManagerAdButton).setOnClickListener {
+            start(RewardedInterstitialAdExampleActivity(), "admanager")
         }
 
         findViewById<AppCompatButton>(R.id.appOpenAdButton).setOnClickListener {
