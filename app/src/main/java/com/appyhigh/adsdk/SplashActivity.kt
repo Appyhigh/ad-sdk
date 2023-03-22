@@ -39,7 +39,7 @@ class SplashActivity : AppCompatActivity() {
             } catch (e: NullPointerException) {
                 e.printStackTrace()
             }
-            Log.d(AdSdkConstants.TAG, "onCreate:AD ID $advertId")
+
             AdSdk.getConsentForEU(
                 activity = this@SplashActivity,
                 testDeviceHashedId = "D3D0E14422C7B10ADA2BAA773B14EFB6",
