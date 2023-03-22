@@ -6,13 +6,17 @@ An Ad Util library to facilitate easy and standardised implementation of AdMob/A
 
 ## Dashboard Setup
 `Step 1:` Open https://admobdash-v2.apyhi.com/
+
 `Step 2:` Login using your google account.
+
 `Step 3:` Register a new App, If already registered skip this step.
+
 - AppName : Your App Name (Eg: Adutils)
 - PackageID: Your package ID (Eg: example.appyhigh.adutils)
 - Platform : Only Android Supported yet
 - Latest Version : Your latest app version here (Eg: 101)
 -  Critical Version : Your critical app version here below which you don't want your users to use the app. (Eg: 100)
+<img src="https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/register.png" style ="width:400px; height:auto;" alt="register"/>
 
 `Step 4:` Open the App from the list and add your ad placements.
 
@@ -32,13 +36,22 @@ An Ad Util library to facilitate easy and standardised implementation of AdMob/A
 - background_threshold -> This parameter has to be a value in `milliseconds` and this will be responsible for Background to Foreground timer for app open ad.
 - mediaHeight -> This parameter is only valid for Native Ad to control media height for native ad.
 
-https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/register.png
-
 
 ## Export JSON file for AD SDK Implementation
 `Step 1:` Open https://admobdash-v2.apyhi.com/
+
 `Step 2:` Login using your google account.
+
 `Step 3:` Open the App from the list and click on the export button at top right corner below New Ad Placement Button.
+
+## Available Ad Sizes For Banner and Native
+<p float="left">
+<img src="https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/banner_ads.png" style ="width:175px; height:auto; " alt="banner ads"/>
+<img src="https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/native_one.png" style ="width:175px; height:auto;" alt="native ads"/>
+<img src="https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/native_big_v1.png" style ="width:175px; height:auto;" alt="native ads"/>
+<img src="https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/native_big_v2.png" style ="width:175px; height:auto;" alt="native ads"/>
+<img src="https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/grid_native.png" style ="width:175px; height:auto;" alt="native ads"/>
+</p>
 
 ## Proguard Rules
 ```
@@ -109,20 +122,20 @@ AdSdk.getConsentForEU( YOUR ACTIVITY , YOUR TEST DEVICE HASHED ID string, object
 var advertId: String? = null
 CoroutineScope(Dispatchers.IO).launch {  
   var idInfo: AdvertisingIdClient.Info? = null  
-		try {  
-	       idInfo = AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)  
-	    } catch (e: GooglePlayServicesNotAvailableException) {  
-	        e.printStackTrace()  
-	    } catch (e: GooglePlayServicesRepairableException) {  
-	        e.printStackTrace()  
-	    } catch (e: IOException) {  
-	        e.printStackTrace()  
-	    }  
-	    try {  
-	        advertId = idInfo!!.id  
-		} catch (e: NullPointerException) {  
-	        e.printStackTrace()  
-	    }  
+    try {  
+       idInfo = AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)  
+    } catch (e: GooglePlayServicesNotAvailableException) {  
+	e.printStackTrace()  
+    } catch (e: GooglePlayServicesRepairableException) {  
+	e.printStackTrace()  
+    } catch (e: IOException) {  
+	e.printStackTrace()  
+    }  
+    try {  
+	advertId = idInfo!!.id  
+	} catch (e: NullPointerException) {  
+	e.printStackTrace()  
+    }  
 }
 ```
 
