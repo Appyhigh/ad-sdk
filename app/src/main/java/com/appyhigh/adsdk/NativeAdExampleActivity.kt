@@ -2,7 +2,10 @@ package com.appyhigh.adsdk
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
+import com.appyhigh.adsdk.interfaces.NativeAdLoadListener
+import com.google.android.gms.ads.nativead.NativeAd
 
 class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
     private var testNativeAdName = "native_small_admob"
@@ -18,7 +21,48 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
             context = this,
             lifecycle = lifecycle,
             adName = testNativeAdName,
-            parentView = findViewById(R.id.native_container)
+            parentView = findViewById(R.id.native_container),
+            nativeAdLoadListener = object : NativeAdLoadListener() {
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                }
+
+                override fun onAdClosed() {
+                    super.onAdClosed()
+                }
+
+                override fun onAdFailedToLoad(errors: List<String>) {
+                    super.onAdFailedToLoad(errors)
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                }
+
+                override fun onAdInflated() {
+                    super.onAdInflated()
+                }
+
+                override fun onAdLoaded(nativeAd: NativeAd?) {
+                    super.onAdLoaded(nativeAd)
+                }
+
+                override fun onAdOpened() {
+                    super.onAdOpened()
+                }
+
+                override fun onAdSwipeGestureClicked() {
+                    super.onAdSwipeGestureClicked()
+                }
+
+                override fun onMaxAdLoaded(nativeAd: MaxNativeAd?) {
+                    super.onMaxAdLoaded(nativeAd)
+                }
+
+                override fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {
+                    super.onMultipleAdsLoaded(nativeAds)
+                }
+            }
         )
 
         AdSdk.loadAd(
