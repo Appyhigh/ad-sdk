@@ -1,7 +1,45 @@
+
 # Ad SDK
 
 ## Introduction
-An ad util library to facilitate easy and standardised implementation of AdMob SDK.
+An Ad Util library to facilitate easy and standardised implementation of AdMob/AdManager/AppLovin SDK.
+
+## Dashboard Setup
+`Step 1:` Open https://admobdash-v2.apyhi.com/
+`Step 2:` Login using your google account.
+`Step 3:` Register a new App, If already registered skip this step.
+- AppName : Your App Name (Eg: Adutils)
+- PackageID: Your package ID (Eg: example.appyhigh.adutils)
+- Platform : Only Android Supported yet
+- Latest Version : Your latest app version here (Eg: 101)
+-  Critical Version : Your critical app version here below which you don't want your users to use the app. (Eg: 100)
+
+`Step 4:` Open the App from the list and add your ad placements.
+
+- ad_name -> This name should `match exactly` with the Ad placement name in your code.
+- primary_ids -> List of `;` seperated ad placement ids.
+- ad_type -> Type of ad you want your ad placement to be (Eg: Native, Banner, etc). This cannot be changed once its set.
+- secondary_ids -> List of `;` seperated ad placement ids. This is used in case primary id fails to load.
+- refresh_rate_ms -> This parameter has to be a value in `milliseconds` and is valid just for `Banner` and `Native` Ad Placements. This will refresh you Ad after the set time to fetch a new Ad.
+- color_hex -> This parameter is only valid for Native Ad. This parameter is responsible for the CTA color of the Ad in Light Mode.
+- color_hex_dark -> This parameter is only valid for Native Ad. This parameter is responsible for the CTA color of the Ad in Dark Mode.
+- text_color -> This parameter is only valid for Native Ad. This parameter is responsible for the Text color of the Ad in Light Mode.
+- text_color_dark -> This parameter is only valid for Native Ad. This parameter is responsible for the Text color of the Ad in Dark Mode.
+- bg_color -> This parameter is only valid for Native Ad. This parameter is responsible for the Background color of the Ad in Light Mode.
+- bg_color_dark -> This parameter is only valid for Native Ad. This parameter is responsible for the Background color of the Ad in Dark Mode.
+- size -> This parameter is only valid for Banner and Native to set the desired Ad Size.
+- primary_adload_timeout_ms -> This parameter has to be a value in `milliseconds` and Ad Loading will wait for this amount of time until it tries next ad unit in line.
+- background_threshold -> This parameter has to be a value in `milliseconds` and this will be responsible for Background to Foreground timer for app open ad.
+- mediaHeight -> This parameter is only valid for Native Ad to control media height for native ad.
+
+https://github.com/Appyhigh/ad-sdk/blob/main/screenshots/register.png
+
+
+## Export JSON file for AD SDK Implementation
+`Step 1:` Open https://admobdash-v2.apyhi.com/
+`Step 2:` Login using your google account.
+`Step 3:` Open the App from the list and click on the export button at top right corner below New Ad Placement Button.
+
 ## Proguard Rules
 ```
 -keep class io.jsonwebtoken.*.* { *; }
@@ -65,6 +103,29 @@ AdSdk.getConsentForEU( YOUR ACTIVITY , YOUR TEST DEVICE HASHED ID string, object
     }
 })
 ```
+
+## Fetch Advertising ID
+```kotlin
+var advertId: String? = null
+CoroutineScope(Dispatchers.IO).launch {  
+  var idInfo: AdvertisingIdClient.Info? = null  
+		try {  
+	       idInfo = AdvertisingIdClient.getAdvertisingIdInfo(applicationContext)  
+	    } catch (e: GooglePlayServicesNotAvailableException) {  
+	        e.printStackTrace()  
+	    } catch (e: GooglePlayServicesRepairableException) {  
+	        e.printStackTrace()  
+	    } catch (e: IOException) {  
+	        e.printStackTrace()  
+	    }  
+	    try {  
+	        advertId = idInfo!!.id  
+		} catch (e: NullPointerException) {  
+	        e.printStackTrace()  
+	    }  
+}
+```
+
 ## SDK Initialization
 
 ```kotlin
@@ -76,22 +137,27 @@ AdSdk.getConsentForEU( YOUR ACTIVITY , YOUR TEST DEVICE HASHED ID string, object
  */
 fun initialize(  
     application: Application,  
-    testDevice: String?,  
+    testDevice: String?,
+    advertisingId: String?,  
     fileId: Int,  
     adInitializeListener: AdInitializeListener  
 )
 ```
+
 ### Example Implementation:
 ```kotlin
 AdSdk.initialize(  
   application = application,  
   testDevice = "59106BA0F480E2EC4CD8CC7AA2C49B81", 
+  advertisingId = advertId,
   fileId = R.raw.ad_utils_response,  
   adInitializeListener = object : AdInitializeListener() {  
       override fun onSdkInitialized() {  
+	      // Ads Ready to be loaded
       }  
 
-      override fun onInitializationFailed(adSdkError: AdSdkError) {  
+      override fun onInitializationFailed(adSdkError: AdSdkError) {
+	      //SDK Initialization Failed  
       }  
   }
 )
@@ -151,7 +217,8 @@ AdSdk.preloadAd(
 ## Load Banner Ad
 ```kotlin
 AdSdk.loadAd(  
-    context = this,  
+    context = this,
+    lifecycle = lifecycle,  
     parentView = findViewById(R.id.llAdView),  
     adName = "test_banner"  
 )
@@ -167,7 +234,8 @@ AdSdk.preloadAd(
 ## Load Native Ad
  ```kotlin
 AdSdk.loadAd(  
-    context = this,  
+    context = this, 
+    lifecycle = lifecycle, 
     parentView = findViewById(R.id.llAdView),  
     adName = "test_native_ad"  
 )
@@ -197,6 +265,7 @@ nativeAdLoadListener = object : NativeAdLoadListener() {
 	  
 	override fun onAdLoaded(nativeAd: NativeAd?) {  
 	    super.onAdLoaded(nativeAd)  
+	    // This will return native ad object only if using AdSdk.fetchNativeAd() and not AdSdk.loadAd()
 	}  
 	  
 	override fun onAdOpened() {  
@@ -208,7 +277,8 @@ nativeAdLoadListener = object : NativeAdLoadListener() {
 	}  
 	  
 	override fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {  
-	    super.onMultipleAdsLoaded(nativeAds)  
+	    super.onMultipleAdsLoaded(nativeAds)
+	    // This will return multiple native ad object only if using AdSdk.fetchNativeAds() and not AdSdk.loadAd()  
 	}
 }
  ```
@@ -256,7 +326,8 @@ AdSdk.fetchNativeAd(
       }  
 
       override fun onAdLoaded(nativeAd: NativeAd?) {  
-          super.onAdLoaded(nativeAd)  
+          super.onAdLoaded(nativeAd)
+          // This will return native ad object only if using AdSdk.fetchNativeAd() and not AdSdk.loadAd()  
       }  
 
       override fun onAdOpened() {  
@@ -268,7 +339,8 @@ AdSdk.fetchNativeAd(
       }  
 
       override fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {  
-          super.onMultipleAdsLoaded(nativeAds)  
+          super.onMultipleAdsLoaded(nativeAds)
+          // This will return multiple native ad object only if using AdSdk.fetchNativeAds() and not AdSdk.loadAd()   
       }
     }  
 )
@@ -339,27 +411,44 @@ AdSdk.fetchNativeAds(
 ```
 ## Load Interstitial Ad
 ```kotlin
+private var mInterstitialAd: InterstitialAd? = null
+private var mMaxInterstitialAd: MaxInterstitialAd? = null
 AdSdk.loadAd(  
-    context = this,  
+    context = this,
+    lifecycle = lifecycle,  
     adName = "test_interstitial",  
-      interstitialAdLoadListener = object : InterstitialAdLoadListener() {  
-        override fun onAdFailedToLoad(adErrors: List<String>) {  
-          //This is fired only if primary, secondary and fallback all 3 Ids fail.  
-        }  
-
-        override fun onAdLoaded(interstitialAd: InterstitialAd) {
-          //This is fired when ad is loaded.    
-        }  
+    interstitialAdLoadListener = object : InterstitialAdLoadListener() {  
+      override fun onAdFailedToLoad(adErrors: List<String>) {  
+        //This is fired only if primary, secondary and fallback all 3 Ids fail.  
       }  
+      override fun onAdLoaded(interstitialAd: InterstitialAd) {
+	     mInterstitialAd = interstitialAd
+        //This is fired when ad is loaded for admob/admanager.    
+      }
+      override fun onApplovinAdLoaded(interstitialAd: MaxInterstitialAd) {
+	     mMaxInterstitialAd = interstitialAd
+	    //This is fired when ad is loaded for applovin
+      }  
+    }  
 )
 ```
-### Show Interstitial Ad
+### Show Interstitial Ad (Admob/Admanager)
 ```kotlin
-interstitialAd.show(this@MainActivity)
+if(mInterstitialAd != null) {
+	mInterstitialAd.show(this@MainActivity)
+}
 ```
-### Set the FullScreenContentCallback for Interstitial Ad
+
+### Show Interstitial Ad (Applovin)
 ```kotlin
-interstitialAd.fullScreenContentCallback = object: FullScreenContentCallback() {  
+if(mMaxInterstitialAd != null && mMaxInterstitialAd?.isReady!!) {
+	mMaxInterstitialAd?.showAd()
+}
+```
+
+### Set the FullScreenContentCallback for Interstitial Ad (Admob/Admanager)
+```kotlin
+mInterstitialAd.fullScreenContentCallback = object: FullScreenContentCallback() {  
       override fun onAdClicked() {
         // Called when a click is recorded for an ad.   
       }  
@@ -381,10 +470,43 @@ interstitialAd.fullScreenContentCallback = object: FullScreenContentCallback() {
       }  
 }
 ```
+### Set the FullScreenContentCallback for Interstitial Ad (Admob/Admanager)
+```kotlin
+mMaxInterstitialAd?.setListener(object : MaxAdListener {  
+    override fun onAdLoaded(p0: MaxAd?) {
+	    // This wont be called again, its already consumed within SDK.
+    }  
+  
+    override fun onAdDisplayed(p0: MaxAd?) { 
+	    // Called when an impression is recorded for an ad. 
+    }  
+  
+    override fun onAdHidden(p0: MaxAd?) {  
+	    // This will be called when ad is closed.  
+    }  
+  
+    override fun onAdClicked(p0: MaxAd?) {
+	    // Called when a click is recorded for an ad.     
+    }  
+  
+    override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+	   // This wont be called again, its already consumed within SDK.  
+    }  
+  
+    override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+	    // This will be called if ad display failed.   
+    }  
+})
+```
+
+
 ## Load Rewarded Ad
 ```kotlin
+private var mRewardedAd: RewardedAd? = null  
+private var mMaxRewardedAd: MaxRewardedAd? = null
 AdSdk.loadAd(  
-    context = this,  
+    context = this,
+    lifecycle = lifecycle,  
     adName = "test_rewarded",  
     rewardedAdLoadListener = object :RewardedAdLoadListener(){  
         override fun onAdFailedToLoad(adErrors: List<String>) {
@@ -397,18 +519,21 @@ AdSdk.loadAd(
     }  
 )
 ```
-### Show Rewarded Ad
+### Show Rewarded Ad (Admob/Appmanager)
 ```kotlin
-rewardedAd.show(this@MainActivity) {  
-    fun onUserEarnedReward(rewardItem: RewardItem) {  
-        var rewardAmount = rewardItem.amount  
-        var rewardType = rewardItem.type  
-    }  
-} 
+mRewardedAd?.show(this@MainActivity) {  
+  println("${AdSdkConstants.TAG} ${it.type} ${it.amount}")  
+}
 ```
-### Set the FullScreenContentCallback for Rewarded Ad
+
+### Show Rewarded Ad (Applovin)
 ```kotlin
-rewardedAd.fullScreenContentCallback = object: FullScreenContentCallback() {  
+mMaxRewardedAd?.showAd() 
+```
+
+### Set the FullScreenContentCallback for Rewarded Ad (Admob/Admanager)
+```kotlin
+mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {  
     override fun onAdClicked() {  
         // Called when a click is recorded for an ad.  
     }  
@@ -431,10 +556,56 @@ rewardedAd.fullScreenContentCallback = object: FullScreenContentCallback() {
     }  
 }
 ```
+
+### Set the FullScreenContentCallback for Rewarded Ad (Applovin)
+```kotlin
+mMaxRewardedAd?.setListener(object : MaxRewardedAdListener {  
+    override fun onAdLoaded(p0: MaxAd?) { 
+	    // This will not be called, it has been already consumed by SDK. 
+    }  
+  
+    override fun onAdDisplayed(p0: MaxAd?) {
+	    // This will be called when ad is shown.  
+    }  
+  
+    override fun onAdHidden(p0: MaxAd?) {  
+        // This will be caled when ad is closed.
+    }  
+  
+    override fun onAdClicked(p0: MaxAd?) { 
+	    // This is called when ad is clicked. 
+    }  
+  
+    override fun onAdLoadFailed(p0: String?, p1: MaxError?) { 
+	    // This will not be called, it has been already consumed by SDK.   
+    }  
+  
+    override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {  
+        // This will be called when ad fails to display.
+    }  
+  
+    override fun onUserRewarded(p0: MaxAd?, p1: MaxReward?) { 
+	    //On User Reward Success 
+        println("${AdSdkConstants.TAG} ${p1?.label} ${p1?.amount}")  
+    }  
+  
+    override fun onRewardedVideoStarted(p0: MaxAd?) { 
+	    // This will be called when rewarded video starts playing. 
+    }  
+  
+    override fun onRewardedVideoCompleted(p0: MaxAd?) {
+	    // This will be called when rewarded video completes.  
+    }  
+})
+```
+
+
 ## Load Rewarded Interstitial Ad
+> **Note:** This is available only for Admob and Admanager.
 ```kotlin
 AdSdk.loadAd(  
-    context = this,  
+  context = this,
+  lifecycle = lifecycle,  
   adName = "test_rewarded_interstitial",  
   rewardedInterstitialAdLoadListener = object : RewardedInterstitialAdLoadListener() {  
         override fun onAdFailedToLoad(adErrors: List<String>) {
@@ -490,13 +661,19 @@ AdSdk.loadAd(
     adName = "test_app_open",  
     appOpenLoadType = AppOpenLoadType.SINGLE_LOAD,  
       appOpenAdLoadListener = object : AppOpenAdLoadListener() {  
-          override fun onInitSuccess(manager: AppOpenAdManager?) {  
+      override fun onInitSuccess(manager: AppOpenAdManager?) {  
           super.onInitSuccess(manager)  
-      }  
+      }
+        
       override fun onAdLoaded(ad: AppOpenAd) {  
           super.onAdLoaded(ad)  
-          ad.show(this@MainActivity)  
-      }  
+          appOpenAd?.show(this@MainActivity)  
+      }
+
+	  override fun onApplovinAdLoaded(ad: MaxAppOpenAd) {  
+	      super.onApplovinAdLoaded(ad)  
+	      maxAppOpenAd?.showAd()
+	  }  
 
       override fun onAdClosed() {  
           super.onAdClosed()  
