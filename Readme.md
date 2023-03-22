@@ -360,6 +360,7 @@ AdSdk.fetchNativeAd(
 ```
 ## Fetch Multiple Native Ad objects for later use
 > **Note:** adsRequested should be a number between 1 to 5.
+
 ```kotlin
 /**  
  * @param context -> Pass the context here  
