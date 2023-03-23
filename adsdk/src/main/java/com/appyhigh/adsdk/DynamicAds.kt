@@ -11,7 +11,7 @@ import java.io.IOException
 
 
 internal class DynamicAds {
-    private val baseUrl = "https://admob-automation.apyhi.com/"
+    private val baseUrl = "https://admob-automation.apyhi.com/api/"
 
     fun fetchRemoteAdConfiguration(
         packageId: String
