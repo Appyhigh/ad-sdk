@@ -71,10 +71,24 @@ allprojects {
  ```
 In your app level `build.gradle` file add :
 ```groovy
+
+plugins {
+  id 'applovin-quality-service'
+}
+
+//root level only
+applovin {
+    apiKey "APP_LOVIN_API_KEY"
+}
+
 dependencies {  
  implementation 'com.github.Appyhigh:ad-sdk.x.x'
+ implementation("com.applovin:applovin-sdk:+")
 }
  ```
+
+Add mediations for AppLovin whichever are needed from [(Ref)](https://dash.applovin.com/documentation/mediation/android/mediation-adapters)
+
 
 Add these configurations to you `AndroidManifest.xml`
 ```xml
@@ -93,6 +107,11 @@ Add these configurations to you `AndroidManifest.xml`
             <meta-data 
             android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
             android:value="true"/>
+
+	    <meta-data
+            android:name="applovin.sdk.key"
+            android:value="APP_LOVIN_API_KEY" />
+
       </application>  
 </manifest>
  ```
@@ -484,7 +503,7 @@ mInterstitialAd.fullScreenContentCallback = object: FullScreenContentCallback() 
       }  
 }
 ```
-### Set the FullScreenContentCallback for Interstitial Ad (Admob/Admanager)
+### Set the FullScreenContentCallback for Interstitial Ad (Applovin)
 ```kotlin
 mMaxInterstitialAd?.setListener(object : MaxAdListener {  
     override fun onAdLoaded(p0: MaxAd?) {
