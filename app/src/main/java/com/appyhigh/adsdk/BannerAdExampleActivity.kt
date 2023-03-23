@@ -11,7 +11,6 @@ class BannerAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_banner_ad_example)
-
         AdSdk.loadAd(
             context = this,
             lifecycle = lifecycle,

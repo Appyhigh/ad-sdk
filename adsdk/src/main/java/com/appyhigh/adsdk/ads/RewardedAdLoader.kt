@@ -13,6 +13,7 @@ import com.applovin.mediation.ads.MaxRewardedAd
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.interfaces.RewardedAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
 import com.google.ads.mediation.admob.AdMobAdapter
@@ -55,7 +56,7 @@ internal class RewardedAdLoader {
             adUnitsProvider.add(secondaryAdUnitProvider)
         }
         adUnits.add(fallBackId)
-        adUnitsProvider.add("admob")
+        adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
 
         countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
@@ -102,7 +103,7 @@ internal class RewardedAdLoader {
         rewardedAdLoadListener: RewardedAdLoadListener?
     ) {
         countDownTimer?.start()
-        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+        if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
             val rewardedAd = MaxRewardedAd.getInstance(adUnit, activity)
             rewardedAd.loadAd()
             rewardedAd.setListener(object : MaxRewardedAdListener {
@@ -154,7 +155,7 @@ internal class RewardedAdLoader {
                 }
             })
         } else {
-            val adRequest = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+            val adRequest = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
                 AdRequest.Builder()
             } else {
                 AdManagerAdRequest.Builder()

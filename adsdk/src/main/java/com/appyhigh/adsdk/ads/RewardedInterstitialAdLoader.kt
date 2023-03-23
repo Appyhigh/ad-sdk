@@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.interfaces.RewardedInterstitialAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
 import com.google.ads.mediation.admob.AdMobAdapter
@@ -48,7 +49,7 @@ internal class RewardedInterstitialAdLoader {
             adUnitsProvider.add(secondaryAdUnitProvider)
         }
         adUnits.add(fallBackId)
-        adUnitsProvider.add("admob")
+        adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
 
         countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
@@ -93,7 +94,7 @@ internal class RewardedInterstitialAdLoader {
     ) {
         countDownTimer?.start()
 
-        val adRequest = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+        val adRequest = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
             AdRequest.Builder()
         } else {
             AdManagerAdRequest.Builder()

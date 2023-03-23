@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import com.applovin.sdk.AppLovinSdk
 import com.appyhigh.adsdk.ads.*
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.data.enums.AdSdkErrorCode
 import com.appyhigh.adsdk.data.enums.AdType
 import com.appyhigh.adsdk.data.enums.AppOpenLoadType
@@ -626,5 +627,24 @@ object AdSdk {
 
     private fun isAdActive(adName: String): Boolean {
         return (adConfig.isAppAdsActive() && adConfig.isAdUnitActive(adName))
+    }
+
+    fun fetchAdUnitId(adName: String): Pair<AdProvider, String>? {
+        adConfig.init()
+        return if (adConfig.fetchPrimaryAdUnitIds(adName).isNotEmpty()) {
+            adConfig.fetchPrimaryAdUnitIds(adName)[0]
+            val adProvider = when (adConfig.fetchPrimaryAdProvider(adName)) {
+                AdProvider.ADMOB.name.lowercase() -> AdProvider.ADMOB
+                AdProvider.APPLOVIN.name.lowercase() -> AdProvider.APPLOVIN
+                AdProvider.ADMANAGER.name.lowercase() -> AdProvider.ADMANAGER
+                else -> AdProvider.UNKNOWN
+            }
+            Pair(
+                adProvider,
+                adConfig.fetchPrimaryAdUnitIds(adName)[0]
+            )
+        } else {
+            null
+        }
     }
 }

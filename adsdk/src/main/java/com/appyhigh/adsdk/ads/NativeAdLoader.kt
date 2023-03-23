@@ -26,6 +26,7 @@ import com.applovin.mediation.nativeAds.MaxNativeAdView
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.data.enums.NativeAdSize
 import com.appyhigh.adsdk.interfaces.NativeAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
@@ -56,7 +57,7 @@ internal class NativeAdLoader {
         neighbourContentURL: List<String>?,
     ) {
         if (AdSdkConstants.preloadedNativeAdMap[adName] == null) {
-            if (adProvider == "applovin") {
+            if (adProvider == AdProvider.APPLOVIN.name.lowercase()) {
                 val nativeAdLoader = MaxNativeAdLoader(adUnitId, context)
                 nativeAdLoader.loadAd()
                 nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
@@ -76,7 +77,7 @@ internal class NativeAdLoader {
                     }
                 })
             } else {
-                val builder = if (adProvider == "admob") {
+                val builder = if (adProvider == AdProvider.ADMOB.name.lowercase()) {
                     AdRequest.Builder().addNetworkExtrasBundle(
                         AdMobAdapter::class.java,
                         if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
@@ -224,7 +225,7 @@ internal class NativeAdLoader {
                 adUnitsProvider.add(secondaryAdUnitProvider)
             }
             adUnits.add(fallBackId)
-            adUnitsProvider.add("admob")
+            adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
 
             if (!isLocalRefresh && !isNativeFetch) {
                 val nativeShimmerBaseView =
@@ -351,7 +352,7 @@ internal class NativeAdLoader {
             }
         }.start()
 
-        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+        if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
             val nativeAdLoader = MaxNativeAdLoader(adUnit, context)
             nativeAdLoader.loadAd()
             nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
@@ -524,7 +525,7 @@ internal class NativeAdLoader {
         contentURL: String?,
         neighbourContentURL: List<String>?,
     ): AdRequest.Builder {
-        val builder = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+        val builder = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
             AdRequest.Builder().addNetworkExtrasBundle(
                 AdMobAdapter::class.java,
                 if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()

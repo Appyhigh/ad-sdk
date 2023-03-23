@@ -7,6 +7,7 @@ import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxAdListener
 import com.applovin.mediation.MaxError
 import com.applovin.mediation.ads.MaxAppOpenAd
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.data.enums.AppOpenLoadType
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListener
 import com.google.android.gms.ads.AdError
@@ -29,7 +30,7 @@ class AppOpenAdExampleActivity : AppCompatActivity() {
 //        loadAppOpenAdBgToFg()
         showAppOpenButton = findViewById(R.id.show_app_open_ad)
         showAppOpenButton?.setOnClickListener {
-            if (adProvider == "applovin") {
+            if (adProvider == AdProvider.APPLOVIN.name.lowercase()) {
                 maxAppOpenAd?.showAd()
                 maxAppOpenAd?.setListener(object : MaxAdListener {
                     override fun onAdLoaded(p0: MaxAd?) {

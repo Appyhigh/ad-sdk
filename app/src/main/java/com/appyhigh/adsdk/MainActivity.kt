@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import com.appyhigh.adsdk.data.enums.AdProvider
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<AppCompatButton>(R.id.interstitialAppLovinAdButton).setOnClickListener {
-            start(InterstitialAdExampleActivity(), "applovin")
+            start(InterstitialAdExampleActivity(), AdProvider.APPLOVIN.name.lowercase())
         }
 
         findViewById<AppCompatButton>(R.id.nativeAdButton).setOnClickListener {
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<AppCompatButton>(R.id.rewardedAppLovinAdButton).setOnClickListener {
-            start(RewardedAdExampleActivity(), "applovin")
+            start(RewardedAdExampleActivity(), AdProvider.APPLOVIN.name.lowercase())
         }
 
         findViewById<AppCompatButton>(R.id.rewardedInterstitialAdButton).setOnClickListener {
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<AppCompatButton>(R.id.appOpenAppLovinAdButton).setOnClickListener {
-            start(AppOpenAdExampleActivity(), "applovin")
+            start(AppOpenAdExampleActivity(), AdProvider.APPLOVIN.name.lowercase())
         }
 
         findViewById<AppCompatButton>(R.id.bannerAdManagerAdButton).setOnClickListener {
