@@ -200,12 +200,14 @@ object AdSdk {
         advertisingId: String?,
         application: Application
     ) {
-        AppLovinSdk.getInstance(application).settings.testDeviceAdvertisingIds =
-            arrayListOf(advertisingId)
-        testDevice?.let {
-            val build = RequestConfiguration.Builder()
-                .setTestDeviceIds(listOf(it)).build()
-            MobileAds.setRequestConfiguration(build)
+        if (BuildConfig.DEBUG) {
+            AppLovinSdk.getInstance(application).settings.testDeviceAdvertisingIds =
+                arrayListOf(advertisingId)
+            testDevice?.let {
+                val build = RequestConfiguration.Builder()
+                    .setTestDeviceIds(listOf(it)).build()
+                MobileAds.setRequestConfiguration(build)
+            }
         }
     }
 
