@@ -12,6 +12,7 @@ import com.applovin.mediation.ads.MaxAppOpenAd
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListener
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListenerInternal
 import com.appyhigh.adsdk.utils.Logger
@@ -55,7 +56,7 @@ internal class AppOpenAdLoader {
             adUnitsProvider.add(secondaryAdUnitProvider)
         }
         adUnits.add(fallBackId)
-        adUnitsProvider.add("admob")
+        adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
 
         countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
             override fun onTick(p0: Long) {}
@@ -109,8 +110,8 @@ internal class AppOpenAdLoader {
             adUnitsProvider.add(secondaryAdUnitProvider)
         }
         adUnits.add(fallBackId)
-        adUnitsProvider.add("admob")
-        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+        adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
+        if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
             ApplovinAppOpenManager(adUnits[adRequestsCompleted], context)
         } else {
             appOpenAdManager = AppOpenAdManager()
@@ -172,7 +173,7 @@ internal class AppOpenAdLoader {
         countDownTimer: CountDownTimer?,
         appOpenAdLoadListener: AppOpenAdLoadListener?
     ) {
-        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+        if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
             val appOpenAd = MaxAppOpenAd(adUnit!!, context)
             appOpenAd.loadAd()
             appOpenAd.setListener(object : MaxAdListener {
@@ -220,7 +221,7 @@ internal class AppOpenAdLoader {
                 }
             })
         } else {
-            val request = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+            val request = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
                 AdRequest.Builder()
             } else {
                 AdManagerAdRequest.Builder()

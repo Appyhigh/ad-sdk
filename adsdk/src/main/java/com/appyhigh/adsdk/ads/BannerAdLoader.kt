@@ -19,6 +19,7 @@ import com.applovin.mediation.ads.MaxAdView
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.interfaces.BannerAdLoadListener
 import com.appyhigh.adsdk.utils.Logger
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -45,7 +46,7 @@ internal class BannerAdLoader {
         neighbourContentURL: List<String>?
     ) {
         if (AdSdkConstants.preloadedBannerAdMap[adName] == null) {
-            if (adProvider == "applovin") {
+            if (adProvider == AdProvider.APPLOVIN.name.lowercase()) {
                 val mAdView = MaxAdView(adUnitId, context)
                 val width = ViewGroup.LayoutParams.MATCH_PARENT
                 val heightPx = context.resources.getDimensionPixelSize(R.dimen.banner_height)
@@ -87,7 +88,7 @@ internal class BannerAdLoader {
                     }
                 })
             } else {
-                val builder = if (adProvider == "admob") {
+                val builder = if (adProvider == AdProvider.ADMOB.name.lowercase()) {
                     AdRequest.Builder()
                 } else {
                     AdManagerAdRequest.Builder()
@@ -209,7 +210,7 @@ internal class BannerAdLoader {
                 adUnitsProvider.add(secondaryAdUnitProvider)
             }
             adUnits.add(fallBackId)
-            adUnitsProvider.add("admob")
+            adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
 
             if (!isLocalRefresh) {
                 val bannerShimmerBaseView =
@@ -292,7 +293,7 @@ internal class BannerAdLoader {
             }
         }.start()
         val mAdView: ViewGroup
-        if (adUnitsProvider[adRequestsCompleted] == "applovin") {
+        if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
             mAdView = MaxAdView(adUnit, context)
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val heightPx = context.resources.getDimensionPixelSize(R.dimen.banner_height)
@@ -302,7 +303,7 @@ internal class BannerAdLoader {
             parentView.addView(mAdView)
             mAdView.loadAd()
         } else {
-            val builder = if (adUnitsProvider[adRequestsCompleted] == "admob") {
+            val builder = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
                 AdRequest.Builder()
             } else {
                 AdManagerAdRequest.Builder()

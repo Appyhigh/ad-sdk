@@ -14,6 +14,7 @@ import androidx.lifecycle.*
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListenerInternal
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.utils.Logger
@@ -75,7 +76,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
             return
         }
         isLoadingAd = true
-        val request = if (adUnitProvider == "admob") {
+        val request = if (adUnitProvider == AdProvider.ADMOB.name.lowercase()) {
             AdRequest.Builder()
         } else {
             AdManagerAdRequest.Builder()

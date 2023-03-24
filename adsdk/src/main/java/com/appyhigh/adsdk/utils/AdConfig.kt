@@ -2,6 +2,7 @@ package com.appyhigh.adsdk.utils
 
 import android.annotation.SuppressLint
 import com.appyhigh.adsdk.AdSdkConstants
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.data.enums.AdType
 import com.appyhigh.adsdk.data.enums.BannerAdSize
 import com.appyhigh.adsdk.data.enums.NativeAdSize
@@ -20,8 +21,8 @@ internal class AdConfig {
     private var defaultDarkTextHex = "#000000"
     private var defaultLightBackgroundHex = "#ffffff"
     private var defaultDarkBackgroundHex = "#000000"
-    private var defaultPrimaryAdProvider = "applovin"
-    private var defaultSecondaryAdProvider = "applovin"
+    private var defaultPrimaryAdProvider = AdProvider.ADMOB.name.lowercase()
+    private var defaultSecondaryAdProvider = AdProvider.ADMOB.name.lowercase()
 
     fun initWithLocalFile(fileData: String) {
         if (adResponse == null) {

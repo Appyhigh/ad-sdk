@@ -7,6 +7,7 @@ import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxAdListener
 import com.applovin.mediation.MaxError
 import com.applovin.mediation.ads.MaxInterstitialAd
+import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.interfaces.InterstitialAdLoadListener
 import com.google.android.gms.ads.AdError
@@ -28,7 +29,7 @@ class InterstitialAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
         loadInterstitialAdButton = findViewById(R.id.show_interstitial_ad)
         loadInterstitialAd()
         loadInterstitialAdButton?.setOnClickListener {
-            if (adProvider == "applovin" && mMaxInterstitialAd?.isReady!!) {
+            if (adProvider == AdProvider.APPLOVIN.name.lowercase() && mMaxInterstitialAd?.isReady!!) {
                 mMaxInterstitialAd?.showAd()
                 mMaxInterstitialAd?.setListener(object : MaxAdListener {
                     override fun onAdLoaded(p0: MaxAd?) {
