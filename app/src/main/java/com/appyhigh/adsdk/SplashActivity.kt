@@ -23,6 +23,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        Log.d(AdSdkConstants.TAG, "start")
         CoroutineScope(Dispatchers.IO).launch {
             var idInfo: AdvertisingIdClient.Info? = null
             try {
@@ -40,16 +41,7 @@ class SplashActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
-            AdSdk.getConsentForEU(
-                activity = this@SplashActivity,
-                testDeviceHashedId = "D3D0E14422C7B10ADA2BAA773B14EFB6",
-                consentRequestListener = object : ConsentRequestListener {
-                    override fun onError(message: String, code: Int) {}
-                    override fun onSuccess() {
-                        initializeAdSdk()
-                    }
-                }
-            )
+            initializeAdSdk()
         }
     }
 
@@ -61,6 +53,7 @@ class SplashActivity : AppCompatActivity() {
             fileId = R.raw.ad_utils_response,
             adInitializeListener = object : AdInitializeListener() {
                 override fun onSdkInitialized() {
+                    Log.d(AdSdkConstants.TAG, "end")
                     AdSdk.setUpVersionControl(
                         activity = this@SplashActivity,
                         view = findViewById(R.id.tvInto),

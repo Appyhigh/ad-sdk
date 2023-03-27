@@ -3,6 +3,7 @@ package com.appyhigh.adsdk
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
@@ -143,7 +144,9 @@ object AdSdk {
         if (isGooglePlayServicesAvailable(application)) {
             addTestDevice(testDevice, advertisingId, application)
             MobileAds.initialize(application) {
+                Log.d(AdSdkConstants.TAG, "admob")
                 AppLovinSdk.getInstance(application).initializeSdk {
+                    Log.d(AdSdkConstants.TAG, "applovin")
                     AppLovinSdk.getInstance(application).mediationProvider = "max"
                     isInitialized = true
                     adInitializeListener.onSdkInitialized()

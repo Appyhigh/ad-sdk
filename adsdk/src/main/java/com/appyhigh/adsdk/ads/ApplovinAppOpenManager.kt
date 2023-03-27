@@ -13,11 +13,14 @@ import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 
 class ApplovinAppOpenManager(
     adUnitId: String,
-    applicationContext: Context
+    applicationContext: Context,
+    backgroundThreshold: Int,
 ) : LifecycleObserver, MaxAdListener,
     LifecycleEventObserver {
     private var appOpenAd: MaxAppOpenAd
     private var context: Context
+    private var backgroundTime: Long = 0
+    private var backgroundThreshold: Long = 0
 
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -25,6 +28,7 @@ class ApplovinAppOpenManager(
         appOpenAd = MaxAppOpenAd(adUnitId, applicationContext)
         appOpenAd.setListener(this)
         appOpenAd.loadAd()
+        this.backgroundThreshold = backgroundThreshold.toLong()
     }
 
     private fun showAdIfReady() {
@@ -39,8 +43,15 @@ class ApplovinAppOpenManager(
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         Handler(Looper.getMainLooper()).postDelayed({
             if (event == Lifecycle.Event.ON_START) {
-                showAdIfReady()
+                val appBackgroundTime = System.currentTimeMillis() - backgroundTime
+                if (appBackgroundTime > backgroundThreshold)
+                    showAdIfReady()
             }
+
+            if (event == Lifecycle.Event.ON_STOP) {
+                backgroundTime = System.currentTimeMillis()
+            }
+
         }, 300)
     }
 
