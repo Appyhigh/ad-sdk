@@ -87,7 +87,7 @@ dependencies {
 }
  ```
 
-Add mediations for AppLovin whichever are needed from [(Ref)](https://dash.applovin.com/documentation/mediation/android/mediation-adapters)
+> **Note:** Add mediations for AppLovin whichever are needed from [(Ref)](https://dash.applovin.com/documentation/mediation/android/mediation-adapters)
 
 
 Add these configurations to you `AndroidManifest.xml`
