@@ -87,6 +87,20 @@ dependencies {
 }
  ```
 
+In your project level `build.gradle` file add :
+```groovy
+
+buildscript {
+    dependencies {
+        classpath "com.applovin.quality:AppLovinQualityServiceGradlePlugin:4.9.1"
+    }
+    repositories {
+        maven { url 'https://artifacts.applovin.com/android' }
+        google()
+    }
+}
+```
+
 > **Note:** Add mediations for AppLovin whichever are needed from [(Ref)](https://dash.applovin.com/documentation/mediation/android/mediation-adapters)
 
 
