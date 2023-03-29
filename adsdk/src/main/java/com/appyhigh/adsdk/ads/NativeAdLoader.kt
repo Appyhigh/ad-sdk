@@ -209,11 +209,11 @@ internal class NativeAdLoader {
                     parentView.addView(adView)
                     nativeAdLoadListener?.onAdInflated()
                 }
-                AdSdkConstants.preloadedNativeAdMap[adName] = null
             } else {
                 parentView.removeAllViews()
                 parentView.addView(AdSdkConstants.preloadedNativeAdMap[adName] as View)
             }
+            AdSdkConstants.preloadedNativeAdMap[adName] = null
         } else {
             for (adUnit in primaryAdUnitIds) {
                 adUnits.add(adUnit)
