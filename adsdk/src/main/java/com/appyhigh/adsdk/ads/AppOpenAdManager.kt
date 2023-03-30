@@ -36,7 +36,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
     private var adName: String? = null
     private var adUnit: String? = null
     private var adUnitProvider: String? = null
-    private var backgroundThreshold: Int = 4000
+    private var backgroundThreshold: Long = 4000
     private var appOpenAdLoadListener: AppOpenAdLoadListenerInternal? = null
     private var appCount = 0
     private var backgroundTime: Long = 0
@@ -55,7 +55,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
     ) {
         application.registerActivityLifecycleCallbacks(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-        this.backgroundTime = backgroundThreshold.toLong()
+        this.backgroundThreshold = backgroundThreshold.toLong()
         this.adName = adName
         this.adUnit = adUnit
         this.adUnitProvider = adUnitProvider

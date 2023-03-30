@@ -16,9 +16,9 @@ android {
 
     defaultConfig {
         applicationId "com.appyhigh.adssdk"
-        minSdk 23
+        minSdk 21
         targetSdk 31
-        versionCode 1
+        versionCode 21
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

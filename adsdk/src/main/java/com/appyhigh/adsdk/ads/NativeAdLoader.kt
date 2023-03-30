@@ -4,9 +4,11 @@ import android.R.attr.*
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -47,6 +49,13 @@ internal class NativeAdLoader {
     private var nativeAd: NativeAd? = null
     private var requestedAdsArray = ArrayList<NativeAd?>()
 
+    val Number.toPx
+        get() = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(),
+            Resources.getSystem().displayMetrics
+        )
+
     @SuppressLint("VisibleForTests")
     fun preloadNativeAd(
         context: Context,
@@ -62,11 +71,13 @@ internal class NativeAdLoader {
                 nativeAdLoader.loadAd()
                 nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
                     override fun onNativeAdLoaded(p0: MaxNativeAdView?, p1: MaxAd?) {
+                        val linearLayout = LinearLayout(context)
+                        linearLayout.addView(p0)
                         Logger.d(
                             AdSdkConstants.TAG,
                             "$adName ==== $adUnitId ==== ${context.getString(R.string.native_ad_preloaded)}"
                         )
-                        AdSdkConstants.preloadedNativeAdMap[adName] = p0
+                        AdSdkConstants.preloadedNativeAdMap[adName] = linearLayout
                     }
 
                     override fun onNativeAdLoadFailed(adUnitId: String, error: MaxError) {
@@ -196,7 +207,7 @@ internal class NativeAdLoader {
                 )
                 if (isNativeFetch) {
                     if (AdSdkConstants.preloadedNativeAdMap[adName]!! is MaxAd) {
-                        nativeAdLoadListener?.onMaxAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!! as MaxNativeAd)
+                        nativeAdLoadListener?.onMaxAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!! as LinearLayout)
                     } else {
                         nativeAdLoadListener?.onAdLoaded(AdSdkConstants.preloadedNativeAdMap[adName]!! as NativeAd)
                     }
@@ -209,11 +220,17 @@ internal class NativeAdLoader {
                     parentView.addView(adView)
                     nativeAdLoadListener?.onAdInflated()
                 }
-                AdSdkConstants.preloadedNativeAdMap[adName] = null
             } else {
+                val adView = AdSdkConstants.preloadedNativeAdMap[adName] as LinearLayout
+                val layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    if (adSize == NativeAdSize.SMALL) 120.toPx.toInt() else 250.toPx.toInt()
+                )
+                adView.layoutParams = layoutParams
                 parentView.removeAllViews()
-                parentView.addView(AdSdkConstants.preloadedNativeAdMap[adName] as View)
+                parentView.addView(adView)
             }
+            AdSdkConstants.preloadedNativeAdMap[adName] = null
         } else {
             for (adUnit in primaryAdUnitIds) {
                 adUnits.add(adUnit)
@@ -365,7 +382,14 @@ internal class NativeAdLoader {
                         )
                         countDownTimer?.cancel()
                         parentView.removeAllViews()
-                        parentView.addView(nativeAdView)
+                        val linearLayout = LinearLayout(context)
+                        val layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            if (adSize == NativeAdSize.SMALL) 120.toPx.toInt() else 250.toPx.toInt()
+                        )
+                        linearLayout.layoutParams = layoutParams
+                        linearLayout.addView(nativeAdView)
+                        parentView.addView(linearLayout)
                         isAdLoaded = true
                     }
                 }
@@ -525,17 +549,18 @@ internal class NativeAdLoader {
         contentURL: String?,
         neighbourContentURL: List<String>?,
     ): AdRequest.Builder {
-        val builder = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-            AdRequest.Builder().addNetworkExtrasBundle(
-                AdMobAdapter::class.java,
-                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-            )
-        } else {
-            AdManagerAdRequest.Builder().addNetworkExtrasBundle(
-                AdMobAdapter::class.java,
-                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-            )
-        }
+        val builder =
+            if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
+                AdRequest.Builder().addNetworkExtrasBundle(
+                    AdMobAdapter::class.java,
+                    if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                )
+            } else {
+                AdManagerAdRequest.Builder().addNetworkExtrasBundle(
+                    AdMobAdapter::class.java,
+                    if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                )
+            }
         contentURL?.let { builder.setContentUrl(it) }
         neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
         return builder

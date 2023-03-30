@@ -112,7 +112,7 @@ internal class AppOpenAdLoader {
         adUnits.add(fallBackId)
         adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
         if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
-            ApplovinAppOpenManager(adUnits[adRequestsCompleted], context)
+            ApplovinAppOpenManager(adUnits[adRequestsCompleted], context, backgroundThreshold)
         } else {
             appOpenAdManager = AppOpenAdManager()
             appOpenAdManager?.init(
