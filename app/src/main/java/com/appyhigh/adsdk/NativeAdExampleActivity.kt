@@ -2,6 +2,7 @@ package com.appyhigh.adsdk
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
 import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
@@ -18,9 +19,8 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_native_ad_example)
-        AdSdk.loadAd(
+        AdSdk.fetchNativeAd(
             context = this,
-            lifecycle = lifecycle,
             adName = testNativeAdName,
             parentView = findViewById(R.id.native_container),
             nativeAdLoadListener = object : NativeAdLoadListener() {
@@ -46,6 +46,7 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
 
                 override fun onAdLoaded(nativeAd: NativeAd?) {
                     super.onAdLoaded(nativeAd)
+                    Log.d(AdSdkConstants.TAG, "onAdLoaded: $nativeAd")
                 }
 
                 override fun onAdOpened() {
@@ -62,6 +63,7 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
 
                 override fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {
                     super.onMultipleAdsLoaded(nativeAds)
+                    Log.d(AdSdkConstants.TAG, "onAdLoaded: $nativeAds")
                 }
             }
         )

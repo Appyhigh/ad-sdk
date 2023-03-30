@@ -24,6 +24,13 @@ class ApplovinAppOpenManager(
     private var backgroundTime: Long = 0
     private var backgroundThreshold: Long = 0
 
+    private var isPremium: Boolean = false
+
+    companion object {
+        var isPremiumUser: Boolean = false
+    }
+
+
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         context = applicationContext
@@ -49,7 +56,8 @@ class ApplovinAppOpenManager(
         Handler(Looper.getMainLooper()).postDelayed({
             if (event == Lifecycle.Event.ON_START) {
                 val appBackgroundTime = System.currentTimeMillis() - backgroundTime
-                if (appBackgroundTime > backgroundThreshold)
+                isPremium = AppOpenAdManager.isPremiumUser
+                if (appBackgroundTime > backgroundThreshold && !isPremium)
                     showAdIfReady()
             }
 

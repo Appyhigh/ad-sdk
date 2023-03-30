@@ -110,6 +110,7 @@ class AppOpenAdExampleActivity : AppCompatActivity() {
                 override fun onApplovinAdLoaded(ad: MaxAppOpenAd) {
                     super.onApplovinAdLoaded(ad)
                     maxAppOpenAd = ad
+
                 }
 
                 override fun onAdLoaded(ad: AppOpenAd) {
