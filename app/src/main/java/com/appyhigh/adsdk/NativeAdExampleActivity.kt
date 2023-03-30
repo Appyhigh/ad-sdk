@@ -2,6 +2,7 @@ package com.appyhigh.adsdk
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.LinearLayout
 import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.interfaces.NativeAdLoadListener
@@ -55,7 +56,7 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
                     super.onAdSwipeGestureClicked()
                 }
 
-                override fun onMaxAdLoaded(nativeAd: MaxNativeAd?) {
+                override fun onMaxAdLoaded(nativeAd: LinearLayout?) {
                     super.onMaxAdLoaded(nativeAd)
                 }
 

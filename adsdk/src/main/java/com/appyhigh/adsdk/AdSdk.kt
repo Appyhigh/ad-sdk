@@ -6,6 +6,9 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.lifecycle.Lifecycle
 import com.applovin.sdk.AppLovinSdk
 import com.appyhigh.adsdk.ads.*
@@ -394,35 +397,52 @@ object AdSdk {
                         return
                     }
 
-                    NativeAdLoader().loadNativeAd(
-                        context,
-                        lifecycle,
-                        parentView,
-                        adName,
-                        adConfig.fetchNativeAdSize(adName),
-                        fallBackId,
-                        adConfig.fetchPrimaryAdUnitIds(adName),
-                        adConfig.fetchSecondaryAdUnitIds(adName),
-                        adConfig.fetchPrimaryAdProvider(adName),
-                        adConfig.fetchSecondaryAdProvider(adName),
-                        adConfig.fetchAdUnitTimeout(adName),
-                        adConfig.fetchAdUnitRefreshTimer(adName),
-                        adConfig.fetchDarkCTAColor(adName).takeIf { isDarkModeEnabled }
-                            ?: adConfig.fetchLightCTAColor(adName),
-                        adConfig.fetchDarkTextColor(adName).takeIf { isDarkModeEnabled }
-                            ?: adConfig.fetchLightTextColor(adName),
-                        (R.drawable.ad_sdk_bg_dark).takeIf { isDarkModeEnabled }
-                            ?: (R.drawable.ad_sdk_bg),
-                        adConfig.fetchDarkBackgroundColor(adName).takeIf { isDarkModeEnabled }
-                            ?: adConfig.fetchLightBackgroundColor(adName),
-                        contentURL,
-                        neighbourContentURL,
-                        nativeAdLoadListener,
-                        false,
-                        isNativeFetch,
-                        adsRequested,
-                        adConfig.fetchMediaHeight(adName)
-                    )
+                    if (parentView is RelativeLayout || parentView is LinearLayout || parentView is FrameLayout) {
+
+                        NativeAdLoader().loadNativeAd(
+                            context,
+                            lifecycle,
+                            parentView,
+                            adName,
+                            adConfig.fetchNativeAdSize(adName),
+                            fallBackId,
+                            adConfig.fetchPrimaryAdUnitIds(adName),
+                            adConfig.fetchSecondaryAdUnitIds(adName),
+                            adConfig.fetchPrimaryAdProvider(adName),
+                            adConfig.fetchSecondaryAdProvider(adName),
+                            adConfig.fetchAdUnitTimeout(adName),
+                            adConfig.fetchAdUnitRefreshTimer(adName),
+                            adConfig.fetchDarkCTAColor(adName).takeIf { isDarkModeEnabled }
+                                ?: adConfig.fetchLightCTAColor(adName),
+                            adConfig.fetchDarkTextColor(adName).takeIf { isDarkModeEnabled }
+                                ?: adConfig.fetchLightTextColor(adName),
+                            (R.drawable.ad_sdk_bg_dark).takeIf { isDarkModeEnabled }
+                                ?: (R.drawable.ad_sdk_bg),
+                            adConfig.fetchDarkBackgroundColor(adName).takeIf { isDarkModeEnabled }
+                                ?: adConfig.fetchLightBackgroundColor(adName),
+                            contentURL,
+                            neighbourContentURL,
+                            nativeAdLoadListener,
+                            false,
+                            isNativeFetch,
+                            adsRequested,
+                            adConfig.fetchMediaHeight(adName)
+                        )
+                    }else{
+                        val error =
+                            "$adName ==== $fallBackId ==== ${context.getString(R.string.error_parent_view_type)}"
+                        triggerAdFailedCallback(
+                            bannerAdLoadListener,
+                            interstitialAdLoadListener,
+                            rewardedAdLoadListener,
+                            rewardedInterstitialAdLoadListener,
+                            appOpenAdLoadListener,
+                            nativeAdLoadListener,
+                            error
+                        )
+                        Logger.e(AdSdkConstants.TAG, error)
+                        return
+                    }
                 }
                 AdType.BANNER -> {
                     if (lifecycle == null && !isService) {
