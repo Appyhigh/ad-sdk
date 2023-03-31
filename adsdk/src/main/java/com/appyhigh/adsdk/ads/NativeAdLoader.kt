@@ -144,7 +144,7 @@ internal class NativeAdLoader {
     fun loadNativeAd(
         context: Context,
         lifecycle: Lifecycle?,
-        parentView: ViewGroup,
+        parentView: ViewGroup?,
         adName: String,
         adSize: NativeAdSize,
         fallBackId: String,
@@ -164,7 +164,8 @@ internal class NativeAdLoader {
         isLocalRefresh: Boolean = false,
         isNativeFetch: Boolean = false,
         adsRequested: Int,
-        mediaMaxHeight: Int
+        mediaMaxHeight: Int,
+        showShimmerLoading: Boolean = true
     ) {
 
         if (!isLocalRefresh) {
@@ -174,7 +175,7 @@ internal class NativeAdLoader {
                     event: Lifecycle.Event
                 ) {
                     if (event == Lifecycle.Event.ON_DESTROY) {
-                        cancelRefreshTimer(adName, fallBackId, parentView.context)
+                        cancelRefreshTimer(adName, fallBackId, parentView?.context!!)
                         nativeAd?.destroy()
                     }
                 }
@@ -216,8 +217,8 @@ internal class NativeAdLoader {
                         AdSdkConstants.TAG,
                         "$adName ==== $fallBackId ==== ${context.getString(R.string.preloaded_native_ad_displayed)}"
                     )
-                    parentView.removeAllViews()
-                    parentView.addView(adView)
+                    parentView?.removeAllViews()
+                    parentView?.addView(adView)
                     nativeAdLoadListener?.onAdInflated()
                 }
             } else {
@@ -227,8 +228,8 @@ internal class NativeAdLoader {
                     if (adSize == NativeAdSize.SMALL) 120.toPx.toInt() else 250.toPx.toInt()
                 )
                 adView.layoutParams = layoutParams
-                parentView.removeAllViews()
-                parentView.addView(adView)
+                parentView?.removeAllViews()
+                parentView?.addView(adView)
             }
             AdSdkConstants.preloadedNativeAdMap[adName] = null
         } else {
@@ -244,10 +245,10 @@ internal class NativeAdLoader {
             adUnits.add(fallBackId)
             adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
 
-            if (!isLocalRefresh && !isNativeFetch) {
+            if (!isLocalRefresh && !isNativeFetch && showShimmerLoading) {
                 val nativeShimmerBaseView =
-                    View.inflate(parentView.context, R.layout.shimmer_parent_view, null)
-                parentView.addView(nativeShimmerBaseView)
+                    View.inflate(parentView?.context, R.layout.shimmer_parent_view, null)
+                parentView?.addView(nativeShimmerBaseView)
                 val layout = when (adSize) {
                     NativeAdSize.SMALL -> R.layout.shimmer_native_small
                     NativeAdSize.MEDIUM -> R.layout.shimmer_native_medium
@@ -259,7 +260,7 @@ internal class NativeAdLoader {
                 }
                 (nativeShimmerBaseView as ShimmerFrameLayout).addView(
                     View.inflate(
-                        parentView.context,
+                        parentView?.context,
                         layout,
                         null
                     )
@@ -328,7 +329,7 @@ internal class NativeAdLoader {
     private fun inflateAd(
         context: Context,
         lifecycle: Lifecycle?,
-        parentView: ViewGroup,
+        parentView: ViewGroup?,
         adName: String,
         adSize: NativeAdSize,
         timeout: Int,
@@ -381,7 +382,7 @@ internal class NativeAdLoader {
                             "$adName ==== $adUnit ==== ${context.getString(R.string.native_ad_loaded)}"
                         )
                         countDownTimer?.cancel()
-                        parentView.removeAllViews()
+                        parentView?.removeAllViews()
                         val linearLayout = LinearLayout(context)
                         val layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -389,7 +390,7 @@ internal class NativeAdLoader {
                         )
                         linearLayout.layoutParams = layoutParams
                         linearLayout.addView(nativeAdView)
-                        parentView.addView(linearLayout)
+                        parentView?.addView(linearLayout)
                         isAdLoaded = true
                     }
                 }
@@ -473,6 +474,7 @@ internal class NativeAdLoader {
                             if (isNativeFetch) {
                                 countDownTimer?.cancel()
                                 if (requestedAdsArray.size == adsRequested) {
+                                    nativeAdLoadListener?.onAdLoaded(requestedAdsArray[0])
                                     nativeAdLoadListener?.onMultipleAdsLoaded(requestedAdsArray)
                                     isAdLoaded = true
                                 }
@@ -510,8 +512,8 @@ internal class NativeAdLoader {
                                     backgroundColor,
                                     mediaMaxHeight
                                 )
-                                parentView.removeAllViews()
-                                parentView.addView(adView)
+                                parentView?.removeAllViews()
+                                parentView?.addView(adView)
                                 nativeAdLoadListener?.onAdInflated()
                                 isAdLoaded = true
                             }
@@ -570,7 +572,7 @@ internal class NativeAdLoader {
         context: Context,
         lifecycle: Lifecycle?,
         errorMsg: String,
-        parentView: ViewGroup,
+        parentView: ViewGroup?,
         adName: String,
         adSize: NativeAdSize,
         timeout: Int,
@@ -589,7 +591,7 @@ internal class NativeAdLoader {
         adFailureReasonArray.add(errorMsg)
         adRequestsCompleted += 1
         if (adUnits.size == adRequestsCompleted) {
-            parentView.removeAllViews()
+            parentView?.removeAllViews()
             nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
         } else {
             if (adUnits.size > adRequestsCompleted) {
@@ -613,7 +615,7 @@ internal class NativeAdLoader {
                     mediaMaxHeight
                 )
             } else {
-                parentView.removeAllViews()
+                parentView?.removeAllViews()
                 nativeAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
             }
         }
@@ -759,7 +761,7 @@ internal class NativeAdLoader {
     private fun startRefreshTimer(
         context: Context,
         lifecycle: Lifecycle?,
-        parentView: ViewGroup,
+        parentView: ViewGroup?,
         adName: String,
         adSize: NativeAdSize,
         fallBackId: String,
@@ -785,7 +787,7 @@ internal class NativeAdLoader {
                 override fun onTick(p0: Long) {}
 
                 override fun onFinish() {
-                    if (parentView.isShown) {
+                    if (parentView?.isShown!!) {
                         AdSdkConstants.adUnitsSet.remove(adName + parentView.toString())
                         loadNativeAd(
                             context,
