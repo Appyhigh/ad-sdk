@@ -27,9 +27,13 @@ class ApplovinAppOpenManager(
 
     private var isPremium: Boolean = false
 
+
     companion object {
         var isPremiumUser: Boolean = false
-        var bypassActivitiesList = ArrayList<Activity>()
+        var currentActivity: Activity? = null
+        fun setCurrentActivity(activity: Activity) {
+            currentActivity = activity
+        }
     }
 
 
@@ -42,10 +46,16 @@ class ApplovinAppOpenManager(
         this.backgroundThreshold = backgroundThreshold.toLong()
     }
 
+
     private fun showAdIfReady() {
         if (!AppLovinSdk.getInstance(context).isInitialized) return
 
-
+        if (currentActivity != null) {
+            if (currentActivity is BypassAppOpenAd) {
+                Log.d(AdSdkConstants.TAG, "showAdIfReady: Bypass")
+                return
+            }
+        }
 
         if (appOpenAd.isReady) {
             Log.d(AdSdkConstants.TAG, "showAdIfReady: ")
