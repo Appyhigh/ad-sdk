@@ -15,7 +15,8 @@ class BannerAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
             context = this,
             lifecycle = lifecycle,
             adName = smallTestBannerName,
-            parentView = findViewById(R.id.banner_container)
+            parentView = findViewById(R.id.banner_container),
+            showShimmerLoading = false
         )
 
         AdSdk.loadAd(
@@ -28,7 +29,8 @@ class BannerAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
             context = this,
             lifecycle = lifecycle,
             adName = largeTestBannerName,
-            parentView = findViewById(R.id.banner_container_large)
+            parentView = findViewById(R.id.banner_container_large),
+            showShimmerLoading = false
         )
     }
 }

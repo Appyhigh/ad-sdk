@@ -1,5 +1,6 @@
 package com.appyhigh.adsdk.ads
 
+import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -28,6 +29,7 @@ class ApplovinAppOpenManager(
 
     companion object {
         var isPremiumUser: Boolean = false
+        var bypassActivitiesList = ArrayList<Activity>()
     }
 
 
@@ -42,6 +44,9 @@ class ApplovinAppOpenManager(
 
     private fun showAdIfReady() {
         if (!AppLovinSdk.getInstance(context).isInitialized) return
+
+
+
         if (appOpenAd.isReady) {
             Log.d(AdSdkConstants.TAG, "showAdIfReady: ")
             appOpenAd.showAd()
@@ -72,6 +77,7 @@ class ApplovinAppOpenManager(
     override fun onAdLoaded(ad: MaxAd) {
         Log.d(AdSdkConstants.TAG, "onAdLoaded: ")
     }
+
     override fun onAdLoadFailed(adUnitId: String, error: MaxError) {}
     override fun onAdDisplayed(ad: MaxAd) {}
     override fun onAdClicked(ad: MaxAd) {}

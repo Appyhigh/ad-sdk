@@ -22,7 +22,6 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
         AdSdk.fetchNativeAd(
             context = this,
             adName = testNativeAdName,
-            parentView = findViewById(R.id.native_container),
             nativeAdLoadListener = object : NativeAdLoadListener() {
                 override fun onAdClicked() {
                     super.onAdClicked()
@@ -73,7 +72,8 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
             lifecycle = lifecycle,
             adName = testNativeAdName,
             parentView = findViewById(R.id.native_container_dark),
-            isDarkModeEnabled = true
+            isDarkModeEnabled = true,
+            showShimmerLoading = false
         )
 
         AdSdk.loadAd(

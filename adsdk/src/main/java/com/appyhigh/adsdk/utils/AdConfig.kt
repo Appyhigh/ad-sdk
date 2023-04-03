@@ -35,21 +35,25 @@ internal class AdConfig {
 
     fun init() {
         if (adResponse == null) {
-            val gson = Gson()
-            if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
-                return
-            }
-            adResponse =
-                gson.fromJson(
-                    SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE),
-                    AdResponse::class.java
-                )
-            adResponse?.let {
-                for (adItem in it.app?.adMob!!) {
-                    adsMap[adItem.ad_name!!] = adItem
-                }
-                Logger.d(AdSdkConstants.TAG, "Cache Data Updated using api response")
-            }
+           try {
+               val gson = Gson()
+               if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
+                   return
+               }
+               adResponse =
+                   gson.fromJson(
+                       SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE),
+                       AdResponse::class.java
+                   )
+               adResponse?.let {
+                   for (adItem in it.app?.adMob!!) {
+                       adsMap[adItem.ad_name!!] = adItem
+                   }
+                   Logger.d(AdSdkConstants.TAG, "Cache Data Updated using api response")
+               }
+           }catch (e:Exception){
+               e.printStackTrace()
+           }
         }
     }
 

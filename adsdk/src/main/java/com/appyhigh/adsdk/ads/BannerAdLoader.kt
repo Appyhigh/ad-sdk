@@ -149,7 +149,8 @@ internal class BannerAdLoader {
         contentURL: String?,
         neighbourContentURL: List<String>?,
         bannerAdLoadListener: BannerAdLoadListener?,
-        isLocalRefresh: Boolean = false
+        isLocalRefresh: Boolean = false,
+        showShimmerLoading: Boolean = true
     ) {
 
         if (!isLocalRefresh) {
@@ -212,7 +213,7 @@ internal class BannerAdLoader {
             adUnits.add(fallBackId)
             adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
 
-            if (!isLocalRefresh) {
+            if (!isLocalRefresh && showShimmerLoading) {
                 val bannerShimmerBaseView =
                     View.inflate(parentView.context, R.layout.shimmer_parent_view, null)
                 parentView.addView(bannerShimmerBaseView)
@@ -303,11 +304,12 @@ internal class BannerAdLoader {
             parentView.addView(mAdView)
             mAdView.loadAd()
         } else {
-            val builder = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-                AdRequest.Builder()
-            } else {
-                AdManagerAdRequest.Builder()
-            }
+            val builder =
+                if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
+                    AdRequest.Builder()
+                } else {
+                    AdManagerAdRequest.Builder()
+                }
             builder.addNetworkExtrasBundle(
                 AdMobAdapter::class.java,
                 if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()

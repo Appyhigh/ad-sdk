@@ -314,6 +314,7 @@ object AdSdk {
         activity: Activity? = null,
         adName: String,
         isDarkModeEnabled: Boolean = false,
+        showShimmerLoading: Boolean = true,
         isNativeFetch: Boolean = false,
         adsRequested: Int = 1,
         isService: Boolean = false,
@@ -381,7 +382,7 @@ object AdSdk {
                         Logger.e(AdSdkConstants.TAG, error)
                         return
                     }
-                    if (parentView == null) {
+                    if (parentView == null && !isNativeFetch) {
                         val error =
                             "$adName ==== $fallBackId ==== ${context.getString(R.string.error_parent_view)}"
                         triggerAdFailedCallback(
@@ -397,52 +398,36 @@ object AdSdk {
                         return
                     }
 
-                    if (parentView is RelativeLayout || parentView is LinearLayout || parentView is FrameLayout) {
-
-                        NativeAdLoader().loadNativeAd(
-                            context,
-                            lifecycle,
-                            parentView,
-                            adName,
-                            adConfig.fetchNativeAdSize(adName),
-                            fallBackId,
-                            adConfig.fetchPrimaryAdUnitIds(adName),
-                            adConfig.fetchSecondaryAdUnitIds(adName),
-                            adConfig.fetchPrimaryAdProvider(adName),
-                            adConfig.fetchSecondaryAdProvider(adName),
-                            adConfig.fetchAdUnitTimeout(adName),
-                            adConfig.fetchAdUnitRefreshTimer(adName),
-                            adConfig.fetchDarkCTAColor(adName).takeIf { isDarkModeEnabled }
-                                ?: adConfig.fetchLightCTAColor(adName),
-                            adConfig.fetchDarkTextColor(adName).takeIf { isDarkModeEnabled }
-                                ?: adConfig.fetchLightTextColor(adName),
-                            (R.drawable.ad_sdk_bg_dark).takeIf { isDarkModeEnabled }
-                                ?: (R.drawable.ad_sdk_bg),
-                            adConfig.fetchDarkBackgroundColor(adName).takeIf { isDarkModeEnabled }
-                                ?: adConfig.fetchLightBackgroundColor(adName),
-                            contentURL,
-                            neighbourContentURL,
-                            nativeAdLoadListener,
-                            false,
-                            isNativeFetch,
-                            adsRequested,
-                            adConfig.fetchMediaHeight(adName)
-                        )
-                    }else{
-                        val error =
-                            "$adName ==== $fallBackId ==== ${context.getString(R.string.error_parent_view_type)}"
-                        triggerAdFailedCallback(
-                            bannerAdLoadListener,
-                            interstitialAdLoadListener,
-                            rewardedAdLoadListener,
-                            rewardedInterstitialAdLoadListener,
-                            appOpenAdLoadListener,
-                            nativeAdLoadListener,
-                            error
-                        )
-                        Logger.e(AdSdkConstants.TAG, error)
-                        return
-                    }
+                    NativeAdLoader().loadNativeAd(
+                        context,
+                        lifecycle,
+                        parentView,
+                        adName,
+                        adConfig.fetchNativeAdSize(adName),
+                        fallBackId,
+                        adConfig.fetchPrimaryAdUnitIds(adName),
+                        adConfig.fetchSecondaryAdUnitIds(adName),
+                        adConfig.fetchPrimaryAdProvider(adName),
+                        adConfig.fetchSecondaryAdProvider(adName),
+                        adConfig.fetchAdUnitTimeout(adName),
+                        adConfig.fetchAdUnitRefreshTimer(adName),
+                        adConfig.fetchDarkCTAColor(adName).takeIf { isDarkModeEnabled }
+                            ?: adConfig.fetchLightCTAColor(adName),
+                        adConfig.fetchDarkTextColor(adName).takeIf { isDarkModeEnabled }
+                            ?: adConfig.fetchLightTextColor(adName),
+                        (R.drawable.ad_sdk_bg_dark).takeIf { isDarkModeEnabled }
+                            ?: (R.drawable.ad_sdk_bg),
+                        adConfig.fetchDarkBackgroundColor(adName).takeIf { isDarkModeEnabled }
+                            ?: adConfig.fetchLightBackgroundColor(adName),
+                        contentURL,
+                        neighbourContentURL,
+                        nativeAdLoadListener,
+                        false,
+                        isNativeFetch,
+                        adsRequested,
+                        adConfig.fetchMediaHeight(adName),
+                        showShimmerLoading
+                    )
                 }
                 AdType.BANNER -> {
                     if (lifecycle == null && !isService) {
@@ -490,7 +475,9 @@ object AdSdk {
                         adConfig.fetchAdUnitRefreshTimer(adName),
                         contentURL,
                         neighbourContentURL,
-                        bannerAdLoadListener
+                        bannerAdLoadListener,
+                        false,
+                        showShimmerLoading
                     )
                 }
                 AdType.INTERSTITIAL -> {
