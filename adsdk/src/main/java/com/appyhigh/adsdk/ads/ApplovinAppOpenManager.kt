@@ -31,9 +31,6 @@ class ApplovinAppOpenManager(
     companion object {
         var isPremiumUser: Boolean = false
         var currentActivity: Activity? = null
-        fun setCurrentActivity(activity: Activity) {
-            currentActivity = activity
-        }
     }
 
 
