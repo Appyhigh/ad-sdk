@@ -60,6 +60,7 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
         this.adUnit = adUnit
         this.adUnitProvider = adUnitProvider
         this.appOpenAdLoadListener = appOpenAdLoadListener
+        appCount = 0
     }
 
     @SuppressLint("VisibleForTests")

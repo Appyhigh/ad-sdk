@@ -28,6 +28,8 @@ class AppOpenAdExampleActivity : AppCompatActivity() {
         adProvider = intent.getStringExtra("adProvider").toString()
 //        loadAppOpenAd()
         loadAppOpenAdBgToFg()
+        loadAppOpenAdBgToFg()
+        loadAppOpenAdBgToFg()
         showAppOpenButton = findViewById(R.id.show_app_open_ad)
         showAppOpenButton?.setOnClickListener {
             if (adProvider == AdProvider.APPLOVIN.name.lowercase()) {
