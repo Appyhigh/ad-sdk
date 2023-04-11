@@ -45,7 +45,7 @@ internal class AdConfig {
                 adResponse =
                     gson.fromJson(
                         SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE),
-                        object : TypeToken<ArrayList<AdResponse?>?>() {}.type
+                        object : TypeToken<AdResponse>() {}.type
                     )
                 adResponse?.let {
                     for (adItem in it.app?.adMob!!) {
