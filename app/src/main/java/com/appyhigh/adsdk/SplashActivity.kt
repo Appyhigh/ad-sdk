@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import com.appyhigh.adsdk.data.enums.UpdateType
 import com.appyhigh.adsdk.interfaces.AdInitializeListener
+import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.interfaces.ConsentRequestListener
 import com.appyhigh.adsdk.interfaces.VersionControlListener
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
     var advertId: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
