@@ -152,6 +152,7 @@ object AdSdk {
                     Log.d(AdSdkConstants.TAG, "applovin")
                     AppLovinSdk.getInstance(application).mediationProvider = "max"
                     isInitialized = true
+                    Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
                     adInitializeListener.onSdkInitialized()
                     Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
                     SharedPrefs.init(application)

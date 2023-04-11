@@ -4,6 +4,7 @@
     <string name="error_reading_file">Unable to read ad_utils_response.json file.</string>
     <string name="consent_exception">Not able to get the consent from user</string>
     <string name="exception_reading_file">Exception reading ad_utils_response.json file.</string>
+    <string name="sdk_callback">AdSdk Initialization Callback Fired</string>
     <string name="sdk_successful">AdSdk Initialized Successfully</string>
     <string name="text_ad">Ad</string>
     <string name="error_lifecycle">Lifecycle Supplied is Null!</string>
