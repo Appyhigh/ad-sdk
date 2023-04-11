@@ -44,6 +44,10 @@ internal class AdConfig {
                 if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
                     return
                 }
+                Log.d(AdSdkConstants.TAG, "convert model")
+                Log.d(AdSdkConstants.TAG,
+                    SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).toString()
+                )
                 adResponse =
                     gson.fromJson(
                         SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE),
