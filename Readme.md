@@ -58,6 +58,7 @@ An Ad Util library to facilitate easy and standardised implementation of AdMob/A
 -keep class io.jsonwebtoken.*.* { *; }
 -keepnames class io.jsonwebtoken.* { *; }
 -keepnames interface io.jsonwebtoken.* { *; }
+-keep class com.appyhigh.adsdk.data.model.adresponse.** { *; }
 ```
 ## Initialization
 Add it in your root `build.gradle` at the end of repositories:
