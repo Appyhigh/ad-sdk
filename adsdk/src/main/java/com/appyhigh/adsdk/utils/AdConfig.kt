@@ -1,6 +1,7 @@
 package com.appyhigh.adsdk.utils
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.data.enums.AdType
@@ -11,6 +12,8 @@ import com.appyhigh.adsdk.data.model.adresponse.AdMob
 import com.appyhigh.adsdk.data.model.adresponse.AdResponse
 import com.google.android.gms.ads.AdSize
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 internal class AdConfig {
     private var adResponse: AdResponse? = null
@@ -35,25 +38,25 @@ internal class AdConfig {
 
     fun init() {
         if (adResponse == null) {
-           try {
-               val gson = Gson()
-               if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
-                   return
-               }
-               adResponse =
-                   gson.fromJson(
-                       SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE),
-                       AdResponse::class.java
-                   )
-               adResponse?.let {
-                   for (adItem in it.app?.adMob!!) {
-                       adsMap[adItem.ad_name!!] = adItem
-                   }
-                   Logger.d(AdSdkConstants.TAG, "Cache Data Updated using api response")
-               }
-           }catch (e:Exception){
-               e.printStackTrace()
-           }
+            try {
+                val gson = Gson()
+                if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
+                    return
+                }
+                adResponse =
+                    gson.fromJson(
+                        SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE),
+                        object : TypeToken<AdResponse>() {}.type
+                    )
+                adResponse?.let {
+                    for (adItem in it.app?.adMob!!) {
+                        adsMap[adItem.ad_name!!] = adItem
+                    }
+                    Logger.d(AdSdkConstants.TAG, "Cache Data Updated using api response")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

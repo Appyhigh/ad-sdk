@@ -13,6 +13,7 @@ import com.applovin.mediation.ads.MaxAppOpenAd
 import com.applovin.sdk.AppLovinSdk
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
+import com.appyhigh.adsdk.utils.Logger
 
 class ApplovinAppOpenManager(
     adUnitId: String,
@@ -27,9 +28,10 @@ class ApplovinAppOpenManager(
 
     private var isPremium: Boolean = false
 
+
     companion object {
         var isPremiumUser: Boolean = false
-        var bypassActivitiesList = ArrayList<Activity>()
+        var currentActivity: Activity? = null
     }
 
 
@@ -42,22 +44,28 @@ class ApplovinAppOpenManager(
         this.backgroundThreshold = backgroundThreshold.toLong()
     }
 
+
     private fun showAdIfReady() {
         if (!AppLovinSdk.getInstance(context).isInitialized) return
 
-
+        if (currentActivity != null) {
+            if (currentActivity is BypassAppOpenAd) {
+                Logger.d(AdSdkConstants.TAG, "showAdIfReady: Bypass")
+                return
+            }
+        }
 
         if (appOpenAd.isReady) {
-            Log.d(AdSdkConstants.TAG, "showAdIfReady: ")
+            Logger.d(AdSdkConstants.TAG, "showAdIfReady: ")
             appOpenAd.showAd()
         } else {
-            Log.d(AdSdkConstants.TAG, "showAdIfReady: Load again")
+            Logger.d(AdSdkConstants.TAG, "showAdIfReady: Load again")
             appOpenAd.loadAd()
         }
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        Log.d(AdSdkConstants.TAG, "onStateChanged: ${event.name}")
+        Logger.d(AdSdkConstants.TAG, "onStateChanged: ${event.name}")
         Handler(Looper.getMainLooper()).postDelayed({
             if (event == Lifecycle.Event.ON_START) {
                 val appBackgroundTime = System.currentTimeMillis() - backgroundTime
@@ -75,7 +83,7 @@ class ApplovinAppOpenManager(
 
 
     override fun onAdLoaded(ad: MaxAd) {
-        Log.d(AdSdkConstants.TAG, "onAdLoaded: ")
+        Logger.d(AdSdkConstants.TAG, "onAdLoaded: ")
     }
 
     override fun onAdLoadFailed(adUnitId: String, error: MaxError) {}

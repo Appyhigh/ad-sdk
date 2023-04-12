@@ -36,7 +36,7 @@ import java.io.InputStream
 object AdSdk {
     private var isInitialized = false
     private var adConfig = AdConfig()
-
+    private var isAppOpenAlreadyRegistered = false
     fun getConsentForEU(
         activity: Activity,
         testDeviceHashedId: String? = null,
@@ -152,6 +152,7 @@ object AdSdk {
                     Log.d(AdSdkConstants.TAG, "applovin")
                     AppLovinSdk.getInstance(application).mediationProvider = "max"
                     isInitialized = true
+                    Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
                     adInitializeListener.onSdkInitialized()
                     Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
                     SharedPrefs.init(application)
@@ -585,17 +586,22 @@ object AdSdk {
                             Logger.e(AdSdkConstants.TAG, error)
                             return
                         }
-                        AppOpenAdLoader().loadAppOpenAdBgToFg(
-                            application,
-                            context,
-                            adName,
-                            fallBackId,
-                            adConfig.fetchPrimaryAdUnitIds(adName),
-                            adConfig.fetchSecondaryAdUnitIds(adName),
-                            adConfig.fetchPrimaryAdProvider(adName),
-                            adConfig.fetchSecondaryAdProvider(adName),
-                            adConfig.fetchBackgroundThreshold(adName)
-                        )
+                        if (!isAppOpenAlreadyRegistered) {
+                            isAppOpenAlreadyRegistered = true
+                            AppOpenAdLoader().loadAppOpenAdBgToFg(
+                                application,
+                                context,
+                                adName,
+                                fallBackId,
+                                adConfig.fetchPrimaryAdUnitIds(adName),
+                                adConfig.fetchSecondaryAdUnitIds(adName),
+                                adConfig.fetchPrimaryAdProvider(adName),
+                                adConfig.fetchSecondaryAdProvider(adName),
+                                adConfig.fetchBackgroundThreshold(adName)
+                            )
+                        }else{
+                            Logger.e(AdSdkConstants.TAG, "AppOpenAd already registered")
+                        }
                     }
                 }
                 else -> Logger.d(

@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.interfaces.NativeAdLoadListener
+import com.appyhigh.adsdk.utils.Logger
 import com.google.android.gms.ads.nativead.NativeAd
 
 class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
@@ -45,7 +46,7 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
 
                 override fun onAdLoaded(nativeAd: NativeAd?) {
                     super.onAdLoaded(nativeAd)
-                    Log.d(AdSdkConstants.TAG, "onAdLoaded: $nativeAd")
+                    Logger.d(AdSdkConstants.TAG, "onAdLoaded: $nativeAd")
                 }
 
                 override fun onAdOpened() {
@@ -62,7 +63,7 @@ class NativeAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
 
                 override fun onMultipleAdsLoaded(nativeAds: ArrayList<NativeAd?>) {
                     super.onMultipleAdsLoaded(nativeAds)
-                    Log.d(AdSdkConstants.TAG, "onAdLoaded: $nativeAds")
+                    Logger.d(AdSdkConstants.TAG, "onAdLoaded: $nativeAds")
                 }
             }
         )
