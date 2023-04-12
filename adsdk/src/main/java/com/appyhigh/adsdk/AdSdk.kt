@@ -131,7 +131,6 @@ object AdSdk {
             null
         } ?: return
         try {
-            Log.d(AdSdkConstants.TAG, "initialize")
             val fileData = readDefaultAdResponseFile(inputStream)
             SharedPrefs.init(application)
             adConfig.initWithLocalFile(fileData)

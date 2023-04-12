@@ -38,22 +38,16 @@ internal class AdConfig {
 
     fun init() {
         if (adResponse == null) {
-            Log.d(AdSdkConstants.TAG, "init Adconfig")
             try {
                 val gson = Gson()
                 if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
                     return
                 }
-                Log.d(AdSdkConstants.TAG, "convert model")
-                Log.d(AdSdkConstants.TAG,
-                    SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).toString()
-                )
                 adResponse =
                     gson.fromJson(
                         SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE),
                         object : TypeToken<AdResponse>() {}.type
                     )
-                Log.d(AdSdkConstants.TAG, adResponse.toString())
                 adResponse?.let {
                     for (adItem in it.app?.adMob!!) {
                         adsMap[adItem.ad_name!!] = adItem
