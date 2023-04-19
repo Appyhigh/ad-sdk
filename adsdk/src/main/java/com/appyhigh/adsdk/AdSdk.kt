@@ -148,6 +148,8 @@ object AdSdk {
 
         if (isGooglePlayServicesAvailable(application)) {
             addTestDevice(testDevice, advertisingId, application)
+            SharedPrefs.init(application)
+            DynamicAds().fetchRemoteAdConfiguration(application.packageName)
             MobileAds.initialize(application) {
                 Logger.d(AdSdkConstants.TAG, "admob")
                 isAdMobInitialized = true
@@ -170,14 +172,11 @@ object AdSdk {
 
     private fun areBothSdksInitialized(application: Application, adInitializeListener: AdInitializeListener){
         if (isAdMobInitialized && isAppLovinInitialized){
-            Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
             AppLovinSdk.getInstance(application).mediationProvider = "max"
             isInitialized = true
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
             adInitializeListener.onSdkInitialized()
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
-            SharedPrefs.init(application)
-            DynamicAds().fetchRemoteAdConfiguration(application.packageName)
         }
     }
 
