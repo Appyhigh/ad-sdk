@@ -37,6 +37,8 @@ object AdSdk {
     private var isInitialized = false
     private var adConfig = AdConfig()
     private var isAppOpenAlreadyRegistered = false
+    private var isAdMobInitialized = false
+    private var isAppLovinInitialized = false
     fun getConsentForEU(
         activity: Activity,
         testDeviceHashedId: String? = null,
@@ -147,17 +149,14 @@ object AdSdk {
         if (isGooglePlayServicesAvailable(application)) {
             addTestDevice(testDevice, advertisingId, application)
             MobileAds.initialize(application) {
-                Log.d(AdSdkConstants.TAG, "admob")
-                AppLovinSdk.getInstance(application).initializeSdk {
-                    Log.d(AdSdkConstants.TAG, "applovin")
-                    AppLovinSdk.getInstance(application).mediationProvider = "max"
-                    isInitialized = true
-                    Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
-                    adInitializeListener.onSdkInitialized()
-                    Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
-                    SharedPrefs.init(application)
-                    DynamicAds().fetchRemoteAdConfiguration(application.packageName)
-                }
+                Logger.d(AdSdkConstants.TAG, "admob")
+                isAdMobInitialized = true
+                areBothSdksInitialized(application, adInitializeListener)
+            }
+            AppLovinSdk.getInstance(application).initializeSdk {
+                Logger.d(AdSdkConstants.TAG, "applovin")
+                isAppLovinInitialized = true
+                areBothSdksInitialized(application, adInitializeListener)
             }
         } else {
             adInitializeListener.onInitializationFailed(
@@ -166,6 +165,19 @@ object AdSdk {
                     application.getString(R.string.error_no_play_services)
                 )
             )
+        }
+    }
+
+    private fun areBothSdksInitialized(application: Application, adInitializeListener: AdInitializeListener){
+        if (isAdMobInitialized && isAppLovinInitialized){
+            Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
+            AppLovinSdk.getInstance(application).mediationProvider = "max"
+            isInitialized = true
+            Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
+            adInitializeListener.onSdkInitialized()
+            Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
+            SharedPrefs.init(application)
+            DynamicAds().fetchRemoteAdConfiguration(application.packageName)
         }
     }
 
