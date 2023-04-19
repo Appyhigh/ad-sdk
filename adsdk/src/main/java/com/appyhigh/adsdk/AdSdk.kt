@@ -147,7 +147,7 @@ object AdSdk {
         }
 
         if (isGooglePlayServicesAvailable(application)) {
-//            addTestDevice(testDevice, advertisingId, application)
+            addTestDevice(testDevice, advertisingId, application)
             MobileAds.initialize(application) {
                 Logger.d(AdSdkConstants.TAG, "admob")
                 isAdMobInitialized = true
