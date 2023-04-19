@@ -147,6 +147,7 @@ object AdSdk {
         }
 
         if (isGooglePlayServicesAvailable(application)) {
+            Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
             SharedPrefs.init(application)
             DynamicAds().fetchRemoteAdConfiguration(application.packageName)

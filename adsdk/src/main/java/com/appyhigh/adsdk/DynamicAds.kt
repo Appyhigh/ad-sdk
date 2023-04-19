@@ -47,7 +47,7 @@ internal class DynamicAds {
             .build()
 
         val call: Call = clientBuilder.build().newCall(request)
-
+        Logger.d(AdSdkConstants.TAG, "fetchRemoteAdConfiguration: ")
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
 
@@ -56,6 +56,7 @@ internal class DynamicAds {
             override fun onResponse(call: Call, response: Response) {
                 try {
                     if (response.isSuccessful) {
+                        Logger.d(AdSdkConstants.TAG, "fetchRemoteAdConfiguration: Success")
                         val apiResponse = response.body?.string()
                         if (apiResponse != null) {
                             SharedPrefs.putString(
@@ -64,6 +65,7 @@ internal class DynamicAds {
                             )
                         }
                     } else {
+                        Logger.d(AdSdkConstants.TAG, "fetchRemoteAdConfiguration: failure")
                         Logger.e(AdSdkConstants.TAG, response.message)
                     }
                 } catch (e: java.lang.Exception) {
