@@ -86,7 +86,9 @@ class ApplovinAppOpenManager(
         Logger.d(AdSdkConstants.TAG, "onAdLoaded: ")
     }
 
-    override fun onAdLoadFailed(adUnitId: String, error: MaxError) {}
+    override fun onAdLoadFailed(adUnitId: String, error: MaxError) {
+        Logger.d(AdSdkConstants.TAG, "onAdLoadFailed: ${error.message}")
+    }
     override fun onAdDisplayed(ad: MaxAd) {}
     override fun onAdClicked(ad: MaxAd) {}
 

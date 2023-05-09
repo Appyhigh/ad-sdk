@@ -37,6 +37,8 @@ object AdSdk {
     private var isInitialized = false
     private var adConfig = AdConfig()
     private var isAppOpenAlreadyRegistered = false
+    private var isAdMobInitialized = false
+    private var isAppLovinInitialized = false
     fun getConsentForEU(
         activity: Activity,
         testDeviceHashedId: String? = null,
@@ -145,19 +147,19 @@ object AdSdk {
         }
 
         if (isGooglePlayServicesAvailable(application)) {
+            Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
+            SharedPrefs.init(application)
+            DynamicAds().fetchRemoteAdConfiguration(application.packageName)
             MobileAds.initialize(application) {
-                Log.d(AdSdkConstants.TAG, "admob")
-                AppLovinSdk.getInstance(application).initializeSdk {
-                    Log.d(AdSdkConstants.TAG, "applovin")
-                    AppLovinSdk.getInstance(application).mediationProvider = "max"
-                    isInitialized = true
-                    Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
-                    adInitializeListener.onSdkInitialized()
-                    Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
-                    SharedPrefs.init(application)
-                    DynamicAds().fetchRemoteAdConfiguration(application.packageName)
-                }
+                Logger.d(AdSdkConstants.TAG, "admob")
+                isAdMobInitialized = true
+                areBothSdksInitialized(application, adInitializeListener)
+            }
+            AppLovinSdk.getInstance(application).initializeSdk {
+                Logger.d(AdSdkConstants.TAG, "applovin")
+                isAppLovinInitialized = true
+                areBothSdksInitialized(application, adInitializeListener)
             }
         } else {
             adInitializeListener.onInitializationFailed(
@@ -166,6 +168,16 @@ object AdSdk {
                     application.getString(R.string.error_no_play_services)
                 )
             )
+        }
+    }
+
+    private fun areBothSdksInitialized(application: Application, adInitializeListener: AdInitializeListener){
+        if (isAdMobInitialized && isAppLovinInitialized){
+            AppLovinSdk.getInstance(application).mediationProvider = "max"
+            isInitialized = true
+            Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
+            adInitializeListener.onSdkInitialized()
+            Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
         }
     }
 
@@ -317,6 +329,7 @@ object AdSdk {
         isDarkModeEnabled: Boolean = false,
         showShimmerLoading: Boolean = true,
         isNativeFetch: Boolean = false,
+        disableRefresh: Boolean = false,
         adsRequested: Int = 1,
         isService: Boolean = false,
         application: Application? = null,
@@ -427,7 +440,8 @@ object AdSdk {
                         isNativeFetch,
                         adsRequested,
                         adConfig.fetchMediaHeight(adName),
-                        showShimmerLoading
+                        showShimmerLoading,
+                        disableRefresh
                     )
                 }
                 AdType.BANNER -> {
@@ -478,7 +492,8 @@ object AdSdk {
                         neighbourContentURL,
                         bannerAdLoadListener,
                         false,
-                        showShimmerLoading
+                        showShimmerLoading,
+                        disableRefresh
                     )
                 }
                 AdType.INTERSTITIAL -> {

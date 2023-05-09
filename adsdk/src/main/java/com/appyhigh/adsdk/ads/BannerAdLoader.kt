@@ -150,7 +150,8 @@ internal class BannerAdLoader {
         neighbourContentURL: List<String>?,
         bannerAdLoadListener: BannerAdLoadListener?,
         isLocalRefresh: Boolean = false,
-        showShimmerLoading: Boolean = true
+        showShimmerLoading: Boolean = true,
+        disableRefresh: Boolean = false
     ) {
 
         if (!isLocalRefresh) {
@@ -244,23 +245,25 @@ internal class BannerAdLoader {
                 bannerAdLoadListener
             )
         }
-        startRefreshTimer(
-            context,
-            lifecycle,
-            parentView,
-            adName,
-            adSize,
-            fallBackId,
-            primaryAdUnitIds,
-            secondaryAdUnitIds,
-            primaryAdUnitProvider,
-            secondaryAdUnitProvider,
-            timeout,
-            refreshTimer,
-            contentURL,
-            neighbourContentURL,
-            bannerAdLoadListener
-        )
+        if (!disableRefresh) {
+            startRefreshTimer(
+                context,
+                lifecycle,
+                parentView,
+                adName,
+                adSize,
+                fallBackId,
+                primaryAdUnitIds,
+                secondaryAdUnitIds,
+                primaryAdUnitProvider,
+                secondaryAdUnitProvider,
+                timeout,
+                refreshTimer,
+                contentURL,
+                neighbourContentURL,
+                bannerAdLoadListener
+            )
+        }
     }
 
     @SuppressLint("VisibleForTests")

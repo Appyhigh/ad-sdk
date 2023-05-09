@@ -42,7 +42,9 @@ class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
                 e.printStackTrace()
             }
 
-            initializeAdSdk()
+            runOnUiThread {
+                initializeAdSdk()
+            }
         }
     }
 

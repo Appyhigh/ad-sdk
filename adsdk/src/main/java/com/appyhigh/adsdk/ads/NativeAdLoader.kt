@@ -165,7 +165,8 @@ internal class NativeAdLoader {
         isNativeFetch: Boolean = false,
         adsRequested: Int,
         mediaMaxHeight: Int,
-        showShimmerLoading: Boolean = true
+        showShimmerLoading: Boolean = true,
+        disableRefresh: Boolean = false,
     ) {
 
         if (!isLocalRefresh) {
@@ -286,31 +287,32 @@ internal class NativeAdLoader {
                 mediaMaxHeight
             )
         }
-
-        startRefreshTimer(
-            context,
-            lifecycle,
-            parentView,
-            adName,
-            adSize,
-            fallBackId,
-            primaryAdUnitIds,
-            secondaryAdUnitIds,
-            primaryAdUnitProvider,
-            secondaryAdUnitProvider,
-            timeout,
-            refreshTimer,
-            ctaColor,
-            textColor,
-            backgroundResource,
-            backgroundColor,
-            contentURL,
-            neighbourContentURL,
-            nativeAdLoadListener,
-            isNativeFetch,
-            adsRequested,
-            mediaMaxHeight
-        )
+        if (!disableRefresh) {
+            startRefreshTimer(
+                context,
+                lifecycle,
+                parentView,
+                adName,
+                adSize,
+                fallBackId,
+                primaryAdUnitIds,
+                secondaryAdUnitIds,
+                primaryAdUnitProvider,
+                secondaryAdUnitProvider,
+                timeout,
+                refreshTimer,
+                ctaColor,
+                textColor,
+                backgroundResource,
+                backgroundColor,
+                contentURL,
+                neighbourContentURL,
+                nativeAdLoadListener,
+                isNativeFetch,
+                adsRequested,
+                mediaMaxHeight
+            )
+        }
     }
 
     private fun cancelRefreshTimer(

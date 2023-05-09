@@ -42,48 +42,50 @@ internal class InterstitialAdLoader {
         timeout: Int,
         interstitialAdLoadListener: InterstitialAdLoadListener?
     ) {
-        for (adUnit in primaryAdUnitIds) {
-            adUnits.add(adUnit)
-            adUnitsProvider.add(primaryAdUnitProvider)
-        }
-
-        for (adUnit in secondaryAdUnitIds) {
-            adUnits.add(adUnit)
-            adUnitsProvider.add(secondaryAdUnitProvider)
-        }
-        adUnits.add(fallBackId)
-        adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
-
-        countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
-            override fun onTick(p0: Long) {}
-            override fun onFinish() {
-
-                val error =
-                    "$adName ==== ${adUnits[adRequestsCompleted]} ==== ${activity.getString(R.string.error_interstitial_timed_out)}"
-                Logger.e(AdSdkConstants.TAG, error)
-                adFailureReasonArray.add(error)
-                adRequestsCompleted += 1
-                if (adRequestsCompleted < adUnits.size) {
-                    requestAd(
-                        adName,
-                        adUnits[adRequestsCompleted],
-                        activity,
-                        countDownTimer,
-                        interstitialAdLoadListener
-                    )
-                } else {
-                    interstitialAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
-                }
+        activity.runOnUiThread {
+            for (adUnit in primaryAdUnitIds) {
+                adUnits.add(adUnit)
+                adUnitsProvider.add(primaryAdUnitProvider)
             }
 
+            for (adUnit in secondaryAdUnitIds) {
+                adUnits.add(adUnit)
+                adUnitsProvider.add(secondaryAdUnitProvider)
+            }
+            adUnits.add(fallBackId)
+            adUnitsProvider.add(AdProvider.ADMOB.name.lowercase())
+
+            countDownTimer = object : CountDownTimer(timeout.toLong(), timeout.toLong()) {
+                override fun onTick(p0: Long) {}
+                override fun onFinish() {
+
+                    val error =
+                        "$adName ==== ${adUnits[adRequestsCompleted]} ==== ${activity.getString(R.string.error_interstitial_timed_out)}"
+                    Logger.e(AdSdkConstants.TAG, error)
+                    adFailureReasonArray.add(error)
+                    adRequestsCompleted += 1
+                    if (adRequestsCompleted < adUnits.size) {
+                        requestAd(
+                            adName,
+                            adUnits[adRequestsCompleted],
+                            activity,
+                            countDownTimer,
+                            interstitialAdLoadListener
+                        )
+                    } else {
+                        interstitialAdLoadListener?.onAdFailedToLoad(adFailureReasonArray)
+                    }
+                }
+
+            }
+            requestAd(
+                adName,
+                adUnits[adRequestsCompleted],
+                activity,
+                countDownTimer,
+                interstitialAdLoadListener
+            )
         }
-        requestAd(
-            adName,
-            adUnits[adRequestsCompleted],
-            activity,
-            countDownTimer,
-            interstitialAdLoadListener
-        )
     }
 
     @SuppressLint("VisibleForTests")

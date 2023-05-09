@@ -33,6 +33,8 @@ internal class AdConfig {
                 Logger.d(AdSdkConstants.TAG, "Cache Data set using local file")
                 SharedPrefs.putString(AdSdkConstants.AD_CONFIG_RESPONSE, fileData)
             }
+        }else{
+            Logger.d(AdSdkConstants.TAG, "Cache Data set skipped as api response came first")
         }
     }
 
