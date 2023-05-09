@@ -329,6 +329,7 @@ object AdSdk {
         isDarkModeEnabled: Boolean = false,
         showShimmerLoading: Boolean = true,
         isNativeFetch: Boolean = false,
+        disableRefresh: Boolean = false,
         adsRequested: Int = 1,
         isService: Boolean = false,
         application: Application? = null,
@@ -439,7 +440,8 @@ object AdSdk {
                         isNativeFetch,
                         adsRequested,
                         adConfig.fetchMediaHeight(adName),
-                        showShimmerLoading
+                        showShimmerLoading,
+                        disableRefresh
                     )
                 }
                 AdType.BANNER -> {
@@ -490,7 +492,8 @@ object AdSdk {
                         neighbourContentURL,
                         bannerAdLoadListener,
                         false,
-                        showShimmerLoading
+                        showShimmerLoading,
+                        disableRefresh
                     )
                 }
                 AdType.INTERSTITIAL -> {
