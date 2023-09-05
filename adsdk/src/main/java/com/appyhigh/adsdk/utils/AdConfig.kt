@@ -33,7 +33,7 @@ internal class AdConfig {
                 Logger.d(AdSdkConstants.TAG, "Cache Data set using local file")
                 SharedPrefs.putString(AdSdkConstants.AD_CONFIG_RESPONSE, fileData)
             }
-        }else{
+        } else {
             Logger.d(AdSdkConstants.TAG, "Cache Data set skipped as api response came first")
         }
     }
@@ -61,6 +61,20 @@ internal class AdConfig {
             }
         }
     }
+
+    fun isPopupEnabled(): Boolean {
+        return adResponse?.app?.enablePopup ?: false
+    }
+
+    fun getRedirectUri(): String {
+        return adResponse?.app?.redirectLink ?: ""
+    }
+
+
+    fun getRedirectDescription(): String {
+        return adResponse?.app?.redirectLinkDescription ?: ""
+    }
+
 
     fun isAppAdsActive(): Boolean {
         return adResponse?.app?.showAppAds ?: true

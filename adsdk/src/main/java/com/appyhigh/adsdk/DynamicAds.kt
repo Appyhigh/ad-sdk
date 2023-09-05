@@ -12,7 +12,7 @@ import java.io.IOException
 
 internal class DynamicAds {
     private val baseUrl = "https://admob-automation.apyhi.com/api/"
-
+    private val baseUrlTest = "https://admob-automation-qa-cdn.apyhi.com/api/"
     fun fetchRemoteAdConfiguration(
         packageId: String
     ) {
@@ -43,7 +43,6 @@ internal class DynamicAds {
         val request: Request = Request.Builder()
             .url(baseUrl + "v2/app/info")
             .post(formBody)
-            .addHeader(AdSdkConstants.AUTHORIZATION_HEADER, fetchToken())
             .build()
 
         val call: Call = clientBuilder.build().newCall(request)
