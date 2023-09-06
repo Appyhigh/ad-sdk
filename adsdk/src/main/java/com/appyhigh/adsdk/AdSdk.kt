@@ -59,50 +59,41 @@ object AdSdk {
     private var isAdMobInitialized = false
     private var isAppLovinInitialized = false
     private var updateDialog: Dialog? = null
-
+    private var isNotShownAlready = true
     fun isPopupEnabled(): Boolean {
         adConfig.init()
         return adConfig.isPopupEnabled()
     }
 
     fun showPopupAd(context: Activity) {
-        updateDialog = Dialog(context)
-        updateDialog?.setContentView(R.layout.update_dialog)
-        updateDialog?.window!!.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        updateDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        updateDialog?.setCancelable(false)
-        updateDialog?.show()
-        val title = updateDialog?.findViewById<AppCompatTextView>(R.id.update_dialog_title)
-        title?.text = adConfig.getRedirectDescription()
-        val download = updateDialog?.findViewById<AppCompatButton>(R.id.update_dialog_btn)
-        download?.setOnClickListener {
-           try {
-               val browserIntent =
-                   Intent(Intent.ACTION_VIEW, Uri.parse(adConfig.getRedirectUri()))
-               context.startActivity(browserIntent)
-           }catch (e:Exception){
-               Toast.makeText(context,"Something went wrong",Toast.LENGTH_SHORT).show()
-           }
+        if (isPopupEnabled() && isNotShownAlready) {
+            isNotShownAlready = false
+            updateDialog = Dialog(context)
+            updateDialog?.setContentView(R.layout.update_dialog)
+            updateDialog?.window!!.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            updateDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            updateDialog?.setCancelable(false)
+            updateDialog?.show()
+            val title = updateDialog?.findViewById<AppCompatTextView>(R.id.update_dialog_title)
+            title?.text = adConfig.getRedirectDescription()
+            val download = updateDialog?.findViewById<AppCompatButton>(R.id.update_dialog_btn)
+            download?.setOnClickListener {
+                try {
+                    val browserIntent =
+                        Intent(Intent.ACTION_VIEW, Uri.parse(adConfig.getRedirectUri()))
+                    context.startActivity(browserIntent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }
+            val cancel = updateDialog?.findViewById<AppCompatImageView>(R.id.update_dialog_close)
+            cancel?.setOnClickListener {
+                context.finishAffinity()
+            }
         }
-        val cancel = updateDialog?.findViewById<AppCompatImageView>(R.id.update_dialog_close)
-        cancel?.setOnClickListener {
-            context.finishAffinity()
-        }
-//        AlertDialog.Builder(context)
-//            .setTitle("Update Available!")
-//            .setMessage(adConfig.getRedirectDescription())
-//            .setPositiveButton("Download") { dialog, which ->
-//                val browserIntent =
-//                    Intent(Intent.ACTION_VIEW, Uri.parse(adConfig.getRedirectUri()))
-//                context.startActivity(browserIntent)
-//            }
-//            .setNegativeButton("Cancel") { dialog, which ->
-//                dialog.dismiss()
-//            }
-//            .show()
     }
 
     fun getConsentForEU(
@@ -236,6 +227,7 @@ object AdSdk {
                 )
             )
         }
+
     }
 
     private fun areBothSdksInitialized(

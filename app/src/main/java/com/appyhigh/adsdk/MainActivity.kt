@@ -12,9 +12,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        if(AdSdk.isPopupEnabled()){
-            AdSdk.showPopupAd(this)
-        }
+
         findViewById<AppCompatButton>(R.id.preloadButton).setOnClickListener {
             start(PreloadMainActivity())
         }
