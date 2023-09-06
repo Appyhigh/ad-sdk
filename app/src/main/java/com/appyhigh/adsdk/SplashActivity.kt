@@ -76,6 +76,10 @@ class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                     finish()
                 }
+
+                override fun onHardStopEnabled(redirectUrl: String) {
+                    super.onHardStopEnabled(redirectUrl)
+                }
             }
         )
     }

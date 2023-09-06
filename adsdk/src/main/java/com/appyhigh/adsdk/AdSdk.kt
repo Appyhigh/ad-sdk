@@ -203,7 +203,10 @@ object AdSdk {
             )
             return
         }
-
+        if (isPopupEnabled()) {
+            adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())
+            return
+        }
         if (isGooglePlayServicesAvailable(application)) {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
