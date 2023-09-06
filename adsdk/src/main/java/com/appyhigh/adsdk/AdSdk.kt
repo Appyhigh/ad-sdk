@@ -235,6 +235,8 @@ object AdSdk {
         adInitializeListener: AdInitializeListener
     ) {
         if (isAdMobInitialized && isAppLovinInitialized) {
+            isAdMobInitialized = false
+            isAppLovinInitialized = false
             AppLovinSdk.getInstance(application).mediationProvider = "max"
             isInitialized = true
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
