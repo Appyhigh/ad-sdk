@@ -131,6 +131,13 @@ Add these configurations to you `AndroidManifest.xml`
 </manifest>
  ```
 
+## Extend AdSdkApplication
+
+```kotlin
+	class MyApp: AdSdkApplication() {
+	...
+```
+
 ## Handle Consent for EU Countries [(Ref)](https://developers.google.com/admob/android/privacy)
 
 Call getConsentForEU method to automatically handle the consent and forms inside the current activity. This method provides a callback with success and failure listener, handle them in your app.
