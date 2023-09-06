@@ -203,15 +203,15 @@ object AdSdk {
             )
             return
         }
-        if (isPopupEnabled()) {
-            adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())
-            return
-        }
         if (isGooglePlayServicesAvailable(application)) {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
             SharedPrefs.init(application)
             DynamicAds().fetchRemoteAdConfiguration(application.packageName)
+            if (isPopupEnabled()) {
+                adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())
+                return
+            }
             MobileAds.initialize(application) {
                 Logger.d(AdSdkConstants.TAG, "admob")
                 isAdMobInitialized = true
@@ -223,6 +223,7 @@ object AdSdk {
                 areBothSdksInitialized(application, adInitializeListener)
             }
         } else {
+
             adInitializeListener.onInitializationFailed(
                 AdSdkError(
                     AdSdkErrorCode.PLAY_SERVICES_NOT_FOUND,
