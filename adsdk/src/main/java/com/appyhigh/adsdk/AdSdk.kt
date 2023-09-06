@@ -91,7 +91,7 @@ object AdSdk {
             }
             val cancel = updateDialog?.findViewById<AppCompatImageView>(R.id.update_dialog_close)
             cancel?.setOnClickListener {
-                context.finishAffinity()
+                System.exit(0)
             }
         }
     }
