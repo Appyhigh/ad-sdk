@@ -79,6 +79,7 @@ class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
 
                 override fun onHardStopEnabled(redirectUrl: String) {
                     super.onHardStopEnabled(redirectUrl)
+                    AdSdk.showPopupAd(this@SplashActivity)
                 }
             }
         )

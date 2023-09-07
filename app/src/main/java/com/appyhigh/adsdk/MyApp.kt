@@ -8,7 +8,7 @@ import com.pluto.plugins.logger.PlutoLoggerPlugin
 import com.pluto.plugins.network.PlutoNetworkPlugin
 import com.pluto.plugins.preferences.PlutoSharePreferencesPlugin
 
-class MyApp: AdSdkApplication() {
+class MyApp: Application() {
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)

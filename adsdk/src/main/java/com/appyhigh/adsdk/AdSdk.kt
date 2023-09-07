@@ -59,7 +59,6 @@ object AdSdk {
     private var isAdMobInitialized = false
     private var isAppLovinInitialized = false
     private var updateDialog: Dialog? = null
-    private var isNotShownAlready = true
     fun isPopupEnabled(context: Context): Boolean {
         SharedPrefs.init(context)
         adConfig.init()
@@ -67,9 +66,8 @@ object AdSdk {
     }
 
     fun showPopupAd(context: Activity) {
-        if (isPopupEnabled(context) && isNotShownAlready) {
-            isNotShownAlready = false
-            updateDialog = Dialog(context)
+        updateDialog = Dialog(context)
+        if (isPopupEnabled(context) && updateDialog?.isShowing == false) {
             updateDialog?.setContentView(R.layout.update_dialog)
             updateDialog?.window!!.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
