@@ -40,7 +40,7 @@ internal class AdConfig {
     }
 
     fun init() {
-        if (adResponse == null && forceUpdate) {
+        if (adResponse == null || forceUpdate) {
             try {
                 val gson = Gson()
                 if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
