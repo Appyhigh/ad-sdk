@@ -60,13 +60,14 @@ object AdSdk {
     private var isAppLovinInitialized = false
     private var updateDialog: Dialog? = null
     private var isNotShownAlready = true
-    fun isPopupEnabled(): Boolean {
+    fun isPopupEnabled(context: Context): Boolean {
+        SharedPrefs.init(context)
         adConfig.init()
         return adConfig.isPopupEnabled()
     }
 
     fun showPopupAd(context: Activity) {
-        if (isPopupEnabled() && isNotShownAlready) {
+        if (isPopupEnabled(context) && isNotShownAlready) {
             isNotShownAlready = false
             updateDialog = Dialog(context)
             updateDialog?.setContentView(R.layout.update_dialog)
@@ -208,7 +209,7 @@ object AdSdk {
             addTestDevice(testDevice, advertisingId, application)
             DynamicAds().fetchRemoteAdConfiguration(application.packageName)
             try {
-                if (isPopupEnabled()) {
+                if (isPopupEnabled(context = application.applicationContext)) {
                     adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())
                     return
                 }
