@@ -67,7 +67,7 @@ object AdSdk {
 
     fun showPopupAd(context: Activity) {
         updateDialog = Dialog(context)
-        if (isPopupEnabled(context) && updateDialog?.isShowing == false) {
+        if (isPopupEnabled(context)) {
             updateDialog?.setContentView(R.layout.update_dialog)
             updateDialog?.window!!.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
