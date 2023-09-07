@@ -179,6 +179,7 @@ object AdSdk {
         fileId: Int,
         adInitializeListener: AdInitializeListener
     ) {
+        SharedPrefs.init(application)
         val inputStream: InputStream = try {
             application.resources.openRawResource(fileId)
         } catch (e: Exception) {
@@ -192,7 +193,6 @@ object AdSdk {
         } ?: return
         try {
             val fileData = readDefaultAdResponseFile(inputStream)
-            SharedPrefs.init(application)
             adConfig.initWithLocalFile(fileData)
         } catch (e: Exception) {
             adInitializeListener.onInitializationFailed(
@@ -206,10 +206,19 @@ object AdSdk {
         if (isGooglePlayServicesAvailable(application)) {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
-            SharedPrefs.init(application)
             DynamicAds().fetchRemoteAdConfiguration(application.packageName)
-            if (isPopupEnabled()) {
-                adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())
+            try {
+                if (isPopupEnabled()) {
+                    adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())
+                    return
+                }
+            }catch (e:Exception){
+                adInitializeListener.onInitializationFailed(
+                    AdSdkError(
+                        AdSdkErrorCode.UNKNOWN_ERROR,
+                        application.getString(R.string.unknown_error)
+                    )
+                )
                 return
             }
             MobileAds.initialize(application) {
