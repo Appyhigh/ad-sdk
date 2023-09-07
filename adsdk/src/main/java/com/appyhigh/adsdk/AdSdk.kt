@@ -205,7 +205,7 @@ object AdSdk {
         if (isGooglePlayServicesAvailable(application)) {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
-            DynamicAds().fetchRemoteAdConfiguration(application.packageName)
+            DynamicAds().fetchRemoteAdConfiguration(adConfig,application.packageName)
             try {
                 if (isPopupEnabled(context = application.applicationContext)) {
                     adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())

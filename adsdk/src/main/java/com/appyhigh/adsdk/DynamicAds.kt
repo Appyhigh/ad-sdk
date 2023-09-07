@@ -2,6 +2,7 @@ package com.appyhigh.adsdk
 
 
 import com.appyhigh.adsdk.data.local.SharedPrefs
+import com.appyhigh.adsdk.utils.AdConfig
 import com.appyhigh.adsdk.utils.Logger
 import com.appyhigh.adsdk.utils.RSAKeyGenerator
 import com.pluto.plugins.network.PlutoInterceptor
@@ -14,6 +15,7 @@ internal class DynamicAds {
     private val baseUrl = "https://admob-automation.apyhi.com/api/"
     private val baseUrlTest = "https://admob-automation-qa-cdn.apyhi.com/api/"
     fun fetchRemoteAdConfiguration(
+        adConfig: AdConfig,
         packageId: String
     ) {
         val headerAuthorizationInterceptor = Interceptor { chain ->
@@ -62,6 +64,7 @@ internal class DynamicAds {
                                 AdSdkConstants.AD_CONFIG_RESPONSE,
                                 apiResponse
                             )
+                            adConfig.forceUpdateConfig()
                         }
                     } else {
                         Logger.d(AdSdkConstants.TAG, "fetchRemoteAdConfiguration: failure")
