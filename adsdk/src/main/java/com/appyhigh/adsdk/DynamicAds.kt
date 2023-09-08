@@ -2,6 +2,7 @@ package com.appyhigh.adsdk
 
 
 import com.appyhigh.adsdk.data.local.SharedPrefs
+import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.utils.AdConfig
 import com.appyhigh.adsdk.utils.Logger
 import com.appyhigh.adsdk.utils.RSAKeyGenerator
@@ -16,7 +17,8 @@ internal class DynamicAds {
     private val baseUrlTest = "https://admob-automation-qa-cdn.apyhi.com/api/"
     fun fetchRemoteAdConfiguration(
         adConfig: AdConfig,
-        packageId: String
+        packageId: String,
+        adConfigFetchListener: AdConfigFetchListener?
     ) {
         val headerAuthorizationInterceptor = Interceptor { chain ->
             var request = chain.request()
@@ -65,6 +67,7 @@ internal class DynamicAds {
                                 apiResponse
                             )
                             adConfig.forceUpdateConfig()
+                            adConfigFetchListener?.onAdConfigFetched(adConfig.isPopupEnabled())
                         }
                     } else {
                         Logger.d(AdSdkConstants.TAG, "fetchRemoteAdConfiguration: failure")
@@ -97,4 +100,9 @@ internal class DynamicAds {
         }
         return "Bearer $token"
     }
+}
+
+interface AdConfigFetchListener {
+    fun onAdConfigFetched(isHardStopEnabled:Boolean)
+    fun onAdConfigFetchFailed(reason: AdSdkError)
 }

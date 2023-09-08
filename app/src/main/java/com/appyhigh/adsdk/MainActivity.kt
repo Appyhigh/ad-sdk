@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import com.appyhigh.adsdk.data.enums.AdProvider
+import com.appyhigh.adsdk.data.model.AdSdkError
 
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +13,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        AdSdk.showPopupAd(this)
+        AdSdk.fetchHardStopStatusForcefully(application, object :AdConfigFetchListener{
+            override fun onAdConfigFetched(isHardStopEnabled: Boolean) {
+                if (isHardStopEnabled) {
+                    AdSdk.showCustomHardStopPopup(this@MainActivity)
+                }
+            }
+
+            override fun onAdConfigFetchFailed(reason: AdSdkError) {
+
+            }
+        })
         findViewById<AppCompatButton>(R.id.preloadButton).setOnClickListener {
             start(PreloadMainActivity())
         }

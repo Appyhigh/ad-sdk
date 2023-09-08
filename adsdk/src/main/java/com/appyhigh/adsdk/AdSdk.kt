@@ -1,7 +1,6 @@
 package com.appyhigh.adsdk
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Application
 import android.app.Dialog
 import android.content.Context
@@ -13,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import com.applovin.sdk.AppLovinSdk
 import com.appyhigh.adsdk.ads.AppOpenAdLoader
@@ -65,32 +63,34 @@ object AdSdk {
         return adConfig.isPopupEnabled()
     }
 
-    fun showPopupAd(context: Activity) {
-        updateDialog = Dialog(context)
-        if (isPopupEnabled(context)) {
-            updateDialog?.setContentView(R.layout.update_dialog)
-            updateDialog?.window!!.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            updateDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-            updateDialog?.setCancelable(false)
-            updateDialog?.show()
-            val title = updateDialog?.findViewById<AppCompatTextView>(R.id.update_dialog_title)
-            title?.text = adConfig.getRedirectDescription()
-            val download = updateDialog?.findViewById<AppCompatButton>(R.id.update_dialog_btn)
-            download?.setOnClickListener {
-                try {
-                    val browserIntent =
-                        Intent(Intent.ACTION_VIEW, Uri.parse(adConfig.getRedirectUri()))
-                    context.startActivity(browserIntent)
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+    fun showCustomHardStopPopup(context: Activity) {
+        context.runOnUiThread {
+            updateDialog = Dialog(context)
+            if (isPopupEnabled(context)) {
+                updateDialog?.setContentView(R.layout.update_dialog)
+                updateDialog?.window!!.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                updateDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                updateDialog?.setCancelable(false)
+                updateDialog?.show()
+                val title = updateDialog?.findViewById<AppCompatTextView>(R.id.update_dialog_title)
+                title?.text = adConfig.getRedirectDescription()
+                val download = updateDialog?.findViewById<AppCompatButton>(R.id.update_dialog_btn)
+                download?.setOnClickListener {
+                    try {
+                        val browserIntent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(adConfig.getRedirectUri()))
+                        context.startActivity(browserIntent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            val cancel = updateDialog?.findViewById<AppCompatImageView>(R.id.update_dialog_close)
-            cancel?.setOnClickListener {
-                System.exit(0)
+                val cancel = updateDialog?.findViewById<AppCompatImageView>(R.id.update_dialog_close)
+                cancel?.setOnClickListener {
+                    System.exit(0)
+                }
             }
         }
     }
@@ -171,6 +171,33 @@ object AdSdk {
         )
     }
 
+    fun fetchHardStopStatusForcefully(
+        application: Application,
+        onAdConfigFetchListener: AdConfigFetchListener
+    ) {
+        if (isSdkInitialized()) {
+            DynamicAds().fetchRemoteAdConfiguration(
+                adConfig,
+                application.packageName,
+                object : AdConfigFetchListener {
+                    override fun onAdConfigFetched(isHardStopEnabled: Boolean) {
+                        onAdConfigFetchListener.onAdConfigFetched(isHardStopEnabled)
+                    }
+
+                    override fun onAdConfigFetchFailed(reason: AdSdkError) {
+
+                    }
+                })
+        } else {
+            onAdConfigFetchListener.onAdConfigFetchFailed(
+                AdSdkError(
+                    AdSdkErrorCode.SDK_NOT_INITIALIZED,
+                    application.getString(R.string.sdk_not_initialized)
+                )
+            )
+        }
+    }
+
     fun initialize(
         application: Application,
         testDevice: String?,
@@ -205,21 +232,7 @@ object AdSdk {
         if (isGooglePlayServicesAvailable(application)) {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
-            DynamicAds().fetchRemoteAdConfiguration(adConfig,application.packageName)
-            try {
-                if (isPopupEnabled(context = application.applicationContext)) {
-                    adInitializeListener.onHardStopEnabled(adConfig.getRedirectUri())
-                    return
-                }
-            }catch (e:Exception){
-                adInitializeListener.onInitializationFailed(
-                    AdSdkError(
-                        AdSdkErrorCode.UNKNOWN_ERROR,
-                        application.getString(R.string.unknown_error)
-                    )
-                )
-                return
-            }
+            DynamicAds().fetchRemoteAdConfiguration(adConfig, application.packageName, null)
             MobileAds.initialize(application) {
                 Logger.d(AdSdkConstants.TAG, "admob")
                 isAdMobInitialized = true
@@ -252,7 +265,7 @@ object AdSdk {
             AppLovinSdk.getInstance(application).mediationProvider = "max"
             isInitialized = true
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
-            adInitializeListener.onSdkInitialized()
+            adInitializeListener.onSdkInitialized(isPopupEnabled(context = application.applicationContext))
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
         }
     }
