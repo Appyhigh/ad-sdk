@@ -54,7 +54,7 @@ internal class BannerAdLoader {
                 mAdView.setBackgroundColor(Color.WHITE)
                 mAdView.loadAd()
                 mAdView.setListener(object : MaxAdViewAdListener {
-                    override fun onAdLoaded(p0: MaxAd?) {
+                    override fun onAdLoaded(p0: MaxAd) {
                         Logger.d(
                             AdSdkConstants.TAG,
                             "$adName ==== $adUnitId ==== ${context.getString(R.string.banner_preloaded)}"
@@ -62,44 +62,51 @@ internal class BannerAdLoader {
                         AdSdkConstants.preloadedBannerAdMap[adName] = mAdView
                     }
 
-                    override fun onAdDisplayed(p0: MaxAd?) {
+                    override fun onAdDisplayed(p0: MaxAd) {
                     }
 
-                    override fun onAdHidden(p0: MaxAd?) {
+                    override fun onAdHidden(p0: MaxAd) {
                     }
 
-                    override fun onAdClicked(p0: MaxAd?) {
+                    override fun onAdClicked(p0: MaxAd) {
                     }
 
-                    override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+                    override fun onAdLoadFailed(p0: String, p1: MaxError) {
                         Logger.e(
                             AdSdkConstants.TAG,
                             "$adName ==== $adUnitId ==== ${context.getString(R.string.error_preloading_banner_failed)}"
                         )
                     }
 
-                    override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+                    override fun onAdDisplayFailed(p0: MaxAd, p1: MaxError) {
                     }
 
-                    override fun onAdExpanded(p0: MaxAd?) {
+                    override fun onAdExpanded(p0: MaxAd) {
                     }
 
-                    override fun onAdCollapsed(p0: MaxAd?) {
+                    override fun onAdCollapsed(p0: MaxAd) {
                     }
                 })
             } else {
-                val builder = if (adProvider == AdProvider.ADMOB.name.lowercase()) {
-                    AdRequest.Builder()
+                val adRequest = if (adProvider == AdProvider.ADMOB.name.lowercase()) {
+                    AdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                        contentURL?.let { setContentUrl(it) }
+                        neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                    }.build()
                 } else {
-                    AdManagerAdRequest.Builder()
+                    AdManagerAdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                        contentURL?.let { setContentUrl(it) }
+                        neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                    }.build()
                 }
-                builder.addNetworkExtrasBundle(
-                    AdMobAdapter::class.java,
-                    if (AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-                )
-                contentURL?.let { builder.setContentUrl(it) }
-                neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
-                val adRequest = builder.build()
                 val mAdView = AdView(context)
                 mAdView.setAdSize(adSize)
                 mAdView.adUnitId = adUnitId
@@ -307,19 +314,26 @@ internal class BannerAdLoader {
             parentView.addView(mAdView)
             mAdView.loadAd()
         } else {
-            val builder =
+            val adRequest =
                 if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-                    AdRequest.Builder()
+                    AdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                        contentURL?.let { setContentUrl(it) }
+                        neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                    }.build()
                 } else {
-                    AdManagerAdRequest.Builder()
+                    AdManagerAdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                        contentURL?.let { setContentUrl(it) }
+                        neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                    }.build()
                 }
-            builder.addNetworkExtrasBundle(
-                AdMobAdapter::class.java,
-                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-            )
-            contentURL?.let { builder.setContentUrl(it) }
-            neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
-            val adRequest = builder.build()
             mAdView = AdView(context)
             mAdView.setAdSize(adSize)
             mAdView.adUnitId = adUnit

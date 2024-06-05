@@ -77,7 +77,8 @@ AdSdk.getConsentForEU( YOUR ACTIVITY , YOUR TEST DEVICE HASHED ID string, object
 fun initialize(  
     application: Application,  
     testDevice: String?,  
-    fileId: Int,  
+    fileId: Int,
+    appLovinKey: String,
     adInitializeListener: AdInitializeListener  
 )
 ```
@@ -86,7 +87,8 @@ fun initialize(
 AdSdk.initialize(  
   application = application,  
   testDevice = "59106BA0F480E2EC4CD8CC7AA2C49B81", 
-  fileId = R.raw.ad_utils_response,  
+  fileId = R.raw.ad_utils_response,
+  appLovinKey = "pA3NAGLWSFkdUbKoK9gLEDnpXe6x8XU6D2TgT5vsHlZXt4FATcoLWTvA3fHBVhG6hh7HJWJa6JD1akUlTlVgwx",
   adInitializeListener = object : AdInitializeListener() {  
       override fun onSdkInitialized() {  
       }  

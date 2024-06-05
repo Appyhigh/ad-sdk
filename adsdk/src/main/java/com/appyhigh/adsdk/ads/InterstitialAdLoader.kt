@@ -101,7 +101,7 @@ internal class InterstitialAdLoader {
             val interstitialAd = MaxInterstitialAd(adUnit, activity)
             interstitialAd.loadAd()
             interstitialAd.setListener(object : MaxAdListener {
-                override fun onAdLoaded(ad: MaxAd?) {
+                override fun onAdLoaded(ad: MaxAd) {
                     if (!isAdLoaded) {
                         countDownTimer?.cancel()
                         Logger.d(
@@ -113,16 +113,16 @@ internal class InterstitialAdLoader {
                     }
                 }
 
-                override fun onAdDisplayed(p0: MaxAd?) {
+                override fun onAdDisplayed(p0: MaxAd) {
                 }
 
-                override fun onAdHidden(p0: MaxAd?) {
+                override fun onAdHidden(p0: MaxAd) {
                 }
 
-                override fun onAdClicked(p0: MaxAd?) {
+                override fun onAdClicked(p0: MaxAd) {
                 }
 
-                override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+                override fun onAdLoadFailed(p0: String, p1: MaxError) {
                     countDownTimer?.cancel()
                     val error = "$adName ==== $adUnit ==== ${p1?.message}"
                     adFailureReasonArray.add(error)
@@ -141,24 +141,31 @@ internal class InterstitialAdLoader {
                     }
                 }
 
-                override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+                override fun onAdDisplayFailed(p0: MaxAd, p1: MaxError) {
                 }
 
             })
         } else {
-            val adRequest = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-                AdRequest.Builder()
-            } else {
-                AdManagerAdRequest.Builder()
-            }
-            adRequest.addNetworkExtrasBundle(
-                AdMobAdapter::class.java,
-                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-            )
+            val adRequest =
+                if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
+                    AdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                    }.build()
+                } else {
+                    AdManagerAdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                    }.build()
+                }
             InterstitialAd.load(
                 activity,
                 adUnit,
-                adRequest.build(),
+                adRequest,
                 object : InterstitialAdLoadCallback() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         countDownTimer?.cancel()

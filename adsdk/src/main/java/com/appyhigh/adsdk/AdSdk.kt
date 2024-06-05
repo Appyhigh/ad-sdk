@@ -13,7 +13,9 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Lifecycle
+import com.applovin.sdk.AppLovinMediationProvider
 import com.applovin.sdk.AppLovinSdk
+import com.applovin.sdk.AppLovinSdkInitializationConfiguration
 import com.appyhigh.adsdk.ads.AppOpenAdLoader
 import com.appyhigh.adsdk.ads.BannerAdLoader
 import com.appyhigh.adsdk.ads.InterstitialAdLoader
@@ -41,6 +43,8 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager
+import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
@@ -203,7 +207,8 @@ object AdSdk {
         testDevice: String?,
         advertisingId: String?,
         fileId: Int,
-        adInitializeListener: AdInitializeListener
+        appLovinConfigBuilder: AppLovinSdkInitializationConfiguration.Builder,
+        adInitializeListener: AdInitializeListener,
     ) {
         SharedPrefs.init(application)
         val inputStream: InputStream = try {
@@ -231,20 +236,27 @@ object AdSdk {
         }
         if (isGooglePlayServicesAvailable(application)) {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
-            addTestDevice(testDevice, advertisingId, application)
+            val initConfig = appLovinConfigBuilder.setMediationProvider(AppLovinMediationProvider.MAX)
+            if (BuildConfig.DEBUG) {
+                initConfig.setTestDeviceAdvertisingIds(arrayListOf(advertisingId))
+                testDevice?.let {
+                    val build = RequestConfiguration.Builder()
+                        .setTestDeviceIds(listOf(testDevice)).build()
+                    MobileAds.setRequestConfiguration(build)
+                }
+            }
             DynamicAds().fetchRemoteAdConfiguration(adConfig, application.packageName, null)
             MobileAds.initialize(application) {
                 Logger.d(AdSdkConstants.TAG, "admob")
                 isAdMobInitialized = true
                 areBothSdksInitialized(application, adInitializeListener)
             }
-            AppLovinSdk.getInstance(application).initializeSdk {
+            AppLovinSdk.getInstance(application).initialize(initConfig.build()) {
                 Logger.d(AdSdkConstants.TAG, "applovin")
                 isAppLovinInitialized = true
                 areBothSdksInitialized(application, adInitializeListener)
             }
         } else {
-
             adInitializeListener.onInitializationFailed(
                 AdSdkError(
                     AdSdkErrorCode.PLAY_SERVICES_NOT_FOUND,
@@ -262,7 +274,6 @@ object AdSdk {
         if (isAdMobInitialized && isAppLovinInitialized) {
             isAdMobInitialized = false
             isAppLovinInitialized = false
-            AppLovinSdk.getInstance(application).mediationProvider = "max"
             isInitialized = true
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
             adInitializeListener.onSdkInitialized(isPopupEnabled(context = application.applicationContext))
@@ -290,34 +301,35 @@ object AdSdk {
         activity: Activity,
         view: View,
         buildVersion: Int,
-        versionControlListener: VersionControlListener?
+        versionControlListener: VersionControlListener?,
+        autoStartUpdate: Boolean = true,
+        isTestMode: Boolean = false,
+        availableVersionCode: Int = 0,
+        appUpdateType: Int = AppUpdateType.FLEXIBLE,
+        hook: (FakeAppUpdateManager, VersionControlListener?) -> Unit = { _, _ -> }
     ) {
         SharedPrefs.init(activity)
-        VersionControl().initializeVersionControl(
-            activity,
-            view,
-            buildVersion,
-            versionControlListener
-        )
+        if (isTestMode) {
+            VersionControl().testFakeUpdate(
+                activity,
+                availableVersionCode,
+                appUpdateType,
+                versionControlListener,
+                hook
+            )
+        } else {
+            VersionControl().initializeVersionControl(
+                activity,
+                view,
+                buildVersion,
+                versionControlListener,
+                autoStartUpdate,
+            )
+        }
+
     }
 
     fun isSdkInitialized() = isInitialized
-
-    private fun addTestDevice(
-        testDevice: String?,
-        advertisingId: String?,
-        application: Application
-    ) {
-        if (BuildConfig.DEBUG) {
-            AppLovinSdk.getInstance(application).settings.testDeviceAdvertisingIds =
-                arrayListOf(advertisingId)
-            testDevice?.let {
-                val build = RequestConfiguration.Builder()
-                    .setTestDeviceIds(listOf(it)).build()
-                MobileAds.setRequestConfiguration(build)
-            }
-        }
-    }
 
     private fun isGooglePlayServicesAvailable(application: Application): Boolean {
         try {

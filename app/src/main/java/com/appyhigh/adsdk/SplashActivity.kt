@@ -48,12 +48,13 @@ class SplashActivity : AppCompatActivity(), BypassAppOpenAd {
         }
     }
 
-    fun initializeAdSdk() {
+    private fun initializeAdSdk() {
         AdSdk.initialize(
             application = application,
             testDevice = "D3D0E14422C7B10ADA2BAA773B14EFB6",
             advertisingId = advertId,
             fileId = R.raw.ad_utils_response,
+            appLovinKey = "pA3NAGLWSFkdUbKoK9gLEDnpXe6x8XU6D2TgT5vsHlZXt4FATcoLWTvA3fHBVhG6hh7HJWJa6JD1akUlTlVgwx",
             adInitializeListener = object : AdInitializeListener() {
                 override fun onSdkInitialized(isHardStopEnabled: Boolean) {
                     Log.d(AdSdkConstants.TAG, "end")

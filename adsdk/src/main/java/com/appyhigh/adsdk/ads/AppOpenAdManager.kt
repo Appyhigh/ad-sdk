@@ -78,18 +78,23 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
         }
         isLoadingAd = true
         val request = if (adUnitProvider == AdProvider.ADMOB.name.lowercase()) {
-            AdRequest.Builder()
+            AdRequest.Builder().apply {
+                addNetworkExtrasBundle(
+                    AdMobAdapter::class.java,
+                    if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                )
+            }.build()
         } else {
-            AdManagerAdRequest.Builder()
+            AdManagerAdRequest.Builder().apply {
+                addNetworkExtrasBundle(
+                    AdMobAdapter::class.java,
+                    if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                )
+            }.build()
         }
 
-        request.addNetworkExtrasBundle(
-            AdMobAdapter::class.java,
-            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        )
-
         AppOpenAd.load(
-            context, adUnit!!, request.build(),
+            context, adUnit!!, request,
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
 

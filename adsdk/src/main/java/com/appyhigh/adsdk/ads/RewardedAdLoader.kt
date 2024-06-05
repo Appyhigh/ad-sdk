@@ -107,7 +107,7 @@ internal class RewardedAdLoader {
             val rewardedAd = MaxRewardedAd.getInstance(adUnit, activity)
             rewardedAd.loadAd()
             rewardedAd.setListener(object : MaxRewardedAdListener {
-                override fun onAdLoaded(p0: MaxAd?) {
+                override fun onAdLoaded(p0: MaxAd) {
                     adLoadedCallback(
                         adName,
                         adUnit,
@@ -119,19 +119,19 @@ internal class RewardedAdLoader {
                     )
                 }
 
-                override fun onAdDisplayed(p0: MaxAd?) {
+                override fun onAdDisplayed(p0: MaxAd) {
                 }
 
-                override fun onAdHidden(p0: MaxAd?) {
+                override fun onAdHidden(p0: MaxAd) {
                 }
 
-                override fun onAdClicked(p0: MaxAd?) {
+                override fun onAdClicked(p0: MaxAd) {
                 }
 
-                override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+                override fun onAdLoadFailed(p0: String, p1: MaxError) {
                 }
 
-                override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+                override fun onAdDisplayFailed(p0: MaxAd, p1: MaxError) {
                     failedAdCallback(
                         adName,
                         adUnit,
@@ -139,35 +139,42 @@ internal class RewardedAdLoader {
                         activity,
                         countDownTimer,
                         rewardedAdLoadListener,
-                        p1?.message
+                        p1.message
                     )
                 }
 
-                override fun onUserRewarded(p0: MaxAd?, p1: MaxReward?) {
+                override fun onUserRewarded(p0: MaxAd, p1: MaxReward) {
                 }
 
                 @Deprecated("Deprecated in Java")
-                override fun onRewardedVideoStarted(p0: MaxAd?) {
+                override fun onRewardedVideoStarted(p0: MaxAd) {
                 }
 
                 @Deprecated("Deprecated in Java")
-                override fun onRewardedVideoCompleted(p0: MaxAd?) {
+                override fun onRewardedVideoCompleted(p0: MaxAd) {
                 }
             })
         } else {
-            val adRequest = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-                AdRequest.Builder()
-            } else {
-                AdManagerAdRequest.Builder()
-            }
-            adRequest.addNetworkExtrasBundle(
-                AdMobAdapter::class.java,
-                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-            )
+            val adRequest =
+                if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
+                    AdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                    }.build()
+                } else {
+                    AdManagerAdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                    }.build()
+                }
             RewardedAd.load(
                 context,
                 adUnit,
-                adRequest.build(),
+                adRequest,
                 object : RewardedAdLoadCallback() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         failedAdCallback(

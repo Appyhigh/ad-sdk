@@ -94,21 +94,27 @@ internal class RewardedInterstitialAdLoader {
     ) {
         countDownTimer?.start()
 
-        val adRequest = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-            AdRequest.Builder()
-        } else {
-            AdManagerAdRequest.Builder()
-        }
-
-        adRequest.addNetworkExtrasBundle(
-            AdMobAdapter::class.java,
-            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-        )
+        val adRequest =
+            if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
+                AdRequest.Builder().apply {
+                    addNetworkExtrasBundle(
+                        AdMobAdapter::class.java,
+                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                    )
+                }.build()
+            } else {
+                AdManagerAdRequest.Builder().apply {
+                    addNetworkExtrasBundle(
+                        AdMobAdapter::class.java,
+                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                    )
+                }.build()
+            }
 
         RewardedInterstitialAd.load(
             context,
             adUnit,
-            adRequest.build(),
+            adRequest,
             object : RewardedInterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     countDownTimer?.cancel()

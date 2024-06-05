@@ -177,7 +177,7 @@ internal class AppOpenAdLoader {
             val appOpenAd = MaxAppOpenAd(adUnit!!, context)
             appOpenAd.loadAd()
             appOpenAd.setListener(object : MaxAdListener {
-                override fun onAdLoaded(p0: MaxAd?) {
+                override fun onAdLoaded(p0: MaxAd) {
                     if (!isAdLoaded) {
                         countDownTimer?.cancel()
                         Logger.d(
@@ -189,16 +189,16 @@ internal class AppOpenAdLoader {
                     }
                 }
 
-                override fun onAdDisplayed(p0: MaxAd?) {
+                override fun onAdDisplayed(p0: MaxAd) {
                 }
 
-                override fun onAdHidden(p0: MaxAd?) {
+                override fun onAdHidden(p0: MaxAd) {
                 }
 
-                override fun onAdClicked(p0: MaxAd?) {
+                override fun onAdClicked(p0: MaxAd) {
                 }
 
-                override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+                override fun onAdLoadFailed(p0: String, p1: MaxError) {
                     countDownTimer?.cancel()
                     val error = "$adName ==== $adUnit ==== ${p1?.message}"
                     adFailureReasonArray.add(error)
@@ -217,23 +217,29 @@ internal class AppOpenAdLoader {
                     }
                 }
 
-                override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+                override fun onAdDisplayFailed(p0: MaxAd, p1: MaxError) {
                 }
             })
         } else {
-            val request = if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-                AdRequest.Builder()
-            } else {
-                AdManagerAdRequest.Builder()
-            }
-
-            request.addNetworkExtrasBundle(
-                AdMobAdapter::class.java,
-                if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-            )
+            val request =
+                if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
+                    AdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                    }.build()
+                } else {
+                    AdManagerAdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                    }.build()
+                }
 
             AppOpenAd.load(
-                context, adUnit!!, request.build(),
+                context, adUnit!!, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
                 object : AppOpenAd.AppOpenAdLoadCallback() {
                     override fun onAdLoaded(ad: AppOpenAd) {

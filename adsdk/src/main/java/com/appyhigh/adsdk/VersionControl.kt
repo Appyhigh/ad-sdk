@@ -14,9 +14,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.gson.Gson
@@ -33,15 +33,17 @@ internal class VersionControl {
         activity: Activity,
         view: View,
         buildVersion: Int,
-        versionControlListener: VersionControlListener?
+        versionControlListener: VersionControlListener?,
+        autoStartUpdate: Boolean = true
     ) {
         try {
-            val gson = Gson()
             if (SharedPrefs.getString(AD_CONFIG_RESPONSE).isNullOrBlank()) {
+                Logger.d(AdSdkConstants.TAG, "Update check failed")
+                versionControlListener?.onUpdateDetectionSuccess(UpdateType.NO_UPDATE)
                 return
             }
-            val adResponse: AdResponse =
-                gson.fromJson(SharedPrefs.getString(AD_CONFIG_RESPONSE), AdResponse::class.java)
+            val gson = Gson()
+            val adResponse: AdResponse = gson.fromJson(SharedPrefs.getString(AD_CONFIG_RESPONSE), AdResponse::class.java)
             currentVersion = adResponse.app?.latestVersion?.toString() ?: "0"
             criticalVersion = adResponse.app?.criticalVersion?.toString() ?: "0"
             appUpdateManager = AppUpdateManagerFactory.create(activity)
@@ -52,29 +54,25 @@ internal class VersionControl {
                         Logger.d(AdSdkConstants.TAG, "SOFT_UPDATE")
                         if (firstRequest) {
                             checkUpdate(
-                                activity,
-                                AppUpdateType.FLEXIBLE, versionControlListener
+                                activity, AppUpdateType.FLEXIBLE, versionControlListener, autoStartUpdate
                             )
                             firstRequest = false
                         }
                     }
+
                     buildVersion < criticalVersion.toFloat().toInt() -> {
                         Logger.d(AdSdkConstants.TAG, "HARD_UPDATE")
-                        checkUpdate(activity, IMMEDIATE, versionControlListener)
+                        checkUpdate(activity, AppUpdateType.IMMEDIATE, versionControlListener, autoStartUpdate)
                     }
+
                     else -> {
                         Logger.d(AdSdkConstants.TAG, "NO_UPDATE")
-                        versionControlListener?.onUpdateDetectionSuccess(
-                            UpdateType.NO_UPDATE
-                        )
-
+                        versionControlListener?.onUpdateDetectionSuccess(UpdateType.NO_UPDATE)
                     }
                 }
             } else {
                 Logger.d(AdSdkConstants.TAG, "NO_UPDATE")
-                versionControlListener?.onUpdateDetectionSuccess(
-                    UpdateType.NO_UPDATE
-                )
+                versionControlListener?.onUpdateDetectionSuccess(UpdateType.NO_UPDATE)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -84,33 +82,47 @@ internal class VersionControl {
     private fun checkUpdate(
         activity: Activity,
         updateType: Int,
-        versionControlListener: VersionControlListener?
+        versionControlListener: VersionControlListener?,
+        autoStartUpdate: Boolean = true
     ) {
         val appUpdateInfoTask = appUpdateManager?.appUpdateInfo
-        Logger.d(AdSdkConstants.TAG, "Checking for updates")
-        appUpdateInfoTask?.addOnSuccessListener { appUpdateInfo ->
-            Logger.d(AdSdkConstants.TAG, appUpdateInfo.updateAvailability().toString())
-            Logger.d(AdSdkConstants.TAG, updateType.toString())
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                && appUpdateInfo.isUpdateTypeAllowed(updateType)
-            ) {
-                if (updateType == IMMEDIATE) {
-                    versionControlListener?.onUpdateDetectionSuccess(UpdateType.HARD_UPDATE)
+        if (appUpdateInfoTask == null) {
+            Logger.d(AdSdkConstants.TAG, "Update check failed")
+            versionControlListener?.onUpdateDetectionSuccess(UpdateType.NO_UPDATE)
+        } else {
+            Logger.d(AdSdkConstants.TAG, "Checking for updates")
+            appUpdateInfoTask.addOnCompleteListener { result ->
+                if (result.isSuccessful) {
+                    val appUpdateInfo = result.result
+                    Logger.d(AdSdkConstants.TAG, appUpdateInfo.updateAvailability().toString())
+                    Logger.d(AdSdkConstants.TAG, updateType.toString())
+                    if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                        && appUpdateInfo.isUpdateTypeAllowed(updateType)
+                    ) {
+                        if (updateType == AppUpdateType.IMMEDIATE) {
+                            versionControlListener?.onUpdateDetectionSuccess(UpdateType.HARD_UPDATE)
+                        } else {
+                            versionControlListener?.onUpdateDetectionSuccess(UpdateType.SOFT_UPDATE)
+                        }
+                        if (autoStartUpdate) {
+                            appUpdateManager!!.registerListener(listener)
+                            appUpdateManager!!.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                activity,
+                                AppUpdateOptions.newBuilder(updateType)
+                                    .setAllowAssetPackDeletion(true)
+                                    .build(),
+                                MY_REQUEST_CODE
+                            )
+                        }
+                    } else {
+                        Logger.d(AdSdkConstants.TAG, "No Update available")
+                        versionControlListener?.onUpdateDetectionSuccess(UpdateType.NO_UPDATE)
+                    }
                 } else {
-                    versionControlListener?.onUpdateDetectionSuccess(UpdateType.SOFT_UPDATE)
+                    Logger.d(AdSdkConstants.TAG, "Update check failed")
+                    versionControlListener?.onUpdateDetectionSuccess(UpdateType.NO_UPDATE)
                 }
-                appUpdateManager!!.registerListener(listener)
-                appUpdateManager!!.startUpdateFlowForResult(
-                    appUpdateInfo,
-                    activity,
-                    AppUpdateOptions.newBuilder(updateType)
-                        .setAllowAssetPackDeletion(true)
-                        .build(),
-                    MY_REQUEST_CODE
-                )
-            } else {
-                Logger.d(AdSdkConstants.TAG, "No Update available")
-                versionControlListener?.onUpdateDetectionSuccess(UpdateType.NO_UPDATE)
             }
         }
     }
@@ -136,5 +148,11 @@ internal class VersionControl {
                 show()
             }
         }
+    }
+
+    fun testFakeUpdate(activity: Activity, availableVersionCode: Int, @AppUpdateType appUpdateType: Int, versionControlListener: VersionControlListener?, hook: (FakeAppUpdateManager, VersionControlListener?) -> Unit) {
+        val fakeUpdateManager = FakeAppUpdateManager(activity)
+        fakeUpdateManager.setUpdateAvailable(availableVersionCode, appUpdateType)
+        hook(fakeUpdateManager, versionControlListener)
     }
 }

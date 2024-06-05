@@ -31,34 +31,34 @@ class RewardedAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
         loadRewardedAdButton?.setOnClickListener {
             mMaxRewardedAd?.showAd()
             mMaxRewardedAd?.setListener(object : MaxRewardedAdListener {
-                override fun onAdLoaded(p0: MaxAd?) {
+                override fun onAdLoaded(p0: MaxAd) {
                 }
 
-                override fun onAdDisplayed(p0: MaxAd?) {
+                override fun onAdDisplayed(p0: MaxAd) {
                 }
 
-                override fun onAdHidden(p0: MaxAd?) {
+                override fun onAdHidden(p0: MaxAd) {
                     loadRewardedAd()
                 }
 
-                override fun onAdClicked(p0: MaxAd?) {
+                override fun onAdClicked(p0: MaxAd) {
                 }
 
-                override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+                override fun onAdLoadFailed(p0: String, p1: MaxError) {
                 }
 
-                override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+                override fun onAdDisplayFailed(p0: MaxAd, p1: MaxError) {
                     loadRewardedAd()
                 }
 
-                override fun onUserRewarded(p0: MaxAd?, p1: MaxReward?) {
+                override fun onUserRewarded(p0: MaxAd, p1: MaxReward) {
                     println("${AdSdkConstants.TAG} ${p1?.label} ${p1?.amount}")
                 }
 
-                override fun onRewardedVideoStarted(p0: MaxAd?) {
+                override fun onRewardedVideoStarted(p0: MaxAd) {
                 }
 
-                override fun onRewardedVideoCompleted(p0: MaxAd?) {
+                override fun onRewardedVideoCompleted(p0: MaxAd) {
                 }
             })
             mRewardedAd?.show(this@RewardedAdExampleActivity) {

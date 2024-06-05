@@ -1,6 +1,5 @@
 package com.appyhigh.adsdk.ads
 
-import android.R.attr.*
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
@@ -21,7 +20,6 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxError
-import com.applovin.mediation.nativeAds.MaxNativeAd
 import com.applovin.mediation.nativeAds.MaxNativeAdListener
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
@@ -70,7 +68,7 @@ internal class NativeAdLoader {
                 val nativeAdLoader = MaxNativeAdLoader(adUnitId, context)
                 nativeAdLoader.loadAd()
                 nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
-                    override fun onNativeAdLoaded(p0: MaxNativeAdView?, p1: MaxAd?) {
+                    override fun onNativeAdLoaded(p0: MaxNativeAdView?, p1: MaxAd) {
                         val linearLayout = LinearLayout(context)
                         linearLayout.addView(p0)
                         Logger.d(
@@ -88,19 +86,25 @@ internal class NativeAdLoader {
                     }
                 })
             } else {
-                val builder = if (adProvider == AdProvider.ADMOB.name.lowercase()) {
-                    AdRequest.Builder().addNetworkExtrasBundle(
-                        AdMobAdapter::class.java,
-                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-                    )
+                val adRequest = if (adProvider == AdProvider.ADMOB.name.lowercase()) {
+                    AdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                        contentURL?.let { setContentUrl(it) }
+                        neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                    }.build()
                 } else {
-                    AdManagerAdRequest.Builder().addNetworkExtrasBundle(
-                        AdMobAdapter::class.java,
-                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-                    )
+                    AdManagerAdRequest.Builder().apply {
+                        addNetworkExtrasBundle(
+                            AdMobAdapter::class.java,
+                            if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                        )
+                        contentURL?.let { setContentUrl(it) }
+                        neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                    }.build()
                 }
-                contentURL?.let { builder.setContentUrl(it) }
-                neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
                 val adLoader: AdLoader = AdLoader.Builder(context, adUnitId)
                     .forNativeAd { ad ->
                         nativeAd = ad
@@ -131,9 +135,7 @@ internal class NativeAdLoader {
                             .build()
                     )
                     .build()
-                adLoader.loadAd(
-                    builder.build()
-                )
+                adLoader.loadAd(adRequest)
             }
         } else {
             return
@@ -540,33 +542,38 @@ internal class NativeAdLoader {
                 )
                 .build()
 
-            val builder = createNativeAdBuilder(contentURL, neighbourContentURL)
-            adLoader.loadAds(
-                builder.build(),
-                adsRequested
-            )
+            val adRequest = createNativeAdRequest(contentURL, neighbourContentURL)
+            adLoader.loadAds(adRequest, adsRequested)
         }
     }
 
     @SuppressLint("VisibleForTests")
-    private fun createNativeAdBuilder(
+    private fun createNativeAdRequest(
         contentURL: String?,
         neighbourContentURL: List<String>?,
-    ): AdRequest.Builder {
+    ): AdRequest {
         val builder =
             if (adUnitsProvider[adRequestsCompleted] == AdProvider.ADMOB.name.lowercase()) {
-                AdRequest.Builder().addNetworkExtrasBundle(
-                    AdMobAdapter::class.java,
-                    if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-                )
+                AdRequest.Builder().apply {
+                    addNetworkExtrasBundle(
+                        AdMobAdapter::class.java,
+                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                    )
+                    contentURL?.let { setContentUrl(it) }
+                    neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                }.build()
+
             } else {
-                AdManagerAdRequest.Builder().addNetworkExtrasBundle(
-                    AdMobAdapter::class.java,
-                    if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
-                )
+                AdManagerAdRequest.Builder().apply {
+                    addNetworkExtrasBundle(
+                        AdMobAdapter::class.java,
+                        if (!AdSdkConstants.consentStatus) consentDisabledBundle else bundleOf()
+                    )
+                    contentURL?.let { setContentUrl(it) }
+                    neighbourContentURL?.let { setNeighboringContentUrls(it) }
+                }.build()
+
             }
-        contentURL?.let { builder.setContentUrl(it) }
-        neighbourContentURL?.let { builder.setNeighboringContentUrls(it) }
         return builder
     }
 
