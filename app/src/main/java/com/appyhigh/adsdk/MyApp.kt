@@ -13,10 +13,10 @@ class MyApp: Application() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
         Pluto.Installer(this)
-            .addPlugin(PlutoNetworkPlugin("network"))
-            .addPlugin(PlutoExceptionsPlugin("exceptions"))
-            .addPlugin(PlutoLoggerPlugin("logger"))
-            .addPlugin(PlutoSharePreferencesPlugin("sharedPref"))
+            .addPlugin(PlutoNetworkPlugin())
+            .addPlugin(PlutoExceptionsPlugin())
+            .addPlugin(PlutoLoggerPlugin())
+            .addPlugin(PlutoSharePreferencesPlugin())
             .install()
     }
 }

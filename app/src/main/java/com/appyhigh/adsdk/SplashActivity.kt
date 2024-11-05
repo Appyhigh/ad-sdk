@@ -5,8 +5,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.applovin.sdk.AppLovinSdkInitializationConfiguration
 import com.appyhigh.adsdk.data.enums.UpdateType
-import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.AdInitializeListener
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
 import com.appyhigh.adsdk.interfaces.VersionControlListener
@@ -54,8 +54,10 @@ class SplashActivity : AppCompatActivity(), BypassAppOpenAd {
             testDevice = "D3D0E14422C7B10ADA2BAA773B14EFB6",
             advertisingId = advertId,
             fileId = R.raw.ad_utils_response,
-            appLovinKey = "pA3NAGLWSFkdUbKoK9gLEDnpXe6x8XU6D2TgT5vsHlZXt4FATcoLWTvA3fHBVhG6hh7HJWJa6JD1akUlTlVgwx",
-            adInitializeListener = object : AdInitializeListener() {
+            appLovinConfigBuilder = AppLovinSdkInitializationConfiguration.builder(
+                "pA3NAGLWSFkdUbKoK9gLEDnpXe6x8XU6D2TgT5vsHlZXt4FATcoLWTvA3fHBVhG6hh7HJWJa6JD1akUlTlVgwx",
+                application
+            ),adInitializeListener = object : AdInitializeListener() {
                 override fun onSdkInitialized(isHardStopEnabled: Boolean) {
                     Log.d(AdSdkConstants.TAG, "end")
                     AdSdk.setUpVersionControl(

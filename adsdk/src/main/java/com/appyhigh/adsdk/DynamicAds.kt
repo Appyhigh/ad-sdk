@@ -6,7 +6,7 @@ import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.utils.AdConfig
 import com.appyhigh.adsdk.utils.Logger
 import com.appyhigh.adsdk.utils.RSAKeyGenerator
-import com.pluto.plugins.network.PlutoInterceptor
+import com.pluto.plugins.network.okhttp.PlutoOkhttpInterceptor
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
@@ -36,7 +36,7 @@ internal class DynamicAds {
         val clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
         clientBuilder.addInterceptor(headerAuthorizationInterceptor)
         clientBuilder.addInterceptor(interceptor)
-        clientBuilder.addInterceptor(PlutoInterceptor())
+        clientBuilder.addInterceptor(PlutoOkhttpInterceptor)
 
 
         val formBody: RequestBody = FormBody.Builder()
