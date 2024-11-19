@@ -247,12 +247,12 @@ object AdSdk {
             }
             DynamicAds().fetchRemoteAdConfiguration(adConfig, application.packageName, null)
             MobileAds.initialize(application) {
-                Logger.d(AdSdkConstants.TAG, "admob")
+                Logger.d(AdSdkConstants.TAG, "Google AdMob Initialized")
                 isAdMobInitialized = true
                 areBothSdksInitialized(application, adInitializeListener)
             }
             AppLovinSdk.getInstance(application).initialize(initConfig.build()) {
-                Logger.d(AdSdkConstants.TAG, "applovin")
+                Logger.d(AdSdkConstants.TAG, "AppLovinSdk Initialized")
                 isAppLovinInitialized = true
                 areBothSdksInitialized(application, adInitializeListener)
             }

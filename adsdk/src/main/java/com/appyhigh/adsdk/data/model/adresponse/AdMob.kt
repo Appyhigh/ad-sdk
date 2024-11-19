@@ -1,5 +1,8 @@
 package com.appyhigh.adsdk.data.model.adresponse
 
+import androidx.annotation.Keep
+
+@Keep
 data class AdMob(
     var primary_ids: List<String> = ArrayList(),
     var secondary_ids: List<String> = ArrayList(),

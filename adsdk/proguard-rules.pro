@@ -237,6 +237,12 @@
 
 -keep class com.android.vending.billing.**
 
+-keep class io.jsonwebtoken.** { *; }
+-keep class io.jsonwebtoken.impl.** { *; }
 -keep class io.jsonwebtoken.*.* { *; }
 -keepnames class io.jsonwebtoken.* { *; }
+-keep interface io.jsonwebtoken.** { *; }
+-keep interface io.jsonwebtoken.impl.** { *; }
+-keep interface io.jsonwebtoken.*.* { *; }
 -keepnames interface io.jsonwebtoken.* { *; }
+-keep class com.appyhigh.adsdk.data.model.adresponse.** { *; }

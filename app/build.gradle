@@ -12,12 +12,12 @@ applovin {
 
 android {
     namespace 'com.appyhigh.adsdk'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.appyhigh.adssdk"
         minSdk 21
-        targetSdk 34
+        targetSdk 35
         versionCode 21
         versionName "1.0"
 
@@ -25,12 +25,13 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
+            shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -46,15 +47,15 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation("com.applovin:applovin-sdk:12.5.0")
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation("com.applovin:applovin-sdk:13.0.1")
     implementation project(path: ':adsdk')
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.gms:play-services-ads:23.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'com.google.android.gms:play-services-ads:23.5.0'
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:31.2.0')
+    implementation platform('com.google.firebase:firebase-bom:33.5.1')
     def pluto = '2.2.2'
     debugImplementation "com.plutolib:pluto:$pluto"
     releaseImplementation "com.plutolib:pluto-no-op:$pluto"

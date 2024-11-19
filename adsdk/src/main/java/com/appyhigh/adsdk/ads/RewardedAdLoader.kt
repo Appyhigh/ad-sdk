@@ -146,13 +146,6 @@ internal class RewardedAdLoader {
                 override fun onUserRewarded(p0: MaxAd, p1: MaxReward) {
                 }
 
-                @Deprecated("Deprecated in Java")
-                override fun onRewardedVideoStarted(p0: MaxAd) {
-                }
-
-                @Deprecated("Deprecated in Java")
-                override fun onRewardedVideoCompleted(p0: MaxAd) {
-                }
             })
         } else {
             val adRequest =
