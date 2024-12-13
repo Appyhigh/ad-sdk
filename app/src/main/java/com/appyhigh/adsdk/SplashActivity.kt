@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.appyhigh.adsdk.data.enums.UpdateType
+import com.appyhigh.adsdk.data.model.AdSdkError
 import com.appyhigh.adsdk.interfaces.AdInitializeListener
 import com.appyhigh.adsdk.interfaces.BypassAppOpenAd
-import com.appyhigh.adsdk.interfaces.ConsentRequestListener
 import com.appyhigh.adsdk.interfaces.VersionControlListener
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
+class SplashActivity : AppCompatActivity(), BypassAppOpenAd {
     var advertId: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,7 @@ class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
             advertisingId = advertId,
             fileId = R.raw.ad_utils_response,
             adInitializeListener = object : AdInitializeListener() {
-                override fun onSdkInitialized() {
+                override fun onSdkInitialized(isHardStopEnabled: Boolean) {
                     Log.d(AdSdkConstants.TAG, "end")
                     AdSdk.setUpVersionControl(
                         activity = this@SplashActivity,
@@ -66,8 +66,10 @@ class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
                                 when (updateType) {
                                     UpdateType.SOFT_UPDATE -> {
                                     }
+
                                     UpdateType.HARD_UPDATE -> {
                                     }
+
                                     else -> {}
                                 }
                             }
@@ -76,6 +78,7 @@ class SplashActivity : AppCompatActivity(),BypassAppOpenAd {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                     finish()
                 }
+
             }
         )
     }

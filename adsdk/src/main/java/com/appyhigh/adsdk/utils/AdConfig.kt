@@ -26,6 +26,7 @@ internal class AdConfig {
     private var defaultDarkBackgroundHex = "#000000"
     private var defaultPrimaryAdProvider = AdProvider.ADMOB.name.lowercase()
     private var defaultSecondaryAdProvider = AdProvider.ADMOB.name.lowercase()
+    private var forceUpdate = true
 
     fun initWithLocalFile(fileData: String) {
         if (adResponse == null) {
@@ -33,13 +34,13 @@ internal class AdConfig {
                 Logger.d(AdSdkConstants.TAG, "Cache Data set using local file")
                 SharedPrefs.putString(AdSdkConstants.AD_CONFIG_RESPONSE, fileData)
             }
-        }else{
+        } else {
             Logger.d(AdSdkConstants.TAG, "Cache Data set skipped as api response came first")
         }
     }
 
     fun init() {
-        if (adResponse == null) {
+        if (adResponse == null || forceUpdate) {
             try {
                 val gson = Gson()
                 if (SharedPrefs.getString(AdSdkConstants.AD_CONFIG_RESPONSE).isNullOrBlank()) {
@@ -56,11 +57,30 @@ internal class AdConfig {
                     }
                     Logger.d(AdSdkConstants.TAG, "Cache Data Updated using api response")
                 }
+                forceUpdate = false
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
+    fun forceUpdateConfig() {
+        forceUpdate = true
+    }
+
+    fun isPopupEnabled(): Boolean {
+        return adResponse?.app?.enablePopup ?: false
+    }
+
+    fun getRedirectUri(): String {
+        return adResponse?.app?.redirectLink ?: ""
+    }
+
+
+    fun getRedirectDescription(): String {
+        return adResponse?.app?.redirectLinkDescription ?: ""
+    }
+
 
     fun isAppAdsActive(): Boolean {
         return adResponse?.app?.showAppAds ?: true

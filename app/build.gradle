@@ -7,7 +7,7 @@ plugins {
 }
 
 applovin {
-    apiKey "gcyVX2np_6N23XxVZWl_N5eTnUgybgZyIMqdBXeWJG4Rniy3LcTOhMvrRTQLpcMePJw9t1uk4O0X2yHg2RNpE"
+    apiKey "gcyVX2np_6N23XxVZWl_N5eTnUgybgZyIMqdBXeWJG4Rniy3LcTOhMvrRTQLpcMePJw9t1uk4O0X2yHg2RNpE9"
 }
 
 android {

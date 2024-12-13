@@ -2,6 +2,8 @@ package com.appyhigh.adsdk
 
 
 import com.appyhigh.adsdk.data.local.SharedPrefs
+import com.appyhigh.adsdk.data.model.AdSdkError
+import com.appyhigh.adsdk.utils.AdConfig
 import com.appyhigh.adsdk.utils.Logger
 import com.appyhigh.adsdk.utils.RSAKeyGenerator
 import com.pluto.plugins.network.PlutoInterceptor
@@ -12,9 +14,11 @@ import java.io.IOException
 
 internal class DynamicAds {
     private val baseUrl = "https://admob-automation.apyhi.com/api/"
-
+    private val baseUrlTest = "https://admob-automation-qa-cdn.apyhi.com/api/"
     fun fetchRemoteAdConfiguration(
-        packageId: String
+        adConfig: AdConfig,
+        packageId: String,
+        adConfigFetchListener: AdConfigFetchListener?
     ) {
         val headerAuthorizationInterceptor = Interceptor { chain ->
             var request = chain.request()
@@ -43,7 +47,6 @@ internal class DynamicAds {
         val request: Request = Request.Builder()
             .url(baseUrl + "v2/app/info")
             .post(formBody)
-            .addHeader(AdSdkConstants.AUTHORIZATION_HEADER, fetchToken())
             .build()
 
         val call: Call = clientBuilder.build().newCall(request)
@@ -63,6 +66,8 @@ internal class DynamicAds {
                                 AdSdkConstants.AD_CONFIG_RESPONSE,
                                 apiResponse
                             )
+                            adConfig.forceUpdateConfig()
+                            adConfigFetchListener?.onAdConfigFetched(adConfig.isPopupEnabled())
                         }
                     } else {
                         Logger.d(AdSdkConstants.TAG, "fetchRemoteAdConfiguration: failure")
@@ -95,4 +100,9 @@ internal class DynamicAds {
         }
         return "Bearer $token"
     }
+}
+
+interface AdConfigFetchListener {
+    fun onAdConfigFetched(isHardStopEnabled:Boolean)
+    fun onAdConfigFetchFailed(reason: AdSdkError)
 }

@@ -4,6 +4,10 @@
   "app": {
     "showAppAds": true,
     "isActive": true,
+    "redirectLinkDescription": "New Update Available!",
+    "redirectLink": "https://play.google.com/store/apps/details?id=documents.excel.word.office",
+    "enablePopup": true,
+    "isDeleted": false,
     "_id": "63d6c69d700bede5026f7f32",
     "appName": "Ad Utils",
     "packageId": "com.appyhigh.adssdk",
@@ -30,7 +34,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "banner",
         "primary_adload_timeout_ms": 8000,
@@ -55,7 +59,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "medium_rectangle",
         "primary_adload_timeout_ms": 8000,
@@ -80,7 +84,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "large_banner",
         "primary_adload_timeout_ms": 8000,
@@ -105,7 +109,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -130,7 +134,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -155,7 +159,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -180,7 +184,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -203,7 +207,7 @@
         "refresh_rate_ms": 45000,
         "color_hex": "#0de8f8",
         "color_hex_dark": "#000000",
-        "text_color": "#000000",
+        "text_color": "#d57676",
         "text_color_dark": "#ffffff",
         "bg_color": "#ffffff",
         "bg_color_dark": "#2c2c2c",
@@ -226,7 +230,7 @@
         "ad_type": "native",
         "isActive": true,
         "refresh_rate_ms": 45000,
-        "color_hex": "#12b5de",
+        "color_hex": "#2de639",
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#ffffff",
@@ -235,7 +239,7 @@
         "size": "medium",
         "primary_adload_timeout_ms": 8000,
         "background_threshold": 0,
-        "mediaHeight": 300
+        "mediaHeight": 500
       },
       {
         "primary_ids": [
@@ -260,7 +264,7 @@
         "size": "bigv1",
         "primary_adload_timeout_ms": 8000,
         "background_threshold": 0,
-        "mediaHeight": 300
+        "mediaHeight": 500
       },
       {
         "primary_ids": [
@@ -280,7 +284,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#ffffff",
-        "bg_color": "#ffffff",
+        "bg_color": "#ead861",
         "bg_color_dark": "#2c2c2c",
         "size": "bigv2",
         "primary_adload_timeout_ms": 8000,
@@ -355,7 +359,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "banner",
         "primary_adload_timeout_ms": 8000,
@@ -380,7 +384,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "medium_rectangle",
         "primary_adload_timeout_ms": 8000,
@@ -405,7 +409,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "large_banner",
         "primary_adload_timeout_ms": 8000,
@@ -430,7 +434,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -455,7 +459,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -480,7 +484,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -505,7 +509,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -526,16 +530,16 @@
         "ad_type": "native",
         "isActive": true,
         "refresh_rate_ms": 45000,
-        "color_hex": "#dd1313",
+        "color_hex": "#a71b1b",
         "color_hex_dark": "#000000",
-        "text_color": "#000000",
+        "text_color": "#3da952",
         "text_color_dark": "#ffffff",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#2c2c2c",
         "size": "small",
         "primary_adload_timeout_ms": 8000,
         "background_threshold": 0,
-        "mediaHeight": 300
+        "mediaHeight": 500
       },
       {
         "primary_ids": [
@@ -555,12 +559,12 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#ffffff",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#2c2c2c",
         "size": "medium",
         "primary_adload_timeout_ms": 8000,
         "background_threshold": 0,
-        "mediaHeight": 300
+        "mediaHeight": 500
       },
       {
         "primary_ids": [
@@ -580,12 +584,12 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#ffffff",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#2c2c2c",
         "size": "bigv1",
         "primary_adload_timeout_ms": 8000,
         "background_threshold": 0,
-        "mediaHeight": 300
+        "mediaHeight": 500
       },
       {
         "primary_ids": [
@@ -605,7 +609,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#ffffff",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#2c2c2c",
         "size": "bigv2",
         "primary_adload_timeout_ms": 8000,
@@ -630,7 +634,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#ffffff",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#2c2c2c",
         "size": "bigv3",
         "primary_adload_timeout_ms": 8000,
@@ -655,7 +659,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#ffffff",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#2c2c2c",
         "size": "grid_ad",
         "primary_adload_timeout_ms": 8000,
@@ -680,7 +684,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "banner",
         "primary_adload_timeout_ms": 8000,
@@ -705,7 +709,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -714,10 +718,10 @@
       },
       {
         "primary_ids": [
-          "7d71db44c25d773b"
+          "qwertyuiop"
         ],
         "secondary_ids": [
-          "7d71db44c25d773b"
+          "qwertyuiop"
         ],
         "_id": "64141dd48e00b09aa012d7cd",
         "ad_name": "app_open_applovin",
@@ -730,7 +734,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -755,7 +759,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "",
         "primary_adload_timeout_ms": 8000,
@@ -764,10 +768,10 @@
       },
       {
         "primary_ids": [
-          "91eae1b0fdcc2de9"
+          "qwertyuiop"
         ],
         "secondary_ids": [
-          "91eae1b0fdcc2de9"
+          "qwertyuiop"
         ],
         "_id": "64141e5f8e00b0db3712d7d5",
         "ad_name": "native_small_applovin",
@@ -780,7 +784,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "small",
         "primary_adload_timeout_ms": 8000,
@@ -789,10 +793,10 @@
       },
       {
         "primary_ids": [
-          "91eae1b0fdcc2de9"
+          "qwertyuiop"
         ],
         "secondary_ids": [
-          "91eae1b0fdcc2de9"
+          "qwertyuiop"
         ],
         "_id": "64141e878e00b0ab8212d7d9",
         "ad_name": "native_big_applovin",
@@ -805,7 +809,7 @@
         "color_hex_dark": "#000000",
         "text_color": "#000000",
         "text_color_dark": "#000000",
-        "bg_color": "#ffffff",
+        "bg_color": "#000000",
         "bg_color_dark": "#000000",
         "size": "bigv1",
         "primary_adload_timeout_ms": 8000,
@@ -814,7 +818,7 @@
       }
     ],
     "createdAt": "2023-01-29T19:18:53.983Z",
-    "updatedAt": "2023-03-17T08:02:15.848Z",
+    "updatedAt": "2023-09-05T09:50:21.724Z",
     "__v": 0
   }
 }

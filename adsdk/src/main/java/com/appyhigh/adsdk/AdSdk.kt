@@ -2,23 +2,39 @@ package com.appyhigh.adsdk
 
 import android.app.Activity
 import android.app.Application
+import android.app.Dialog
 import android.content.Context
-import android.util.Log
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Lifecycle
 import com.applovin.sdk.AppLovinSdk
-import com.appyhigh.adsdk.ads.*
+import com.appyhigh.adsdk.ads.AppOpenAdLoader
+import com.appyhigh.adsdk.ads.BannerAdLoader
+import com.appyhigh.adsdk.ads.InterstitialAdLoader
+import com.appyhigh.adsdk.ads.NativeAdLoader
+import com.appyhigh.adsdk.ads.RewardedAdLoader
+import com.appyhigh.adsdk.ads.RewardedInterstitialAdLoader
 import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.data.enums.AdSdkErrorCode
 import com.appyhigh.adsdk.data.enums.AdType
 import com.appyhigh.adsdk.data.enums.AppOpenLoadType
 import com.appyhigh.adsdk.data.local.SharedPrefs
 import com.appyhigh.adsdk.data.model.AdSdkError
-import com.appyhigh.adsdk.interfaces.*
+import com.appyhigh.adsdk.interfaces.AdInitializeListener
+import com.appyhigh.adsdk.interfaces.AppOpenAdLoadListener
+import com.appyhigh.adsdk.interfaces.BannerAdLoadListener
+import com.appyhigh.adsdk.interfaces.ConsentRequestListener
+import com.appyhigh.adsdk.interfaces.InterstitialAdLoadListener
+import com.appyhigh.adsdk.interfaces.NativeAdLoadListener
+import com.appyhigh.adsdk.interfaces.RewardedAdLoadListener
+import com.appyhigh.adsdk.interfaces.RewardedInterstitialAdLoadListener
+import com.appyhigh.adsdk.interfaces.VersionControlListener
 import com.appyhigh.adsdk.utils.AdConfig
 import com.appyhigh.adsdk.utils.Logger
 import com.google.android.gms.ads.MobileAds
@@ -33,12 +49,52 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 
+
 object AdSdk {
     private var isInitialized = false
     private var adConfig = AdConfig()
     private var isAppOpenAlreadyRegistered = false
     private var isAdMobInitialized = false
     private var isAppLovinInitialized = false
+    private var updateDialog: Dialog? = null
+    fun isPopupEnabled(context: Context): Boolean {
+        SharedPrefs.init(context)
+        adConfig.init()
+        return adConfig.isPopupEnabled()
+    }
+
+    fun showCustomHardStopPopup(context: Activity) {
+        context.runOnUiThread {
+            updateDialog = Dialog(context)
+            if (isPopupEnabled(context)) {
+                updateDialog?.setContentView(R.layout.update_dialog)
+                updateDialog?.window!!.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                updateDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                updateDialog?.setCancelable(false)
+                updateDialog?.show()
+                val title = updateDialog?.findViewById<AppCompatTextView>(R.id.update_dialog_title)
+                title?.text = adConfig.getRedirectDescription()
+                val download = updateDialog?.findViewById<AppCompatButton>(R.id.update_dialog_btn)
+                download?.setOnClickListener {
+                    try {
+                        val browserIntent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(adConfig.getRedirectUri()))
+                        context.startActivity(browserIntent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                val cancel = updateDialog?.findViewById<AppCompatImageView>(R.id.update_dialog_close)
+                cancel?.setOnClickListener {
+                    System.exit(0)
+                }
+            }
+        }
+    }
+
     fun getConsentForEU(
         activity: Activity,
         testDeviceHashedId: String? = null,
@@ -101,6 +157,7 @@ object AdSdk {
                             loadForm(consentInformation, activity, consentRequestListener)
                         }
                     }
+
                     else -> {
                         AdSdkConstants.consentStatus = true
                         consentRequestListener.onSuccess()
@@ -114,6 +171,33 @@ object AdSdk {
         )
     }
 
+    fun fetchHardStopStatusForcefully(
+        application: Application,
+        onAdConfigFetchListener: AdConfigFetchListener
+    ) {
+        if (isSdkInitialized()) {
+            DynamicAds().fetchRemoteAdConfiguration(
+                adConfig,
+                application.packageName,
+                object : AdConfigFetchListener {
+                    override fun onAdConfigFetched(isHardStopEnabled: Boolean) {
+                        onAdConfigFetchListener.onAdConfigFetched(isHardStopEnabled)
+                    }
+
+                    override fun onAdConfigFetchFailed(reason: AdSdkError) {
+
+                    }
+                })
+        } else {
+            onAdConfigFetchListener.onAdConfigFetchFailed(
+                AdSdkError(
+                    AdSdkErrorCode.SDK_NOT_INITIALIZED,
+                    application.getString(R.string.sdk_not_initialized)
+                )
+            )
+        }
+    }
+
     fun initialize(
         application: Application,
         testDevice: String?,
@@ -121,6 +205,7 @@ object AdSdk {
         fileId: Int,
         adInitializeListener: AdInitializeListener
     ) {
+        SharedPrefs.init(application)
         val inputStream: InputStream = try {
             application.resources.openRawResource(fileId)
         } catch (e: Exception) {
@@ -134,7 +219,6 @@ object AdSdk {
         } ?: return
         try {
             val fileData = readDefaultAdResponseFile(inputStream)
-            SharedPrefs.init(application)
             adConfig.initWithLocalFile(fileData)
         } catch (e: Exception) {
             adInitializeListener.onInitializationFailed(
@@ -145,12 +229,10 @@ object AdSdk {
             )
             return
         }
-
         if (isGooglePlayServicesAvailable(application)) {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             addTestDevice(testDevice, advertisingId, application)
-            SharedPrefs.init(application)
-            DynamicAds().fetchRemoteAdConfiguration(application.packageName)
+            DynamicAds().fetchRemoteAdConfiguration(adConfig, application.packageName, null)
             MobileAds.initialize(application) {
                 Logger.d(AdSdkConstants.TAG, "admob")
                 isAdMobInitialized = true
@@ -162,6 +244,7 @@ object AdSdk {
                 areBothSdksInitialized(application, adInitializeListener)
             }
         } else {
+
             adInitializeListener.onInitializationFailed(
                 AdSdkError(
                     AdSdkErrorCode.PLAY_SERVICES_NOT_FOUND,
@@ -169,14 +252,20 @@ object AdSdk {
                 )
             )
         }
+
     }
 
-    private fun areBothSdksInitialized(application: Application, adInitializeListener: AdInitializeListener){
-        if (isAdMobInitialized && isAppLovinInitialized){
+    private fun areBothSdksInitialized(
+        application: Application,
+        adInitializeListener: AdInitializeListener
+    ) {
+        if (isAdMobInitialized && isAppLovinInitialized) {
+            isAdMobInitialized = false
+            isAppLovinInitialized = false
             AppLovinSdk.getInstance(application).mediationProvider = "max"
             isInitialized = true
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_callback))
-            adInitializeListener.onSdkInitialized()
+            adInitializeListener.onSdkInitialized(isPopupEnabled(context = application.applicationContext))
             Logger.d(AdSdkConstants.TAG, application.getString(R.string.sdk_successful))
         }
     }
@@ -264,6 +353,7 @@ object AdSdk {
                     contentURL,
                     neighbourContentURL
                 )
+
                 AdType.BANNER -> BannerAdLoader().preloadBannerAd(
                     context,
                     adName,
@@ -273,6 +363,7 @@ object AdSdk {
                     contentURL,
                     neighbourContentURL
                 )
+
                 else -> Logger.d(
                     AdSdkConstants.TAG,
                     "$adName ==== $fallBackId ==== ${context.getString(R.string.error_preloading_not_supported)}"
@@ -444,6 +535,7 @@ object AdSdk {
                         disableRefresh
                     )
                 }
+
                 AdType.BANNER -> {
                     if (lifecycle == null && !isService) {
                         val error =
@@ -496,6 +588,7 @@ object AdSdk {
                         disableRefresh
                     )
                 }
+
                 AdType.INTERSTITIAL -> {
                     if (activity == null) {
                         val error =
@@ -524,6 +617,7 @@ object AdSdk {
                         interstitialAdLoadListener
                     )
                 }
+
                 AdType.REWARDED_INTERSTITIAL ->
                     RewardedInterstitialAdLoader().loadInterstitialRewardedAd(
                         context,
@@ -536,6 +630,7 @@ object AdSdk {
                         adConfig.fetchAdUnitTimeout(adName),
                         rewardedInterstitialAdLoadListener
                     )
+
                 AdType.REWARDED -> {
                     if (activity == null) {
                         val error =
@@ -566,6 +661,7 @@ object AdSdk {
                         rewardedAdLoadListener
                     )
                 }
+
                 AdType.APP_OPEN -> {
                     if (appOpenLoadTypeInternal == null) {
                         val error =
@@ -614,11 +710,12 @@ object AdSdk {
                                 adConfig.fetchSecondaryAdProvider(adName),
                                 adConfig.fetchBackgroundThreshold(adName)
                             )
-                        }else{
+                        } else {
                             Logger.e(AdSdkConstants.TAG, "AppOpenAd already registered")
                         }
                     }
                 }
+
                 else -> Logger.d(
                     AdSdkConstants.TAG,
                     "$adName ==== $fallBackId ==== ${context.getString(R.string.unknown_ad_type)}"
