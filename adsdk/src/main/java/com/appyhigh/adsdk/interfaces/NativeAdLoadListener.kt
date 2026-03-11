@@ -1,9 +1,6 @@
 package com.appyhigh.adsdk.interfaces
 
 import android.widget.LinearLayout
-import com.applovin.mediation.MaxAd
-import com.applovin.mediation.nativeAds.MaxNativeAd
-import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 
 

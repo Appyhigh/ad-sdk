@@ -5,7 +5,6 @@ import android.app.Application
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -52,6 +51,8 @@ import com.google.android.ump.UserMessagingPlatform
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import androidx.core.net.toUri
+import kotlin.system.exitProcess
 
 
 object AdSdk {
@@ -85,15 +86,15 @@ object AdSdk {
                 download?.setOnClickListener {
                     try {
                         val browserIntent =
-                            Intent(Intent.ACTION_VIEW, Uri.parse(adConfig.getRedirectUri()))
+                            Intent(Intent.ACTION_VIEW, adConfig.getRedirectUri().toUri())
                         context.startActivity(browserIntent)
-                    } catch (e: Exception) {
+                    } catch (_: Exception) {
                         Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
                     }
                 }
                 val cancel = updateDialog?.findViewById<AppCompatImageView>(R.id.update_dialog_close)
                 cancel?.setOnClickListener {
-                    System.exit(0)
+                    exitProcess(0)
                 }
             }
         }
@@ -213,7 +214,7 @@ object AdSdk {
         SharedPrefs.init(application)
         val inputStream: InputStream = try {
             application.resources.openRawResource(fileId)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             adInitializeListener.onInitializationFailed(
                 AdSdkError(
                     AdSdkErrorCode.DEFAULT_RESOURCE_NOT_FOUND,
@@ -225,7 +226,7 @@ object AdSdk {
         try {
             val fileData = readDefaultAdResponseFile(inputStream)
             adConfig.initWithLocalFile(fileData)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             adInitializeListener.onInitializationFailed(
                 AdSdkError(
                     AdSdkErrorCode.EXCEPTION_READING_FILE,
@@ -238,7 +239,7 @@ object AdSdk {
             Logger.d(AdSdkConstants.TAG, "initializeSdk Begin")
             val initConfig = appLovinConfigBuilder.setMediationProvider(AppLovinMediationProvider.MAX)
             if (BuildConfig.DEBUG) {
-                initConfig.setTestDeviceAdvertisingIds(arrayListOf(advertisingId))
+                initConfig.testDeviceAdvertisingIds = arrayListOf(advertisingId)
                 testDevice?.let {
                     val build = RequestConfiguration.Builder()
                         .setTestDeviceIds(listOf(testDevice)).build()
@@ -338,11 +339,8 @@ object AdSdk {
                 application,
                 GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE
             )
-            if (status != ConnectionResult.SUCCESS) {
-                return false
-            }
-            return true
-        } catch (e: Exception) {
+            return status == ConnectionResult.SUCCESS
+        } catch (_: Exception) {
             return false
         }
     }
@@ -450,8 +448,7 @@ object AdSdk {
     ) {
         var appOpenLoadTypeInternal = appOpenLoadType
         if (!isSdkInitialized()) {
-            val error =
-                "${context.getString(R.string.error_sdk_not_initialized)}"
+            val error = context.getString(R.string.error_sdk_not_initialized)
             triggerAdFailedCallback(
                 bannerAdLoadListener,
                 interstitialAdLoadListener,
@@ -734,8 +731,7 @@ object AdSdk {
                 )
             }
         } else {
-            val error =
-                "${context.getString(R.string.error_ad_is_disabled)}"
+            val error = context.getString(R.string.error_ad_is_disabled)
             triggerAdFailedCallback(
                 bannerAdLoadListener,
                 interstitialAdLoadListener,

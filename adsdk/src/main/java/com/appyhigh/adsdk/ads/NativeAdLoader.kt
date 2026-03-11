@@ -35,6 +35,7 @@ import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.nativead.*
+import androidx.core.graphics.toColorInt
 
 
 internal class NativeAdLoader {
@@ -65,7 +66,7 @@ internal class NativeAdLoader {
     ) {
         if (AdSdkConstants.preloadedNativeAdMap[adName] == null) {
             if (adProvider == AdProvider.APPLOVIN.name.lowercase()) {
-                val nativeAdLoader = MaxNativeAdLoader(adUnitId, context)
+                val nativeAdLoader = MaxNativeAdLoader(adUnitId)
                 nativeAdLoader.loadAd()
                 nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
                     override fun onNativeAdLoaded(p0: MaxNativeAdView?, p1: MaxAd) {
@@ -375,7 +376,7 @@ internal class NativeAdLoader {
         }.start()
 
         if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
-            val nativeAdLoader = MaxNativeAdLoader(adUnit, context)
+            val nativeAdLoader = MaxNativeAdLoader(adUnit)
             nativeAdLoader.loadAd()
             nativeAdLoader.setNativeAdListener(object : MaxNativeAdListener() {
 
@@ -645,7 +646,7 @@ internal class NativeAdLoader {
             if (adView != null) {
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(adView.context, backgroundResource)
-                drawable?.setTint(Color.parseColor(backgroundColor))
+                drawable?.setTint(backgroundColor.toColorInt())
                 adView.findViewById<RelativeLayout>(R.id.rootView).background = drawable
             }
         } catch (e: Exception) {
@@ -654,7 +655,7 @@ internal class NativeAdLoader {
         try {
             adView?.findViewById<ConstraintLayout>(R.id.innerView)
                 ?.setBackgroundResource(backgroundResource)
-        } catch (e: java.lang.Exception) {
+        } catch (_: java.lang.Exception) {
             try {
                 adView?.findViewById<RelativeLayout>(R.id.innerView)
                     ?.setBackgroundResource(backgroundResource)
@@ -662,7 +663,7 @@ internal class NativeAdLoader {
                 e.printStackTrace()
             }
         }
-        val iconView = adView?.findViewById(R.id.icon) as ImageView
+        val iconView: ImageView = adView?.findViewById(R.id.icon)!!
         val icon = nativeAd.icon
         adView.iconView = iconView
         val iconView1 = adView.iconView
@@ -713,17 +714,17 @@ internal class NativeAdLoader {
             (adView.mediaView as MediaView).mediaContent = mediaIcon
         }
 
-        val adHeadline = adView.findViewById(R.id.headline) as TextView
+        val adHeadline: TextView = adView.findViewById(R.id.headline)
         adView.headlineView = adHeadline
         val headlineView = adView.headlineView
         headlineView?.visibility = View.VISIBLE
         val textView = headlineView as TextView
         textView.text = nativeAd.headline
         if (textColor1 != null) {
-            textView.setTextColor(ColorStateList.valueOf(Color.parseColor(textColor1)))
+            textView.setTextColor(ColorStateList.valueOf(textColor1.toColorInt()))
         }
 
-        val adBody = adView.findViewById(R.id.body) as TextView
+        val adBody: TextView = adView.findViewById(R.id.body)
         adView.bodyView = adBody
         val bodyView = adView.bodyView
         if (adType == NativeAdSize.BIGV3) {
@@ -733,7 +734,7 @@ internal class NativeAdLoader {
             val textView1 = bodyView as TextView
             textView1.text = nativeAd.body
             if (textColor2 != null) {
-                textView1.setTextColor(ColorStateList.valueOf(Color.parseColor(textColor2)))
+                textView1.setTextColor(ColorStateList.valueOf(textColor2.toColorInt()))
             }
         }
 
@@ -744,14 +745,14 @@ internal class NativeAdLoader {
             val textView1 = adView.storeView as TextView
             textView1.text = nativeAd.store
             if (textColor2 != null) {
-                textView1.setTextColor(ColorStateList.valueOf(Color.parseColor(textColor2)))
+                textView1.setTextColor(ColorStateList.valueOf(textColor2.toColorInt()))
             }
         } else {
             adView.storeView?.visibility = View.GONE
         }
 
 
-        val cta = adView.findViewById(R.id.call_to_action) as TextView
+        val cta: TextView = adView.findViewById(R.id.call_to_action)
         cta.backgroundTintList = (ColorStateList.valueOf(Color.parseColor(buttonColor)))
         adView.callToActionView = cta
         adView.callToActionView?.visibility = View.VISIBLE
@@ -796,7 +797,7 @@ internal class NativeAdLoader {
                 override fun onTick(p0: Long) {}
 
                 override fun onFinish() {
-                    if (parentView?.isShown!!) {
+                    if (parentView?.isShown == true) {
                         AdSdkConstants.adUnitsSet.remove(adName + parentView.toString())
                         loadNativeAd(
                             context,

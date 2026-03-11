@@ -104,7 +104,7 @@ internal class RewardedAdLoader {
     ) {
         countDownTimer?.start()
         if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
-            val rewardedAd = MaxRewardedAd.getInstance(adUnit, activity)
+            val rewardedAd = MaxRewardedAd.getInstance(adUnit)
             rewardedAd.loadAd()
             rewardedAd.setListener(object : MaxRewardedAdListener {
                 override fun onAdLoaded(p0: MaxAd) {

@@ -12,12 +12,12 @@ applovin {
 
 android {
     namespace 'com.appyhigh.adsdk'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.appyhigh.adssdk"
-        minSdk 21
-        targetSdk 35
+        minSdk 23
+        targetSdk 36
         versionCode 21
         versionName "1.0"
 
@@ -26,8 +26,8 @@ android {
 
     buildTypes {
         debug {
-            shrinkResources true
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
@@ -43,19 +43,22 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.15.0'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation("com.applovin:applovin-sdk:13.0.1")
+    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation("com.applovin:applovin-sdk:13.6.0")
     implementation project(path: ':adsdk')
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
-    implementation 'com.google.android.gms:play-services-ads:23.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'com.google.android.gms:play-services-ads:25.0.0'
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:33.5.1')
+    implementation platform('com.google.firebase:firebase-bom:34.9.0')
     def pluto = '2.2.2'
     debugImplementation "com.plutolib:pluto:$pluto"
     releaseImplementation "com.plutolib:pluto-no-op:$pluto"
@@ -64,5 +67,5 @@ dependencies {
 
     // Add the dependency for the Performance Monitoring library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-perf-ktx'
+    implementation 'com.google.firebase:firebase-perf'
 }

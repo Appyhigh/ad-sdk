@@ -21,7 +21,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.appopen.AppOpenAd
-import java.util.*
 import kotlin.collections.ArrayList
 
 internal class AppOpenAdLoader {
@@ -174,7 +173,7 @@ internal class AppOpenAdLoader {
         appOpenAdLoadListener: AppOpenAdLoadListener?
     ) {
         if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
-            val appOpenAd = MaxAppOpenAd(adUnit!!, context)
+            val appOpenAd = MaxAppOpenAd(adUnit!!)
             appOpenAd.loadAd()
             appOpenAd.setListener(object : MaxAdListener {
                 override fun onAdLoaded(p0: MaxAd) {
@@ -200,7 +199,7 @@ internal class AppOpenAdLoader {
 
                 override fun onAdLoadFailed(p0: String, p1: MaxError) {
                     countDownTimer?.cancel()
-                    val error = "$adName ==== $adUnit ==== ${p1?.message}"
+                    val error = "$adName ==== $adUnit ==== ${p1.message}"
                     adFailureReasonArray.add(error)
                     Logger.e(AdSdkConstants.TAG, error)
                     adRequestsCompleted += 1
@@ -240,7 +239,6 @@ internal class AppOpenAdLoader {
 
             AppOpenAd.load(
                 context, adUnit!!, request,
-                AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
                 object : AppOpenAd.AppOpenAdLoadCallback() {
                     override fun onAdLoaded(ad: AppOpenAd) {
                         if (!isAdLoaded) {

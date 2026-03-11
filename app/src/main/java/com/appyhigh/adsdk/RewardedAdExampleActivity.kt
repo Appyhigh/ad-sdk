@@ -52,14 +52,9 @@ class RewardedAdExampleActivity : AppCompatActivity(), BypassAppOpenAd {
                 }
 
                 override fun onUserRewarded(p0: MaxAd, p1: MaxReward) {
-                    println("${AdSdkConstants.TAG} ${p1?.label} ${p1?.amount}")
+                    println("${AdSdkConstants.TAG} ${p1.label} ${p1.amount}")
                 }
 
-                override fun onRewardedVideoStarted(p0: MaxAd) {
-                }
-
-                override fun onRewardedVideoCompleted(p0: MaxAd) {
-                }
             })
             mRewardedAd?.show(this@RewardedAdExampleActivity) {
                 println("${AdSdkConstants.TAG} ${it.type} ${it.amount}")

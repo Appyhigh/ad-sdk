@@ -1,8 +1,6 @@
 package com.appyhigh.adsdk
 
 import androidx.core.os.bundleOf
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.nativead.NativeAd
 
 object AdSdkConstants {
 //    const val BASE_URL = "https://admob-automation.apyhi.com/"

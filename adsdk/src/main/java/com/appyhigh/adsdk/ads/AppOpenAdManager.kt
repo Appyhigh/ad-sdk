@@ -7,10 +7,11 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.core.os.bundleOf
-import androidx.core.os.postDelayed
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.AdSdkConstants.consentDisabledBundle
 import com.appyhigh.adsdk.R
@@ -25,7 +26,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.admanager.AdManagerAdRequest
 import com.google.android.gms.ads.appopen.AppOpenAd
-import java.util.*
+import java.util.Date
 
 class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventObserver {
     private var appOpenAd: AppOpenAd? = null
@@ -58,7 +59,6 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
         this.backgroundThreshold = backgroundThreshold.toLong()
         this.adName = adName
         this.adUnit = adUnit
-        this.adUnitProvider = adUnitProvider
         this.appOpenAdLoadListener = appOpenAdLoadListener
         appCount = 0
     }
@@ -95,7 +95,6 @@ class AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleEventO
 
         AppOpenAd.load(
             context, adUnit!!, request,
-            AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
 
                 override fun onAdLoaded(ad: AppOpenAd) {

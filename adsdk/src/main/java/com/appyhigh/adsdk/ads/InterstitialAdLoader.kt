@@ -2,7 +2,6 @@ package com.appyhigh.adsdk.ads
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.os.CountDownTimer
 import androidx.core.os.bundleOf
 import com.applovin.mediation.MaxAd
@@ -98,7 +97,7 @@ internal class InterstitialAdLoader {
     ) {
         countDownTimer?.start()
         if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
-            val interstitialAd = MaxInterstitialAd(adUnit, activity)
+            val interstitialAd = MaxInterstitialAd(adUnit)
             interstitialAd.loadAd()
             interstitialAd.setListener(object : MaxAdListener {
                 override fun onAdLoaded(ad: MaxAd) {
@@ -124,7 +123,7 @@ internal class InterstitialAdLoader {
 
                 override fun onAdLoadFailed(p0: String, p1: MaxError) {
                     countDownTimer?.cancel()
-                    val error = "$adName ==== $adUnit ==== ${p1?.message}"
+                    val error = "$adName ==== $adUnit ==== ${p1.message}"
                     adFailureReasonArray.add(error)
                     Logger.e(AdSdkConstants.TAG, error)
                     adRequestsCompleted += 1

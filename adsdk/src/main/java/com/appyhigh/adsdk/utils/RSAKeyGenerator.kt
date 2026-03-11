@@ -3,7 +3,6 @@ package com.appyhigh.adsdk.utils
 import android.os.Build
 import android.util.Base64
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
 import java.security.GeneralSecurityException
 import java.security.Key
 import java.security.KeyFactory
@@ -34,14 +33,13 @@ object RSAKeyGenerator {
         val userId = data["user_id"]
         val api = data["api"]
         val prevJwt = data["jwt_token"]
-        val exp: Date
         val prevIAT: Long = 0
 
-        //get the real time in unix epoch format (milliseconds since midnight on 1 january 1970)
         val nowMillis: Long = System.currentTimeMillis()
         val iat = Date(nowMillis)
-        exp = Date(nowMillis + validityMs)
+        val exp = Date(nowMillis + validityMs)
         val timeOutInMinutes = 50
+
         return if (nowMillis - prevIAT > timeOutInMinutes * 60 * 1000) {
             var privateKey: Key? = null
             try {
@@ -49,18 +47,15 @@ object RSAKeyGenerator {
             } catch (e: GeneralSecurityException) {
                 e.printStackTrace()
             }
-            val jws = Jwts.builder()
+            Jwts.builder()
                 .claim("user_id", userId)
                 .claim("api", api)
-                .claim("iat", iat)
-                .claim("exp", exp)
-                .signWith(privateKey, SignatureAlgorithm.RS256)
-                .setAudience("adutils")
+                .issuedAt(iat)
+                .expiration(exp)
+                .audience().add("adutils").and()
+                .signWith(privateKey)
                 .compact()
-            jws
         } else {
-            prevJwt?.let {
-            }
             prevJwt
         }
     }

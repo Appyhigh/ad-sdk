@@ -4,8 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxAdListener
 import com.applovin.mediation.MaxError
@@ -38,7 +41,7 @@ class ApplovinAppOpenManager(
     init {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         context = applicationContext
-        appOpenAd = MaxAppOpenAd(adUnitId, applicationContext)
+        appOpenAd = MaxAppOpenAd(adUnitId)
         appOpenAd.setListener(this)
         appOpenAd.loadAd()
         this.backgroundThreshold = backgroundThreshold.toLong()

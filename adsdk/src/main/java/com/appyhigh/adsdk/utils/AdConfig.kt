@@ -1,7 +1,6 @@
 package com.appyhigh.adsdk.utils
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.appyhigh.adsdk.AdSdkConstants
 import com.appyhigh.adsdk.data.enums.AdProvider
 import com.appyhigh.adsdk.data.enums.AdType
@@ -13,7 +12,6 @@ import com.appyhigh.adsdk.data.model.adresponse.AdResponse
 import com.google.android.gms.ads.AdSize
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.lang.reflect.Type
 
 internal class AdConfig {
     private var adResponse: AdResponse? = null

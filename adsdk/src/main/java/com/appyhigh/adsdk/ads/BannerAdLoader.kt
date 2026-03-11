@@ -7,7 +7,6 @@ import android.os.CountDownTimer
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -47,7 +46,7 @@ internal class BannerAdLoader {
     ) {
         if (AdSdkConstants.preloadedBannerAdMap[adName] == null) {
             if (adProvider == AdProvider.APPLOVIN.name.lowercase()) {
-                val mAdView = MaxAdView(adUnitId, context)
+                val mAdView = MaxAdView(adUnitId)
                 val width = ViewGroup.LayoutParams.MATCH_PARENT
                 val heightPx = context.resources.getDimensionPixelSize(R.dimen.banner_height)
                 mAdView.layoutParams = FrameLayout.LayoutParams(width, heightPx)
@@ -305,7 +304,7 @@ internal class BannerAdLoader {
         }.start()
         val mAdView: ViewGroup
         if (adUnitsProvider[adRequestsCompleted] == AdProvider.APPLOVIN.name.lowercase()) {
-            mAdView = MaxAdView(adUnit, context)
+            mAdView = MaxAdView(adUnit)
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val heightPx = context.resources.getDimensionPixelSize(R.dimen.banner_height)
             mAdView.layoutParams = FrameLayout.LayoutParams(width, heightPx)
