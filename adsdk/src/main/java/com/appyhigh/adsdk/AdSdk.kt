@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import com.applovin.sdk.AppLovinMediationProvider
 import com.applovin.sdk.AppLovinSdk
@@ -51,7 +52,6 @@ import com.google.android.ump.UserMessagingPlatform
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
-import androidx.core.net.toUri
 import kotlin.system.exitProcess
 
 
@@ -127,11 +127,28 @@ object AdSdk {
                 activity,
                 params,
                 {
-                    if (consentInformation.isConsentFormAvailable) {
-                        loadForm(consentInformation, activity, consentRequestListener)
-                    } else {
+                    if (consentInformation.canRequestAds()) {
                         AdSdkConstants.consentStatus = true
-                        consentRequestListener.onSuccess()
+                        val isRequired = consentInformation.privacyOptionsRequirementStatus ==
+                                ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED
+                        consentRequestListener.onSuccess(isRequired)
+                        return@requestConsentInfoUpdate
+                    }
+                    UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity) { formError ->
+                        if (formError!=null) {
+                            AdSdkConstants.consentStatus = false
+                            consentRequestListener.onError(formError.message, formError.errorCode)
+                        } else {
+                            val canRequestAds = consentInformation.canRequestAds()
+                            AdSdkConstants.consentStatus = canRequestAds
+                            if (canRequestAds) {
+                                val isRequired = consentInformation.privacyOptionsRequirementStatus ==
+                                        ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED
+                                consentRequestListener.onSuccess(isRequired)
+                            } else {
+                                consentRequestListener.onError("User declined consent", -1)
+                            }
+                        }
                     }
                 },
                 {
@@ -146,34 +163,40 @@ object AdSdk {
         }
     }
 
-    private fun loadForm(
-        consentInformation: ConsentInformation,
+    fun showPrivacyOptions(
         activity: Activity,
-        consentRequestListener: ConsentRequestListener
+        consentRequestListener: ConsentRequestListener? = null
     ) {
-        UserMessagingPlatform.loadConsentForm(
-            activity,
-            { consentForm ->
-                when (consentInformation.consentStatus) {
-                    ConsentInformation.ConsentStatus.REQUIRED -> {
-                        consentForm.show(
-                            activity,
-                        ) {
-                            loadForm(consentInformation, activity, consentRequestListener)
-                        }
-                    }
+        try {
+            UserMessagingPlatform.showPrivacyOptionsForm(
+                activity
+            ) { formError ->
 
-                    else -> {
-                        AdSdkConstants.consentStatus = true
-                        consentRequestListener.onSuccess()
-                    }
+                if (formError != null) {
+                    consentRequestListener?.onError(formError.message, formError.errorCode)
+                    return@showPrivacyOptionsForm
                 }
-            },
-            {
-                AdSdkConstants.consentStatus = false
-                consentRequestListener.onError(it.message, it.errorCode)
+
+                val consentInformation = UserMessagingPlatform.getConsentInformation(activity)
+                val canRequestAds = consentInformation.canRequestAds()
+                AdSdkConstants.consentStatus = canRequestAds
+                if (canRequestAds) {
+                    val isRequired = consentInformation.privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED
+                    consentRequestListener?.onSuccess(isRequired)
+                } else {
+                    consentRequestListener?.onError(
+                        "User declined consent",
+                        -1
+                    )
+                }
             }
-        )
+
+        } catch (e: Exception) {
+            consentRequestListener?.onError(
+                e.message ?: "Failed to open privacy options",
+                -1
+            )
+        }
     }
 
     fun fetchHardStopStatusForcefully(
