@@ -4,7 +4,6 @@ import android.os.Build
 import android.util.Base64
 import io.jsonwebtoken.Jwts
 import java.security.GeneralSecurityException
-import java.security.Key
 import java.security.KeyFactory
 import java.security.PrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
@@ -41,20 +40,21 @@ object RSAKeyGenerator {
         val timeOutInMinutes = 50
 
         return if (nowMillis - prevIAT > timeOutInMinutes * 60 * 1000) {
-            var privateKey: Key? = null
-            try {
-                privateKey = privateKey(privateKeyNotification)
+            val privateKey = try {
+                privateKey(privateKeyNotification)
             } catch (e: GeneralSecurityException) {
                 e.printStackTrace()
+                return null
             }
-            Jwts.builder()
+            val jws = Jwts.builder()
                 .claim("user_id", userId)
                 .claim("api", api)
                 .issuedAt(iat)
                 .expiration(exp)
-                .audience().add("adutils").and()
-                .signWith(privateKey)
+                .audience().single("adutils")
+                .signWith(privateKey, Jwts.SIG.RS256)
                 .compact()
+            jws
         } else {
             prevJwt
         }
